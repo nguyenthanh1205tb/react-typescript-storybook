@@ -1,45 +1,44 @@
-import commonjs from "@rollup/plugin-commonjs";
-import resolve from "@rollup/plugin-node-resolve";
-import peerDepsExternal from "rollup-plugin-peer-deps-external";
-import postcss from "rollup-plugin-postcss";
-import { terser } from "rollup-plugin-terser";
-import typescript from "rollup-plugin-typescript2";
-import pkg from "./package.json";
-const tailwindcss = require("tailwindcss");
+import commonjs from '@rollup/plugin-commonjs';
+import resolve from '@rollup/plugin-node-resolve';
+import peerDepsExternal from 'rollup-plugin-peer-deps-external';
+import postcss from 'rollup-plugin-postcss';
+import { terser } from 'rollup-plugin-terser';
+import typescript from 'rollup-plugin-typescript2';
+const tailwindcss = require('tailwindcss');
 
 export default {
-  input: "src/index.ts",
+  input: 'src/index.ts',
   output: [
     {
-      file: pkg.main,
-      format: "cjs",
-      sourcemap: true,
+      file: 'build/index.js',
+      format: 'cjs',
+      sourcemap: false,
     },
     {
-      file: pkg.module,
-      format: "es",
-      sourcemap: true,
+      file: 'build/index.es.js',
+      format: 'es',
+      sourcemap: false,
     },
   ],
-  external: ["react"],
+  external: ['react'],
   plugins: [
     peerDepsExternal(),
     postcss({
       plugins: [
-        tailwindcss("./tailwind.config.js"),
-        require("autoprefixer"),
-        require("cssnano")({ preset: "default" }),
+        tailwindcss('./tailwind.config.js'),
+        require('autoprefixer'),
+        require('cssnano')({ preset: 'default' }),
       ],
     }),
     resolve(),
     typescript({
       useTsconfigDeclarationDir: true,
       rollupCommonJSResolveHack: true,
-      exclude: ["**/__tests__/**", "**/*.stories.tsx"],
+      exclude: ['**/__tests__/**', '**/*.stories.tsx'],
       clean: true,
     }),
     commonjs({
-      include: ["node_modules/**"],
+      include: ['node_modules/**'],
     }),
     terser(),
   ],
