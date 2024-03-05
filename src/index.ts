@@ -1,3 +1,8 @@
-import "../src/css/index.src.css";
+import './css/main.css';
 
-export { default as Button } from "./components/Button/Button";
+import Init from '@/src/stores/useInit';
+import MediaContainer from '@/src/views/index';
+
+export { Init };
+
+export default MediaContainer;

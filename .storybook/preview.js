@@ -1,6 +1,7 @@
 import React from 'react';
+import '../src/css/index.css';
 
-const review = {
+const preview = {
   decorators: [
     (Story) => (
       <div style={{ margin: '3em' }}>

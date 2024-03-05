@@ -14,5 +14,8 @@
     "@babel/preset-typescript",
     "@babel/preset-react"
   ],
-  "plugins": []
+  "plugins": [
+    ["@babel/plugin-proposal-decorators", { "legacy": true }], // Enable decorators
+    "@babel/plugin-transform-class-properties" // Enable class properties
+  ]
 }
