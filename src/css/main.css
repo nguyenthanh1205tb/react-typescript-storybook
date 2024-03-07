@@ -1,3 +1,4 @@
+@import url('./uppy-dashboard.css');
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -74,5 +75,3 @@
     @apply tw-bg-background tw-text-foreground;
   }
 }
-
-@import url('./uppy-dashboard.css');
