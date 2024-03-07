@@ -1,13 +1,10 @@
 import commonjs from '@rollup/plugin-commonjs';
 import nodeResolve from '@rollup/plugin-node-resolve';
 import replace from '@rollup/plugin-replace';
-import externalGlobals from 'rollup-plugin-external-globals';
 import peerDepsExternal from 'rollup-plugin-peer-deps-external';
-import nodePolyfill from 'rollup-plugin-polyfill-node';
 import postcss from 'rollup-plugin-postcss';
 import { terser } from 'rollup-plugin-terser';
 import tsTrans from 'rollup-plugin-typescript2';
-import { visualizer } from 'rollup-plugin-visualizer';
 import ts from 'typescript';
 
 const tailwindcss = require('tailwindcss');
@@ -29,18 +26,30 @@ export default {
       sourcemap: false,
       name: '$MMedia',
       globals: {
+        react: 'React',
         'react-dom/client': 'ReactDOM',
+        path: 'path',
+        fs: 'fs',
+        http: 'http',
+        https: 'https',
+        crypto: 'crypto',
+        stream: 'stream',
+        constants: 'constants',
       },
     },
   ],
-  external: ['react'],
+  external: [
+    'react',
+    'path',
+    'fs',
+    'http',
+    'https',
+    'crypto',
+    'stream',
+    'constants',
+  ],
   plugins: [
-    replace({
-      preventAssignment: true,
-      'process.env.NODE_ENV': JSON.stringify('production'),
-    }),
     peerDepsExternal(),
-    nodePolyfill(),
     postcss({
       extract: true,
       plugins: [
@@ -49,22 +58,18 @@ export default {
         require('cssnano')({ preset: 'default' }),
       ],
     }),
-    nodeResolve(),
+    replace({
+      preventAssignment: true,
+      'process.env.NODE_ENV': JSON.stringify('production'),
+    }),
+    nodeResolve({ preferBuiltins: false, browser: true }),
     commonjs(),
     tsTrans({
       useTsconfigDeclarationDir: true,
-      exclude: ['**/__tests__/**', '**/*.stories.tsx', 'node_modules/**/*'],
+      exclude: ['node_modules/**/*', '**/__tests__/**', '**/*.stories.tsx'],
       clean: true,
       typescript: ts,
     }),
-    externalGlobals({
-      react: 'React',
-      'react-dom': 'ReactDOM',
-    }),
     terser(),
-    visualizer({
-      emitFile: true,
-      filename: 'stats.html',
-    }),
   ],
 };
