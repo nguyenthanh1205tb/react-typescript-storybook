@@ -8,6 +8,7 @@ import {
 import { Image as ImageIcon, Search, Video } from 'lucide-react';
 import { observer } from 'mobx-react';
 import { useState } from 'react';
+import Image from '../components/image';
 import { Input } from '../components/ui/input';
 import { ScrollArea } from '../components/ui/scroll-area';
 import { Separator } from '../components/ui/separator';
@@ -21,7 +22,6 @@ import { TooltipProvider } from '../components/ui/tooltip';
 import If from '../lib/hooks/if';
 import AppStore, { TabItemType } from '../stores/useApp';
 import { SideMenu, SideMenuActive } from '../types';
-import MediaItem from './components/MediaItem/MediaItem';
 import Filter from './filter';
 import ListMedia from './list';
 import LinkUpload from './upload/link';
@@ -135,8 +135,13 @@ function Main() {
                       <ListMedia />
                     </TabsContent>
                   </ScrollArea>
-                  <ScrollArea className=" tw-w-[250px] xl:tw-w-[400px] tw-flex-none">
-                    <MediaItem />
+                  <ScrollArea className="tw-w-[250px] xl:tw-w-[400px] tw-flex-none">
+                    <div className="tw-flex tw-flex-col tw-pl-2">
+                      <Image
+                        className="tw-h-[200px]"
+                        src="https://picsum.photos/600/400"
+                      />
+                    </div>
                   </ScrollArea>
                 </div>
               </div>
