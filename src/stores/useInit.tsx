@@ -1,6 +1,5 @@
 import App from '@/src/index';
 import { makeAutoObservable, observable } from 'mobx';
-import React from 'react';
 import ReactDom from 'react-dom/client';
 
 class Init {

@@ -74,3 +74,5 @@
     @apply tw-bg-background tw-text-foreground;
   }
 }
+
+@import url('./uppy-dashboard.css');

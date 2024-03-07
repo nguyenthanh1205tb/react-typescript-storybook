@@ -1,12 +1,14 @@
 import commonjs from '@rollup/plugin-commonjs';
-import resolve from '@rollup/plugin-node-resolve';
+import nodeResolve from '@rollup/plugin-node-resolve';
 import replace from '@rollup/plugin-replace';
 import externalGlobals from 'rollup-plugin-external-globals';
 import peerDepsExternal from 'rollup-plugin-peer-deps-external';
+import nodePolyfill from 'rollup-plugin-polyfill-node';
 import postcss from 'rollup-plugin-postcss';
 import { terser } from 'rollup-plugin-terser';
-import typescript from 'rollup-plugin-typescript2';
+import tsTrans from 'rollup-plugin-typescript2';
 import { visualizer } from 'rollup-plugin-visualizer';
+import ts from 'typescript';
 
 const tailwindcss = require('tailwindcss');
 
@@ -33,12 +35,12 @@ export default {
   ],
   external: ['react'],
   plugins: [
-    peerDepsExternal(),
-    resolve({ jsnext: true, main: true }),
-    visualizer({
-      emitFile: true,
-      filename: 'stats.html',
+    replace({
+      preventAssignment: true,
+      'process.env.NODE_ENV': JSON.stringify('production'),
     }),
+    peerDepsExternal(),
+    nodePolyfill(),
     postcss({
       extract: true,
       plugins: [
@@ -47,22 +49,22 @@ export default {
         require('cssnano')({ preset: 'default' }),
       ],
     }),
-    typescript({
+    nodeResolve(),
+    commonjs(),
+    tsTrans({
       useTsconfigDeclarationDir: true,
-      exclude: ['**/__tests__/**', '**/*.stories.tsx'],
+      exclude: ['**/__tests__/**', '**/*.stories.tsx', 'node_modules/**/*'],
       clean: true,
+      typescript: ts,
     }),
     externalGlobals({
       react: 'React',
       'react-dom': 'ReactDOM',
     }),
-    commonjs({
-      include: ['node_modules/**'],
-    }),
-    replace({
-      preventAssignment: true,
-      'process.env.NODE_ENV': JSON.stringify('production'),
-    }),
     terser(),
+    visualizer({
+      emitFile: true,
+      filename: 'stats.html',
+    }),
   ],
 };
