@@ -23,7 +23,7 @@ import AppStore, { TabItemType } from '../stores/useApp';
 import { SideMenu, SideMenuActive } from '../types';
 import MediaItem from './components/MediaItem/MediaItem';
 import Filter from './filter';
-import ListMedia from './list';
+import ListMedia from './list-media';
 import LinkUpload from './upload/link';
 import LocalFilesUpload from './upload/local-files';
 import MenuUpload from './upload/menu';
