@@ -8,6 +8,12 @@ interface Props {}
 function LocalFilesUpload({}: PropsWithChildren<Props>) {
   const uppyRef = useRef<{ upload: () => void }>();
 
+  const onUpload = () => {
+    if (uppyRef.current) {
+      uppyRef.current.upload();
+    }
+  };
+
   return (
     <div className="tw-flex tw-flex-col tw-gap-4">
       <p className="tw-text-lg tw-font-bold">Upload từ máy của bạn</p>
@@ -16,7 +22,7 @@ function LocalFilesUpload({}: PropsWithChildren<Props>) {
         templateId={TEMPLATE_ID}
         ref={uppyRef}
       />
-      <Button>Tải lên</Button>
+      <Button onClick={onUpload}>Tải lên</Button>
     </div>
   );
 }

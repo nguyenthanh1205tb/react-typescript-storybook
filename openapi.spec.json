@@ -1,0 +1,202 @@
+{
+  "openapi": "3.0.0",
+  "paths": {
+    "/detail/media": {
+      "get": {
+        "operationId": "MediaController_detailMedia",
+        "parameters": [
+          {
+            "name": "mediaId",
+            "required": true,
+            "in": "query",
+            "description": "Media ID",
+            "schema": { "type": "string" }
+          },
+          {
+            "name": "organizationId",
+            "required": true,
+            "in": "query",
+            "description": "Organization ID",
+            "schema": { "type": "string" }
+          }
+        ],
+        "responses": { "200": { "description": "" } }
+      }
+    },
+    "/media/files": {
+      "get": {
+        "operationId": "MediaController_getMediaFileList",
+        "parameters": [
+          {
+            "name": "order",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "default": "DESC",
+              "enum": ["ASC", "DESC"],
+              "type": "string"
+            }
+          },
+          {
+            "name": "page",
+            "required": false,
+            "in": "query",
+            "schema": { "minimum": 1, "default": 1, "type": "number" }
+          },
+          {
+            "name": "take",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "minimum": 1,
+              "maximum": 50,
+              "default": 10,
+              "type": "number"
+            }
+          },
+          {
+            "name": "orderBy",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "default": "createdAt",
+              "enum": ["name", "createdAt"],
+              "type": "string"
+            }
+          },
+          {
+            "name": "keyword",
+            "required": false,
+            "in": "query",
+            "schema": { "type": "string" }
+          },
+          {
+            "name": "timeRange",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "default": "all",
+              "enum": ["all", "24h", "7d", "30d", "1y", "custom"],
+              "type": "string"
+            }
+          },
+          {
+            "name": "startDate",
+            "required": false,
+            "in": "query",
+            "schema": { "type": "string" }
+          },
+          {
+            "name": "endDate",
+            "required": false,
+            "in": "query",
+            "schema": { "type": "string" }
+          }
+        ],
+        "responses": { "200": { "description": "Get media list" } }
+      }
+    },
+    "/create/media": {
+      "post": {
+        "operationId": "CustomMediaController_createMediaFile",
+        "parameters": [
+          {
+            "name": "filePath",
+            "required": true,
+            "in": "query",
+            "description": "File path",
+            "schema": { "type": "string" }
+          },
+          {
+            "name": "durations",
+            "required": true,
+            "in": "query",
+            "description": "Durations in mini second",
+            "schema": { "type": "string" }
+          }
+        ],
+        "responses": { "201": { "description": "" } }
+      }
+    },
+    "/hook-fb": {
+      "get": {
+        "operationId": "ChannelController_verify",
+        "parameters": [],
+        "responses": { "200": { "description": "" } }
+      },
+      "post": {
+        "operationId": "ChannelController_handleWebhookFacebook",
+        "parameters": [],
+        "responses": { "201": { "description": "" } }
+      }
+    },
+    "/copyright_matches": {
+      "post": {
+        "operationId": "RightController_copyRightMatches",
+        "parameters": [
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "description": "Limit",
+            "schema": { "type": "number" }
+          },
+          {
+            "name": "ownerId",
+            "required": true,
+            "in": "query",
+            "description": "Owner ID",
+            "schema": { "type": "string" }
+          },
+          {
+            "name": "match_statuses",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "enum": [
+                  "MANUAL_REVIEW",
+                  "CLAIMED",
+                  "MONITORED",
+                  "BLOCKED",
+                  "REPORTED_OR_REMOVED",
+                  "REPORTED",
+                  "ADDED_MATCH",
+                  "REMOVED",
+                  "IN_DISPUTE",
+                  "ALL"
+                ]
+              }
+            }
+          }
+        ],
+        "responses": { "201": { "description": "" } }
+      }
+    },
+    "/excel/download/report/{mediaId}": {
+      "get": {
+        "operationId": "ReportController_generateExcel",
+        "parameters": [],
+        "responses": { "200": { "description": "" } }
+      }
+    }
+  },
+  "info": {
+    "title": "API",
+    "description": "",
+    "version": "2.0.0",
+    "contact": {}
+  },
+  "tags": [],
+  "servers": [],
+  "components": {
+    "securitySchemes": {
+      "bearer": { "scheme": "bearer", "bearerFormat": "JWT", "type": "http" }
+    },
+    "schemas": {
+      "GetOrganizationInput": { "type": "object", "properties": {} }
+    }
+  }
+}

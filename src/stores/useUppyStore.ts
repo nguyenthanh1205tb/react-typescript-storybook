@@ -1,4 +1,4 @@
-import { action } from 'mobx';
+import { create } from 'zustand';
 
 type FileStatus = {
   file: any;
@@ -8,18 +8,24 @@ type FileStatus = {
   organizationId: string;
 };
 
-class UppyStore {
-  uploadStatusMap = {};
+type State = {
+  uploadStatusMap: Record<string, FileStatus>;
+  updateUploadStatusMap: (fileId: string, file: FileStatus) => void;
+  clearStatusMap: () => void;
+};
 
-  @action
-  updateUploadStatusMap = (fileId: string, file: FileStatus) => {
-    this.uploadStatusMap = { ...this.uploadStatusMap, [fileId]: file };
-  };
+const useUppyStore = create<State>((set) => ({
+  uploadStatusMap: {},
+  updateUploadStatusMap: (fileId: string, file: FileStatus) => {
+    set((state) => ({
+      uploadStatusMap: { ...state.uploadStatusMap, [fileId]: file },
+    }));
+  },
+  clearStatusMap: () => {
+    set(() => ({
+      uploadStatusMap: {},
+    }));
+  },
+}));
 
-  @action
-  clearStatusMap = () => {
-    this.uploadStatusMap = {};
-  };
-}
-
-export default new UppyStore();
+export default useUppyStore;

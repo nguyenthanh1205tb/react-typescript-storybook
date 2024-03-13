@@ -1,0 +1,5 @@
+mutation deleteMedia($input: DeleteMedia!) {
+  deleteMedia(input: $input){
+    success
+  }
+}

@@ -38,7 +38,10 @@ function MenuUpload({ onChangeMenu, active }: PropsWithChildren<Props>) {
                 <FilterIcon size={18} />
               </div>
             </TooltipTrigger>
-            <TooltipContent>
+            <TooltipContent
+              side="right"
+              className="tw-bg-slate-800 tw-text-white"
+            >
               <p>Bộ lọc</p>
             </TooltipContent>
           </Tooltip>
@@ -59,7 +62,10 @@ function MenuUpload({ onChangeMenu, active }: PropsWithChildren<Props>) {
                 <Computer size={18} />
               </div>
             </TooltipTrigger>
-            <TooltipContent>
+            <TooltipContent
+              side="right"
+              className="tw-bg-slate-800 tw-text-white"
+            >
               <p>Upload từ máy của bạn</p>
             </TooltipContent>
           </Tooltip>
@@ -80,7 +86,10 @@ function MenuUpload({ onChangeMenu, active }: PropsWithChildren<Props>) {
                 <Link size={18} />
               </div>
             </TooltipTrigger>
-            <TooltipContent>
+            <TooltipContent
+              side="right"
+              className="tw-bg-slate-800 tw-text-white"
+            >
               <p>Upload từ urls</p>
             </TooltipContent>
           </Tooltip>
@@ -101,7 +110,10 @@ function MenuUpload({ onChangeMenu, active }: PropsWithChildren<Props>) {
                 <FolderOpen size={18} />
               </div>
             </TooltipTrigger>
-            <TooltipContent>
+            <TooltipContent
+              side="right"
+              className="tw-bg-slate-800 tw-text-white"
+            >
               <p>Upload từ watch folder</p>
             </TooltipContent>
           </Tooltip>
@@ -122,7 +134,10 @@ function MenuUpload({ onChangeMenu, active }: PropsWithChildren<Props>) {
                 <UploadCloud size={18} />
               </div>
             </TooltipTrigger>
-            <TooltipContent>
+            <TooltipContent
+              side="right"
+              className="tw-bg-slate-800 tw-text-white"
+            >
               <p>Upload từ S3 storage</p>
             </TooltipContent>
           </Tooltip>

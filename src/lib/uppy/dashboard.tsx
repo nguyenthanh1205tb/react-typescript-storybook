@@ -2,7 +2,6 @@ import { createUppyInstance } from '@/src/configs/uppy';
 import UppyStore from '@/src/stores/useUppyStore';
 import type { Uppy } from '@uppy/core';
 import '@uppy/core/dist/style.min.css';
-import { observer } from 'mobx-react';
 import React, { useEffect, useImperativeHandle, useState } from 'react';
 import { v4 as uuid } from 'uuid';
 // import '@/assets/css/libs/uppy-dashboard.css';
@@ -43,16 +42,14 @@ const UppyDashboard = React.forwardRef((props: Props, ref) => {
   } = props;
 
   const [uppyInstance, setUppyInstance] = useState<Uppy>();
-  const { updateUploadStatusMap } = UppyStore;
+  const { updateUploadStatusMap } = UppyStore();
 
   useImperativeHandle(
     ref,
     () => {
       return {
         upload: () => {
-          if (!uppyInstance) {
-            return null;
-          }
+          if (!uppyInstance) return null;
           return uppyInstance?.upload();
         },
       };
@@ -116,7 +113,7 @@ const UppyDashboard = React.forwardRef((props: Props, ref) => {
           return;
         }
 
-        uppy?.upload();
+        // uppy?.upload();
         for (const file of files) {
           updateUploadStatusMap(file?.id, {
             file,
@@ -158,4 +155,4 @@ const UppyDashboard = React.forwardRef((props: Props, ref) => {
   return <div id="uppy-target"></div>;
 });
 
-export default observer(UppyDashboard);
+export default UppyDashboard;

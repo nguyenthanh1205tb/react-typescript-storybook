@@ -1,8 +1,4 @@
-import './css/main.css';
-
-import Init from '@/src/stores/useInit';
-import MediaContainer from '@/src/views/index';
+import './assets/css/main.css';
+import Init from '@/src/init';
 
 export { Init };
-
-export default MediaContainer;

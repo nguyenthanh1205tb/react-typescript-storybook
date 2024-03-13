@@ -1,5 +1,5 @@
-import MediaContainer from '@/src/index';
 import React from 'react';
+import MediaContainer from '@/src/views/index';
 
 export default { title: 'Media Package' };
 

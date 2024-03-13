@@ -6,8 +6,7 @@ import {
   DialogTitle,
 } from '@/src/components/ui/dialog';
 import { Image as ImageIcon, Search, Video } from 'lucide-react';
-import { observer } from 'mobx-react';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Input } from '../components/ui/input';
 import { ScrollArea } from '../components/ui/scroll-area';
 import { Separator } from '../components/ui/separator';
@@ -18,24 +17,32 @@ import {
   TabsTrigger,
 } from '../components/ui/tabs';
 import { TooltipProvider } from '../components/ui/tooltip';
-import If from '../lib/hooks/if';
-import AppStore, { TabItemType } from '../stores/useApp';
+import If from '../hooks/if';
+import useAppStore, { TabItemType } from '../stores/useAppStore';
 import { SideMenu, SideMenuActive } from '../types';
-import MediaItem from './components/MediaItem/MediaItem';
+import MediaDetail from './media-detail/detail';
 import Filter from './filter';
-import ListMedia from './list-media';
+import ListMedia from './media-list/list';
 import LinkUpload from './upload/link';
 import LocalFilesUpload from './upload/local-files';
 import MenuUpload from './upload/menu';
 import S3StorageUpload from './upload/s3-storage';
 import WatchFolderUpload from './upload/watch-folder';
+import {
+  AUTH_TOKEN,
+  LS_SELECTED_ORGANIZATION_KEY,
+  LS_SELECTED_TEMPLATE_KEY,
+  LS_SELECTED_TOKEN_KEY,
+  ORG_ID,
+  TEMPLATE_ID,
+} from '../configs';
 
 type State = {
   sideMenu: SideMenu;
 };
 
 function Main() {
-  const { setMediaDialog, openMedia, tabActivated } = AppStore;
+  const { setMediaDialog, openMedia, tabActivated } = useAppStore();
   const [state, setState] = useState<State>({
     sideMenu: {
       active: SideMenuActive.FILTER,
@@ -49,8 +56,15 @@ function Main() {
     }));
   };
 
+  useEffect(() => {
+    localStorage.setItem(LS_SELECTED_ORGANIZATION_KEY, ORG_ID);
+    localStorage.setItem(LS_SELECTED_TOKEN_KEY, AUTH_TOKEN);
+    localStorage.setItem(LS_SELECTED_TEMPLATE_KEY, TEMPLATE_ID);
+  }, []);
+
   return (
-    <TooltipProvider>
+    <TooltipProvider delayDuration={100}>
+      <div className="tw-hidden tw-grid-cols-1 tw-grid-cols-2 tw-grid-cols-3 tw-grid-cols-4 tw-grid-cols-5 tw-grid-cols-6"></div>
       <Button onClick={() => setMediaDialog(true)}>
         Open Media MefiPlatform
       </Button>
@@ -127,7 +141,7 @@ function Main() {
                 </div>
 
                 <div className="tw-flex-1 tw-pl-2 tw-pt-2 tw-flex">
-                  <ScrollArea className="tw-pr-4 tw-max-h-[650px] tw-border-r">
+                  <ScrollArea className="tw-pr-4 tw-max-h-[650px] tw-border-r tw-flex-1">
                     <TabsContent value={TabItemType.VIDEO} className="!tw-mt-0">
                       <ListMedia />
                     </TabsContent>
@@ -135,9 +149,7 @@ function Main() {
                       <ListMedia />
                     </TabsContent>
                   </ScrollArea>
-                  <ScrollArea className="tw-w-[250px] xl:tw-w-[400px] tw-flex-none">
-                    <MediaItem />
-                  </ScrollArea>
+                  <MediaDetail />
                 </div>
               </div>
             </Tabs>
@@ -147,4 +159,5 @@ function Main() {
     </TooltipProvider>
   );
 }
-export default observer(Main);
+
+export default Main;

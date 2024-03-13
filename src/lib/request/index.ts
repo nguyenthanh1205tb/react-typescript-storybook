@@ -7,7 +7,7 @@ import type { OnCancel } from './core/CancelablePromise';
 import { CancelablePromise } from './core/CancelablePromise';
 
 const isDefined = <T>(
-  value: T | null | undefined,
+  value: T | null | undefined
 ): value is Exclude<T, null | undefined> => {
   return value !== undefined && value !== null;
 };
@@ -130,7 +130,7 @@ type Resolver<T> = (options: ApiRequestOptions) => Promise<T>;
 
 const resolve = async <T>(
   options: ApiRequestOptions,
-  resolver?: T | Resolver<T>,
+  resolver?: T | Resolver<T>
 ): Promise<T | undefined> => {
   if (typeof resolver === 'function') {
     return (resolver as Resolver<T>)(options);
@@ -140,9 +140,10 @@ const resolve = async <T>(
 
 const getHeaders = async (
   config: APIConfig,
-  options: ApiRequestOptions,
+  options: ApiRequestOptions
 ): Promise<Headers> => {
   const token = await resolve(options, config.TOKEN);
+  const orgID = await resolve(options, config.ORGANIZATION_ID);
   const username = await resolve(options, config.USERNAME);
   const password = await resolve(options, config.PASSWORD);
   const additionalHeaders = await resolve(options, config.HEADERS);
@@ -158,8 +159,12 @@ const getHeaders = async (
         ...headers,
         [key]: String(value),
       }),
-      {} as Record<string, string>,
+      {} as Record<string, string>
     );
+  if (isStringWithValue(orgID)) {
+    headers['Organizationid'] = orgID;
+  }
+
   if (isStringWithValue(token)) {
     headers['Authorization'] = `Bearer ${token.replaceAll('"', '')}`;
   }
@@ -208,7 +213,7 @@ const sendRequest = async (
   body: any,
   formData: FormData | undefined,
   headers: Headers,
-  onCancel: OnCancel,
+  onCancel: OnCancel
 ): Promise<Response> => {
   const controller = new AbortController();
 
@@ -230,7 +235,7 @@ const sendRequest = async (
 
 const getResponseHeader = (
   response: Response,
-  responseHeader?: string,
+  responseHeader?: string
 ): string | undefined => {
   if (responseHeader) {
     const content = response.headers.get(responseHeader);
@@ -250,7 +255,7 @@ const getResponseBody = async (response: Response): Promise<any> => {
         const isBlob = contentType
           .toLowerCase()
           .startsWith(
-            'application/vnd.openxmlformats-officedocument.spreadsheetml.styles+xml',
+            'application/vnd.openxmlformats-officedocument.spreadsheetml.styles+xml'
           );
         if (isJSON) {
           return await response.json();
@@ -269,7 +274,7 @@ const getResponseBody = async (response: Response): Promise<any> => {
 
 const catchErrorCodes = (
   options: ApiRequestOptions,
-  result: ApiResult,
+  result: ApiResult
 ): void => {
   const errors: Record<number, string> = {
     400: 'Bad Request',
@@ -307,7 +312,7 @@ const catchErrorCodes = (
  */
 export const request = <T>(
   config: APIConfig,
-  options: ApiRequestOptions,
+  options: ApiRequestOptions
 ): CancelablePromise<T> => {
   return new CancelablePromise(async (resolve, reject, onCancel) => {
     try {
@@ -323,12 +328,12 @@ export const request = <T>(
           body,
           formData,
           headers,
-          onCancel,
+          onCancel
         );
         const responseBody = await getResponseBody(response);
         const responseHeader = getResponseHeader(
           response,
-          options.responseHeader,
+          options.responseHeader
         );
 
         const result: ApiResult = {
