@@ -52,6 +52,12 @@ export enum MediaStatus {
   Uploading = 'UPLOADING',
 }
 
+export enum FileType {
+  VIDEO = 'video',
+  IMAGE = 'image',
+  DOCUMENT = 'document',
+}
+
 export interface AvatarThumb {
   uri: string;
   url_list: string[];
@@ -120,6 +126,7 @@ export interface GetListMediaRequest {
   startDate?: string;
   endDate?: string;
   categoryId?: string;
+  fileType: FileType;
 }
 export interface GetListMediaResponse {
   data: MediaEntity[];

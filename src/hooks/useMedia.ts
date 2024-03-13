@@ -2,6 +2,7 @@ import { useCallback, useState } from 'react';
 import { request } from '../lib/request';
 import { APIConfigs } from '../lib/request/core/ApiConfig';
 import {
+  FileType,
   GetDetailMediaResponse,
   GetListMediaRequest,
   GetListMediaResponse,
@@ -17,6 +18,7 @@ const useListMedia = () => {
     page: 1,
     take: 30,
     orderBy: OrderByType.CREATED_AT,
+    fileType: FileType.VIDEO,
   });
   const [state, setState] = useState<HookState<GetListMediaResponse>>({
     loading: false,
