@@ -11,7 +11,7 @@
   ],
   "scripts": {
     "add-components": "npx shadcn-ui@latest add",
-    "start:sb": "postcss src/css/main.css -o src/assets/css/index.css && storybook dev -p 5050",
+    "start:sb": "postcss src/assets/css/main.css -o src/assets/css/index.css && storybook dev -p 5050",
     "build:tw": "postcss src/assets/css/main.css -o src/assets/css/index.css",
     "build": "rm -rf build && rollup -c rollup.config.js --bundleConfigAsCjs",
     "gen:model": "openapi --input openapi.spec.json --output src/generated --request src/lib/request/index.ts --exportServices=false --exportCore=false",
