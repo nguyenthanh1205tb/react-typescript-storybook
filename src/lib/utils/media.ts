@@ -16,3 +16,13 @@ export const avatarUrl = (d?: AvatarThumb) => {
   if (d.url_list.length && d.url_list[0] !== '') return d.url_list[0];
   return d.uri;
 };
+
+export const formatBytes = (bytes: number, decimals = 2) => {
+  if (bytes === 0) return '0 MB';
+  const k = 1024;
+  const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB'];
+  const i = Math.floor(Math.log(bytes) / Math.log(k));
+  const convertedSize = parseFloat((bytes / Math.pow(k, i)).toFixed(decimals));
+  return `${convertedSize} ${sizes[i]}`;
+}
+

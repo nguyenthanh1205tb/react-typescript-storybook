@@ -20,11 +20,13 @@ import {
   Scissors,
   X,
 } from 'lucide-react';
-import { avatarUrl } from '@/src/lib/utils/media';
+import {avatarUrl, formatBytes} from '@/src/lib/utils/media';
 import { cn } from '@/src/lib/utils/merge-class';
 import VideoPlayer from '@/src/components/video-player';
 import If from '@/src/hooks/if';
 import { Hl, MediaCodec, MediaPacks, Video } from '@/src/types';
+import {formatDate} from "@/src/lib/utils/date";
+
 
 const Detail = () => {
   const { mediaSelectedID, mediaSelectedData, setMediaSelectedData } =
@@ -86,15 +88,16 @@ const Detail = () => {
                 <div className="tw-flex tw-gap-4">
                   <div className="tw-flex tw-gap-1 tw-items-center">
                     <Frame size={16} />
-                    <span className="tw-text-xs">1920x1080</span>
+                    <span className="tw-text-xs">{`${mediaSelectedData?.data?.video?.width}x${mediaSelectedData?.data?.video?.height}`}</span>
                   </div>
                   <div className="tw-flex tw-gap-1 tw-items-center">
                     <Ruler size={16} />
-                    <span className="tw-text-xs">500mb</span>
+                    <span className="tw-text-xs">{formatBytes(mediaSelectedData?.data?.size as number)}</span>
                   </div>
                   <div className="tw-flex tw-gap-1 tw-items-center">
-                    <CalendarClock size={16} />
-                    <span className="tw-text-xs">11:20:41 15-5-2023</span>
+                    <CalendarClock size={16}/>
+                    {/*<span className="tw-text-xs">11:20:41 15-5-2023</span>*/}
+                    <span className="tw-text-xs">{formatDate(mediaSelectedData?.data?.createdAt as string) }</span>
                   </div>
                 </div>
 
