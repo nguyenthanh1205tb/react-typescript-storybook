@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useCallback, useState } from 'react';
 import { request } from '../lib/request';
 import { APIConfigs } from '../lib/request/core/ApiConfig';
 import {
@@ -12,35 +12,43 @@ import {
 import useAppStore from '../stores/useAppStore';
 
 const useListMedia = () => {
+  const [requestData, setRequestData] = useState<Partial<GetListMediaRequest>>({
+    order: OrderType.DESC,
+    page: 1,
+    take: 30,
+    orderBy: OrderByType.CREATED_AT,
+  });
   const [state, setState] = useState<HookState<GetListMediaResponse>>({
     loading: false,
     data: null,
     err: null,
   });
-  const getListMedia = async (payload: Partial<GetListMediaRequest>) => {
-    setState({ data: null, err: null, loading: true });
-    const queries: Partial<GetListMediaRequest> = {
-      order: OrderType.DESC,
-      page: 1,
-      take: 30,
-      orderBy: OrderByType.CREATED_AT,
-      ...payload,
-    };
-    try {
-      const result = await request<GetListMediaResponse>(APIConfigs(), {
-        url: '/media/files',
-        method: 'GET',
-        query: queries,
-      });
-      setState({ loading: false, data: result, err: null });
-    } catch {
-      setState({
-        loading: false,
-        data: null,
-        err: new Error('Can not get list media [/media/files]'),
-      });
-    }
-  };
+
+  const getListMedia = useCallback(
+    async (payload?: Partial<GetListMediaRequest>) => {
+      setState({ data: null, err: null, loading: true });
+      const queries = { ...requestData, ...payload };
+      try {
+        const result = await request<GetListMediaResponse>(APIConfigs(), {
+          url: '/media/files',
+          method: 'GET',
+          query: queries,
+        });
+        setState({ loading: false, data: result, err: null });
+      } catch {
+        setState({
+          loading: false,
+          data: null,
+          err: new Error('Can not get list media [/media/files]'),
+        });
+      }
+    },
+    [requestData, request]
+  );
+
+  // const getListMediaByImage = () => {
+  //   setRequestData((prev) => ({...prev, }));
+  // };
 
   return { response: state, getListMedia };
 };
