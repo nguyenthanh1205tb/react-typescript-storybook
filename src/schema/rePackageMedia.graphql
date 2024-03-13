@@ -1,5 +1,0 @@
-mutation rePackageMedia($input: TranscodeMediaInput!) {
-  rePackageMedia(input: $input) {
-    success
-  }
-}

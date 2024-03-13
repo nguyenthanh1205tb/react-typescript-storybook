@@ -1,5 +1,5 @@
 import React, { PropsWithChildren } from 'react';
-import Image from '@/src/components/image';
+import Image from '@/src/components/common/image';
 import { cn } from '@/src/lib/utils/merge-class';
 import useAppStore from '@/src/stores/useAppStore';
 import { MediaEntity, MediaStatus } from '@/src/types';

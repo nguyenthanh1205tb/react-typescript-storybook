@@ -1,5 +1,0 @@
-mutation transcodeMedia($input: TranscodeMediaInput!) {
-  transcodeMedia(input: $input) {
-    success
-  }
-}

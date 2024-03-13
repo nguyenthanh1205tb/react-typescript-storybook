@@ -9,7 +9,6 @@ import {
   OrderByType,
   OrderType,
 } from '../types';
-import { getOrganizationId } from '../lib/utils/auth';
 import useAppStore from '../stores/useAppStore';
 
 const useListMedia = () => {
@@ -23,7 +22,7 @@ const useListMedia = () => {
     const queries: Partial<GetListMediaRequest> = {
       order: OrderType.DESC,
       page: 1,
-      take: 20,
+      take: 30,
       orderBy: OrderByType.CREATED_AT,
       ...payload,
     };

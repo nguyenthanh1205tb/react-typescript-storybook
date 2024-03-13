@@ -3,10 +3,9 @@ import Item from './item';
 import useAppStore from '@/src/stores/useAppStore';
 import { useListMedia } from '@/src/hooks/useMedia';
 import If from '@/src/hooks/if';
-import { SkeletonCard } from '@/src/components/skeleton-card';
+import { SkeletonCard } from '@/src/components/common/skeleton-card';
 import Each from '@/src/hooks/each';
 import { cn } from '@/src/lib/utils';
-import _debounce from 'lodash/debounce';
 
 const BASE_ITEM_WIDTH = 239;
 interface Props {}
@@ -20,7 +19,7 @@ function ListMedia({}: PropsWithChildren<Props>) {
     if (!listRef || !listRef.current) return;
     const w = listRef.current.offsetWidth;
     const c = w / BASE_ITEM_WIDTH;
-    const num = Math.ceil(c);
+    const num = Math.floor(c);
     if (colNum !== num) {
       setColNum(num <= 0 ? 1 : num);
     }

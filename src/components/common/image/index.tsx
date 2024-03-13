@@ -1,6 +1,6 @@
 import { cn } from '@/src/lib/utils/merge-class';
 import React, { PropsWithChildren, useState } from 'react';
-import { Skeleton } from '../ui/skeleton';
+import { Skeleton } from '../../ui/skeleton';
 import If from '@/src/hooks/if';
 import { Image as ImageIcon } from 'lucide-react';
 import errorImg from '@/src/assets/images/error-img.png';
@@ -60,7 +60,7 @@ function Image({
             loading="lazy"
             src={src}
             className={cn(
-              'tw-object-cover tw-w-full tw-rounded-2xl',
+              'tw-object-cover tw-w-full tw-rounded-lg',
               { '!tw-h-0': !imgLoaded },
               className
             )}
