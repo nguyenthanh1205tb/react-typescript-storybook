@@ -75,3 +75,8 @@
     @apply tw-bg-background tw-text-foreground;
   }
 }
+
+* {
+  outline: none !important;
+  user-select: none !important;
+}

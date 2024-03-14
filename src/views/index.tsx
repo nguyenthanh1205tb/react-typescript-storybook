@@ -1,4 +1,5 @@
 import { Button } from '@/src/components/ui/button';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import {
   Dialog,
   DialogContent,
@@ -42,6 +43,7 @@ type State = {
 };
 
 function Main() {
+  const queryClient = new QueryClient();
   const { setMediaDialog, openMedia, tabActivated } = useAppStore();
   const [state, setState] = useState<State>({
     sideMenu: {
@@ -63,100 +65,114 @@ function Main() {
   }, []);
 
   return (
-    <TooltipProvider delayDuration={100}>
-      <div className="tw-hidden tw-grid-cols-1 tw-grid-cols-2 tw-grid-cols-3 tw-grid-cols-4 tw-grid-cols-5 tw-grid-cols-6"></div>
-      <Button onClick={() => setMediaDialog(true)}>
-        Open Media MefiPlatform
-      </Button>
-      <Dialog open={openMedia} onOpenChange={(open) => setMediaDialog(open)}>
-        <DialogContent className="!tw-max-w-[90vw] tw-max-h-[90vh] !tw-flex tw-flex-col">
-          <DialogHeader>
-            <DialogTitle>Quản lý Media</DialogTitle>
-          </DialogHeader>
-          <div className="tw-flex tw-flex-col tw-h-full">
-            <Tabs
-              defaultValue={tabActivated}
-              className="w-[400px] tw-h-full tw-overflow-hidden tw-flex tw-flex-col"
-            >
-              <div className="tw-flex tw-flex-row tw-justify-between tw-items-center tw-py-2 tw-flex-none">
-                <TabsList>
-                  <TabsTrigger value={TabItemType.VIDEO} className="!tw-px-14">
-                    <div className="tw-flex tw-items-center">
-                      <Video size={18} className="tw-mr-2" />
-                      <p>Video</p>
+    <QueryClientProvider client={queryClient}>
+      <TooltipProvider delayDuration={100}>
+        <div className="tw-hidden tw-grid-cols-1 tw-grid-cols-2 tw-grid-cols-3 tw-grid-cols-4 tw-grid-cols-5 tw-grid-cols-6"></div>
+        <Button onClick={() => setMediaDialog(true)}>
+          Open Media MefiPlatform
+        </Button>
+        <Dialog open={openMedia} onOpenChange={(open) => setMediaDialog(open)}>
+          <DialogContent className="!tw-max-w-[90vw] !tw-flex tw-flex-col tw-min-h-[800px] tw-max-h-[800px] tw-overflow-hidden">
+            <DialogHeader>
+              <DialogTitle>Quản lý Media</DialogTitle>
+            </DialogHeader>
+            <div className="tw-flex tw-flex-col tw-h-full tw-flex-1">
+              <Tabs
+                defaultValue={tabActivated}
+                className="w-[400px] tw-h-full tw-overflow-hidden tw-flex tw-flex-col tw-flex-1"
+              >
+                <div className="tw-flex tw-flex-row tw-justify-between tw-items-center tw-py-2 tw-flex-none">
+                  <TabsList>
+                    <TabsTrigger
+                      value={TabItemType.VIDEO}
+                      className="!tw-px-14"
+                    >
+                      <div className="tw-flex tw-items-center">
+                        <Video size={18} className="tw-mr-2" />
+                        <p>Video</p>
+                      </div>
+                    </TabsTrigger>
+                    <TabsTrigger
+                      value={TabItemType.IMAGE}
+                      className="!tw-px-14"
+                    >
+                      <div className="tw-flex tw-items-center">
+                        <ImageIcon size={18} className="tw-mr-2" />
+                        <p>Hình ảnh</p>
+                      </div>
+                    </TabsTrigger>
+                  </TabsList>
+                  <div className="tw-flex tw-items-center tw-gap-2">
+                    <div className="tw-relative tw-pr-1 tw-w-[300px]">
+                      <Search
+                        size={16}
+                        className="tw-absolute tw-left-2 tw-top-[52%] -tw-translate-y-1/2 tw-transform tw-text-gray-600"
+                      />
+                      <Input placeholder="Tìm kiếm" className="tw-pl-8" />
                     </div>
-                  </TabsTrigger>
-                  <TabsTrigger value={TabItemType.IMAGE} className="!tw-px-14">
-                    <div className="tw-flex tw-items-center">
-                      <ImageIcon size={18} className="tw-mr-2" />
-                      <p>Hình ảnh</p>
-                    </div>
-                  </TabsTrigger>
-                </TabsList>
-                <div className="tw-flex tw-items-center tw-gap-2">
-                  <div className="tw-relative tw-pr-1 tw-w-[300px]">
-                    <Search
-                      size={16}
-                      className="tw-absolute tw-left-2 tw-top-[52%] -tw-translate-y-1/2 tw-transform tw-text-gray-600"
-                    />
-                    <Input placeholder="Tìm kiếm" className="tw-pl-8" />
                   </div>
                 </div>
-              </div>
-              <Separator className="tw-flex-none" />
-              <div className="tw-flex tw-flex-1">
-                <div className="tw-py-2 tw-w-[350px] tw-pr-2 tw-border-r tw-flex-none tw-flex">
-                  <MenuUpload
-                    onChangeMenu={onChangeMenu}
-                    active={state.sideMenu.active}
-                  />
-                  <div className="tw-flex-1 tw-pl-2">
-                    <If
-                      isShow={state.sideMenu.active === SideMenuActive.FILTER}
-                      element={<Filter />}
+                <Separator className="tw-flex-none" />
+                <div className="tw-flex tw-flex-1">
+                  <div className="tw-py-2 tw-w-[350px] tw-pr-2 tw-border-r tw-flex-none tw-flex">
+                    <MenuUpload
+                      onChangeMenu={onChangeMenu}
+                      active={state.sideMenu.active}
                     />
-                    <If
-                      isShow={
-                        state.sideMenu.active === SideMenuActive.LOCAL_FILES
-                      }
-                      element={<LocalFilesUpload />}
-                    />
-                    <If
-                      isShow={state.sideMenu.active === SideMenuActive.LINK}
-                      element={<LinkUpload />}
-                    />
-                    <If
-                      isShow={
-                        state.sideMenu.active === SideMenuActive.WATCH_FOLDER
-                      }
-                      element={<WatchFolderUpload />}
-                    />
-                    <If
-                      isShow={
-                        state.sideMenu.active === SideMenuActive.S3_STORAGE
-                      }
-                      element={<S3StorageUpload />}
-                    />
+                    <div className="tw-flex-1 tw-pl-2">
+                      <If
+                        isShow={state.sideMenu.active === SideMenuActive.FILTER}
+                        element={<Filter />}
+                      />
+                      <If
+                        isShow={
+                          state.sideMenu.active === SideMenuActive.LOCAL_FILES
+                        }
+                        element={<LocalFilesUpload />}
+                      />
+                      <If
+                        isShow={state.sideMenu.active === SideMenuActive.LINK}
+                        element={<LinkUpload />}
+                      />
+                      <If
+                        isShow={
+                          state.sideMenu.active === SideMenuActive.WATCH_FOLDER
+                        }
+                        element={<WatchFolderUpload />}
+                      />
+                      <If
+                        isShow={
+                          state.sideMenu.active === SideMenuActive.S3_STORAGE
+                        }
+                        element={<S3StorageUpload />}
+                      />
+                    </div>
                   </div>
-                </div>
 
-                <div className="tw-flex-1 tw-pl-2 tw-pt-2 tw-flex">
-                  <ScrollArea className="tw-pr-4 tw-max-h-[650px] tw-border-r tw-flex-1">
-                    <TabsContent value={TabItemType.VIDEO} className="!tw-mt-0">
-                      <ListMedia />
-                    </TabsContent>
-                    <TabsContent value={TabItemType.IMAGE} className="!tw-mt-0">
-                      <ListMedia />
-                    </TabsContent>
-                  </ScrollArea>
-                  <MediaDetail />
+                  <div className="tw-flex-1 tw-pl-2 tw-pt-2 tw-flex">
+                    <ScrollArea className="tw-pr-4 tw-max-h-[650px] tw-border-r tw-flex-1">
+                      <TabsContent
+                        value={TabItemType.VIDEO}
+                        className="!tw-mt-0"
+                      >
+                        <ListMedia />
+                      </TabsContent>
+                      <TabsContent
+                        value={TabItemType.IMAGE}
+                        className="!tw-mt-0"
+                      >
+                        <ListMedia />
+                      </TabsContent>
+                    </ScrollArea>
+                    <MediaDetail />
+                  </div>
                 </div>
-              </div>
-            </Tabs>
-          </div>
-        </DialogContent>
-      </Dialog>
-    </TooltipProvider>
+              </Tabs>
+            </div>
+          </DialogContent>
+        </Dialog>
+      </TooltipProvider>
+    </QueryClientProvider>
   );
 }
 
