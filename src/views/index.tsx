@@ -28,7 +28,7 @@ import {
 } from '../configs';
 import If from '../hooks/if';
 import useAppStore, { TabItemType } from '../stores/useAppStore';
-import { SideMenu, SideMenuActive } from '../types';
+import { FileType, SideMenu, SideMenuActive } from '../types';
 import Filter from './filter';
 import MediaDetail from './media-detail/detail';
 import ListMedia from './media-list/list';
@@ -36,6 +36,7 @@ import LinkUpload from './upload/link';
 import MenuUpload from './upload/menu';
 import S3StorageUpload from './upload/s3-storage';
 import WatchFolderUpload from './upload/watch-folder';
+import { Toaster } from '../components/ui/toaster';
 
 type State = {
   sideMenu: SideMenu;
@@ -43,7 +44,8 @@ type State = {
 
 function Main() {
   const queryClient = new QueryClient();
-  const { setMediaDialog, openMedia, tabActivated } = useAppStore();
+  const { setMediaDialog, openMedia, tabActivated, setTabActivated } =
+    useAppStore();
   const [state, setState] = useState<State>({
     sideMenu: {
       active: SideMenuActive.FILTER,
@@ -67,6 +69,8 @@ function Main() {
     <QueryClientProvider client={queryClient}>
       <TooltipProvider delayDuration={100}>
         <div className="tw-hidden tw-grid-cols-1 tw-grid-cols-2 tw-grid-cols-3 tw-grid-cols-4 tw-grid-cols-5 tw-grid-cols-6"></div>
+        <Toaster />
+
         <Button onClick={() => setMediaDialog(true)}>
           Open Media MefiPlatform
         </Button>
@@ -85,6 +89,7 @@ function Main() {
                     <TabsTrigger
                       value={TabItemType.VIDEO}
                       className="!tw-px-14"
+                      onClick={() => setTabActivated(TabItemType.VIDEO)}
                     >
                       <div className="tw-flex tw-items-center">
                         <Video size={18} className="tw-mr-2" />
@@ -94,6 +99,7 @@ function Main() {
                     <TabsTrigger
                       value={TabItemType.IMAGE}
                       className="!tw-px-14"
+                      onClick={() => setTabActivated(TabItemType.IMAGE)}
                     >
                       <div className="tw-flex tw-items-center">
                         <ImageIcon size={18} className="tw-mr-2" />
@@ -154,13 +160,13 @@ function Main() {
                         value={TabItemType.VIDEO}
                         className="!tw-mt-0"
                       >
-                        <ListMedia />
+                        <ListMedia type={FileType.VIDEO} />
                       </TabsContent>
                       <TabsContent
                         value={TabItemType.IMAGE}
                         className="!tw-mt-0"
                       >
-                        <ListMedia />
+                        <ListMedia type={FileType.IMAGE} />
                       </TabsContent>
                     </ScrollArea>
                     <MediaDetail />

@@ -8,22 +8,31 @@ import {
   SelectValue,
 } from '@/src/components/ui/select';
 import Each from '@/src/hooks/each';
-import React, { PropsWithChildren } from 'react';
+import { useListMedia } from '@/src/hooks/useMedia';
+import { cn } from '@/src/lib/utils';
+import { OrderByType, OrderType } from '@/src/types';
+import React, { PropsWithChildren, useEffect } from 'react';
 
 interface Props {}
 function Filter({}: PropsWithChildren<Props>) {
+  const { requestData, onChangeOrder } = useListMedia();
+
   const sorts = [
     {
       name: 'Mới nhất',
+      val: [OrderByType.CREATED_AT, OrderType.DESC],
     },
     {
       name: 'Cũ nhất',
+      val: [OrderByType.CREATED_AT, OrderType.ASC],
     },
     {
       name: 'Tên A-Z',
+      val: [OrderByType.NAME, OrderType.DESC],
     },
     {
       name: 'Tên Z-A',
+      val: [OrderByType.NAME, OrderType.ASC],
     },
   ];
 
@@ -35,7 +44,17 @@ function Filter({}: PropsWithChildren<Props>) {
           <Each
             of={sorts}
             render={(item) => (
-              <div className="tw-transition-all tw-h-[35px] tw-w-[120px] tw-cursor-pointer tw-bg-slate-100 tw-flex tw-items-center tw-justify-center tw-text-black tw-rounded-2xl tw-text-sm hover:tw-text-white hover:tw-bg-red-500">
+              <div
+                className={cn(
+                  'tw-transition-all tw-h-[35px] tw-w-[120px] tw-cursor-pointer tw-bg-slate-100 tw-flex tw-items-center tw-justify-center tw-text-black tw-rounded-2xl tw-text-sm hover:tw-text-white hover:tw-bg-red-400',
+                  {
+                    'tw-text-white !tw-bg-red-500':
+                      item.val.includes(requestData.order) &&
+                      item.val.includes(requestData.orderBy),
+                  }
+                )}
+                onClick={() => onChangeOrder(item.val)}
+              >
                 <span>{item.name}</span>
               </div>
             )}
@@ -51,18 +70,6 @@ function Filter({}: PropsWithChildren<Props>) {
             <SelectItem value="light">Dưới 4 phút</SelectItem>
             <SelectItem value="dark">Từ 4 - 20 phút</SelectItem>
             <SelectItem value="system">Trên 20 phút</SelectItem>
-          </SelectContent>
-        </Select> */}
-      </div>
-      <div>
-        {/* <Select>
-          <SelectTrigger className="w-[180px]">
-            <SelectValue placeholder="Độ phân giải" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="light">360p</SelectItem>
-            <SelectItem value="dark">720p</SelectItem>
-            <SelectItem value="system">1080p</SelectItem>
           </SelectContent>
         </Select> */}
       </div>

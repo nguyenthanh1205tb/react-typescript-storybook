@@ -1,8 +1,7 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useState } from 'react';
 import { request } from '../lib/request';
 import { APIConfigs } from '../lib/request/core/ApiConfig';
 import {
-  FileType,
   GetDetailMediaResponse,
   GetListMediaRequest,
   GetListMediaResponse,
@@ -16,31 +15,25 @@ import { useQuery } from '@tanstack/react-query';
 
 const useListMedia = () => {
   const [totalCount, setTotalCount] = useState(0);
-  const [requestData, setRequestData] = useState<Partial<GetListMediaRequest>>({
-    order: OrderType.DESC,
+  const [requestData, setRequestData] = useState<GetListMediaRequest>({
     page: 1,
     take: PAGINATE_LIMIT,
+    order: OrderType.DESC,
     orderBy: OrderByType.CREATED_AT,
-    fileType: FileType.VIDEO,
   });
 
-  const getListMedia = useCallback(
-    (payload?: Partial<GetListMediaRequest>) => {
-      const queries = { ...requestData, ...payload };
-      return useQuery<GetListMediaResponse>({
-        queryKey: ['getListMedia', queries],
-        staleTime: 0,
-        refetchInterval: 5000,
-        queryFn: () =>
-          request<GetListMediaResponse>(APIConfigs(), {
-            url: '/media/files',
-            method: 'GET',
-            query: queries,
-          }),
-      });
-    },
-    [requestData]
-  );
+  const getListMedia = (payload?: Partial<GetListMediaRequest>) => {
+    const queries = { ...requestData, ...payload };
+    return useQuery<GetListMediaResponse>({
+      queryKey: ['getListMedia', queries],
+      queryFn: () =>
+        request<GetListMediaResponse>(APIConfigs(), {
+          url: '/media/files',
+          method: 'GET',
+          query: queries,
+        }),
+    });
+  };
 
   const onChangePagination = (page: number) =>
     setRequestData((prev) => ({
@@ -65,9 +58,15 @@ const useListMedia = () => {
     }));
   }, [requestData]);
 
-  // const getListMediaByImage = () => {
-  //   setRequestData((prev) => ({...prev, }));
-  // };
+  const onChangeOrder = (payload: string[]) => {
+    const orderBy = payload[0] as OrderByType;
+    const orderType = payload[1] as OrderType;
+    setRequestData((prev) => ({
+      ...prev,
+      orderBy,
+      order: orderType,
+    }));
+  };
 
   return {
     getListMedia,
@@ -77,6 +76,7 @@ const useListMedia = () => {
     onChangePagination,
     onNextPagination,
     onPrevPagination,
+    onChangeOrder,
   };
 };
 

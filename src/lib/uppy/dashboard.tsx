@@ -1,4 +1,3 @@
-import { useToast } from '@/src/components/ui/use-toast';
 import { createUppyInstance } from '@/src/configs/uppy';
 import UppyStore from '@/src/stores/useUppyStore';
 import type { Uppy } from '@uppy/core';
@@ -7,6 +6,7 @@ import { Computer } from 'lucide-react';
 import React, { useEffect, useImperativeHandle, useState } from 'react';
 import { v4 as uuid } from 'uuid';
 import { cn } from '../utils';
+import { useToast } from '@/src/components/ui/use-toast';
 // import '@/assets/css/libs/uppy-dashboard.css';
 
 interface Props {
@@ -169,13 +169,11 @@ const UppyDashboard = React.forwardRef((props: Props, ref) => {
         setIsFileAdded(false);
         toast({
           description: 'Tải lên thành công',
-          type: 'foreground',
         });
       })
       .on('error', (error) => {
         setIsFileAdded(false);
         toast({
-          type: 'background',
           description: 'Tải lên thất bại',
         });
       });

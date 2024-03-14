@@ -122,11 +122,11 @@ export interface GetListMediaRequest {
   take: number;
   orderBy: OrderByType;
   keyword?: string;
-  timeRange: GetListMediaTimeRange;
+  timeRange?: GetListMediaTimeRange;
   startDate?: string;
   endDate?: string;
   categoryId?: string;
-  fileType: FileType;
+  fileType?: FileType;
 }
 export interface GetListMediaResponse {
   data: MediaEntity[];

@@ -14,10 +14,13 @@ import Each from '@/src/hooks/each';
 import { cn } from '@/src/lib/utils';
 import Paginate from '@/src/components/common/paginate';
 import { PAGINATE_LIMIT } from '@/src/configs';
+import { FileType } from '@/src/types';
 
 const BASE_ITEM_WIDTH = 239;
-interface Props {}
-function ListMedia({}: PropsWithChildren<Props>) {
+interface Props {
+  type: FileType;
+}
+function ListMedia({ type }: PropsWithChildren<Props>) {
   const listRef = useRef<HTMLDivElement>(null);
   const [colNum, setColNum] = useState(5);
   const { listMedia, setListMedia } = useAppStore();
@@ -31,7 +34,7 @@ function ListMedia({}: PropsWithChildren<Props>) {
     onPrevPagination,
   } = useListMedia();
 
-  const { data, isLoading } = getListMedia({});
+  const { data, isLoading } = getListMedia({ fileType: type });
 
   const showPaginateMeta = useMemo(() => {
     const currentPage = requestData.page ?? 1;

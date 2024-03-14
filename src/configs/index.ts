@@ -1,8 +1,8 @@
 const AUTH_TOKEN =
-  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImFkbWluQG1lZmkudm4iLCJmdWxsTmFtZSI6IkFkbWluaXN0cmF0b3IgIiwiX2lkIjoiNjVhZTMxOTg1MzJhOTI1MDBkZDMwYjZhIiwiaWF0IjoxNzEwMzE4MzY0LCJleHAiOjE3MTA0MDQ3NjR9.ipB89OOPpb0JUi31HSwoYmIgwHyrUgx1Oq0IZggi0bY';
+  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImFkbWluQG1lZmkudm4iLCJmdWxsTmFtZSI6IkFkbWluaXN0cmF0b3IgIiwiX2lkIjoiNjVhZTMxOTg1MzJhOTI1MDBkZDMwYjZhIiwiaWF0IjoxNzEwNDA0OTY5LCJleHAiOjE3MTA0OTEzNjl9.kiR9MSU3Td6LaVsRngrdJrXTBv2kKGBF18NEW6HPFN4';
 const UPLOAD_ENDPOINT = 'https://uat.upload.plcplatform.net/files/';
 const MEDIA_BASE_ENDPOINT = 'https://uat.upload.plcplatform.net/media';
-const ORG_ID = '65bc649a1f2422e6c787898c';
+const ORG_ID = '65ae3593905f66bff177f068';
 const TEMPLATE_ID = '65bc649a1f2422e6c787898d';
 const APP_API_URL = 'https://uat.api.plcplatform.net';
 
