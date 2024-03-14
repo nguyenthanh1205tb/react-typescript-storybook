@@ -3,22 +3,71 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from '@/src/components/ui/tooltip';
+import { ORG_ID, TEMPLATE_ID } from '@/src/configs';
+import { createUppyInstance } from '@/src/configs/uppy';
+import UppyDashboard, {
+  getContentId,
+  saveContentIdToLocalStorage,
+} from '@/src/lib/uppy/dashboard';
 import { cn } from '@/src/lib/utils';
 import { SideMenuActive } from '@/src/types';
-import {
-  Computer,
-  FilterIcon,
-  FolderOpen,
-  Link,
-  UploadCloud,
-} from 'lucide-react';
-import { PropsWithChildren } from 'react';
+import { uniqueId } from 'lodash';
+import { FilterIcon, FolderOpen, Link, UploadCloud } from 'lucide-react';
+import { PropsWithChildren, useEffect, useRef, useState } from 'react';
 
 interface Props {
   onChangeMenu: (menu: SideMenuActive) => void;
   active: SideMenuActive;
 }
 function MenuUpload({ onChangeMenu, active }: PropsWithChildren<Props>) {
+  const uppyRef = useRef<any>(null);
+  const [isFileAdded, setIsFileAdded] = useState(false);
+
+  useEffect(() => {
+    if (isFileAdded) {
+      uppyRef.current?.upload();
+    }
+  }, [isFileAdded]);
+
+  useEffect(() => {
+    if (!ORG_ID) {
+      return () => {};
+    }
+
+    uppyRef.current = createUppyInstance({
+      autoProceed: false, // Set to false to manually start upload
+    });
+
+    uppyRef.current.on('file-added', (file: any) => {
+      const contentId = getContentId(file.id) || uniqueId();
+      saveContentIdToLocalStorage(file.id, contentId);
+
+      // eslint-disable-next-line @typescript-eslint/no-unused-expressions
+      console.log('File added>>>>:', file, contentId);
+      uppyRef.current.setFileMeta(file.id, {
+        contentId,
+        ORG_ID,
+        TEMPLATE_ID,
+      });
+
+      setIsFileAdded(true);
+    });
+
+    return () => {
+      uppyRef.current.close(); // Close Uppy instance when component unmounts
+    };
+  }, [ORG_ID, TEMPLATE_ID]);
+
+  const handleFileInputChange = (event: any) => {
+    const files = event.target.files;
+    if (files.length > 0) {
+      // Add selected files to Uppy instance
+      uppyRef.current.addFiles(files);
+      // Optionally, you can start the upload process here
+      uppyRef.current.upload();
+    }
+  };
+
   return (
     <div className="tw-w-[50px] tw-flex-none tw-bg-gray-50 tw-h-full tw-rounded-lg">
       <ul className="tw-py-2 tw-flex tw-flex-col tw-gap-4">
@@ -49,18 +98,7 @@ function MenuUpload({ onChangeMenu, active }: PropsWithChildren<Props>) {
         <li className="tw-flex tw-items-center tw-justify-center">
           <Tooltip>
             <TooltipTrigger>
-              <div
-                className={cn(
-                  'tw-w-[35px] tw-h-[35px] tw-flex tw-items-center tw-justify-center tw-rounded-lg tw-cursor-pointer',
-                  {
-                    'tw-bg-slate-600 tw-text-white':
-                      active === SideMenuActive.LOCAL_FILES,
-                  }
-                )}
-                onClick={() => onChangeMenu(SideMenuActive.LOCAL_FILES)}
-              >
-                <Computer size={18} />
-              </div>
+              <UppyDashboard organizationId={ORG_ID} templateId={TEMPLATE_ID} />
             </TooltipTrigger>
             <TooltipContent
               side="right"

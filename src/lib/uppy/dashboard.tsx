@@ -1,9 +1,12 @@
+import { useToast } from '@/src/components/ui/use-toast';
 import { createUppyInstance } from '@/src/configs/uppy';
 import UppyStore from '@/src/stores/useUppyStore';
 import type { Uppy } from '@uppy/core';
 import '@uppy/core/dist/style.min.css';
+import { Computer } from 'lucide-react';
 import React, { useEffect, useImperativeHandle, useState } from 'react';
 import { v4 as uuid } from 'uuid';
+import { cn } from '../utils';
 // import '@/assets/css/libs/uppy-dashboard.css';
 
 interface Props {
@@ -42,7 +45,15 @@ const UppyDashboard = React.forwardRef((props: Props, ref) => {
   } = props;
 
   const [uppyInstance, setUppyInstance] = useState<Uppy>();
+  const [isFileAdded, setIsFileAdded] = useState(false);
   const { updateUploadStatusMap } = UppyStore();
+  const { toast } = useToast();
+
+  useEffect(() => {
+    if (isFileAdded) {
+      uppyInstance?.upload();
+    }
+  }, [isFileAdded]);
 
   useImperativeHandle(
     ref,
@@ -84,7 +95,8 @@ const UppyDashboard = React.forwardRef((props: Props, ref) => {
       return () => {};
     }
 
-    const uppy = createUppyInstance();
+    const uppy = createUppyInstance({});
+
     setUppyInstance(uppy);
 
     uppy.on('upload-progress', (file, progress) => {
@@ -131,12 +143,15 @@ const UppyDashboard = React.forwardRef((props: Props, ref) => {
 
         // eslint-disable-next-line @typescript-eslint/no-unused-expressions
         typeof onFileAdded === 'function' && onFileAdded(file, contentId);
+        console.log('File added:', file, contentId);
 
         uppy.setFileMeta(file.id, {
           contentId,
           organizationId,
           templateId,
         });
+
+        setIsFileAdded(true);
       })
       .on('file-removed', () => {
         if (setIsDisabledUploadButton) setIsDisabledUploadButton(true);
@@ -144,18 +159,55 @@ const UppyDashboard = React.forwardRef((props: Props, ref) => {
       .on('upload', (file) => {
         const ids = file?.fileIDs;
         const contentIds = ids?.map((id) => getContentId(id)).filter(Boolean);
+        console.log('ContentIds:', contentIds);
+        console.log('File:', file);
         if (onFileUpload) onFileUpload(contentIds as string[], undefined);
       })
       .on('complete', (result) => {
         const successFiles = result?.successful || [];
         successFiles.map((f) => deleteFileContentId(f.id));
+        setIsFileAdded(false);
+        toast({
+          description: 'Tải lên thành công',
+          type: 'foreground',
+        });
       })
       .on('error', (error) => {
-        console.log('Error:', error);
+        setIsFileAdded(false);
+        toast({
+          type: 'background',
+          description: 'Tải lên thất bại',
+        });
       });
   }, [organizationId]);
 
-  return <div id="uppy-target"></div>;
+  return (
+    <label
+      htmlFor="browser-files"
+      className={cn(
+        'tw-w-[35px] tw-h-[35px] tw-flex tw-items-center tw-justify-center tw-rounded-lg tw-cursor-pointer'
+      )}
+      // onClick={() => onChangeMenu(SideMenuActive.LOCAL_FILES)}
+    >
+      <Computer size={18} />
+      <input
+        id="browser-files"
+        type="file"
+        accept="image/*, video/*"
+        style={{ display: 'none' }}
+        onChange={
+          // handleFileInputChange
+          (e) => {
+            if (e?.target?.files) {
+              console.log('Files:', e.target.files);
+              uppyInstance?.addFiles(e.target.files as any);
+            }
+          }
+        }
+        multiple
+      />
+    </label>
+  );
 });
 
 export default UppyDashboard;

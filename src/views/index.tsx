@@ -1,11 +1,11 @@
 import { Button } from '@/src/components/ui/button';
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
 } from '@/src/components/ui/dialog';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { Image as ImageIcon, Search, Video } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { Input } from '../components/ui/input';
@@ -18,17 +18,6 @@ import {
   TabsTrigger,
 } from '../components/ui/tabs';
 import { TooltipProvider } from '../components/ui/tooltip';
-import If from '../hooks/if';
-import useAppStore, { TabItemType } from '../stores/useAppStore';
-import { SideMenu, SideMenuActive } from '../types';
-import MediaDetail from './media-detail/detail';
-import Filter from './filter';
-import ListMedia from './media-list/list';
-import LinkUpload from './upload/link';
-import LocalFilesUpload from './upload/local-files';
-import MenuUpload from './upload/menu';
-import S3StorageUpload from './upload/s3-storage';
-import WatchFolderUpload from './upload/watch-folder';
 import {
   AUTH_TOKEN,
   LS_SELECTED_ORGANIZATION_KEY,
@@ -37,6 +26,16 @@ import {
   ORG_ID,
   TEMPLATE_ID,
 } from '../configs';
+import If from '../hooks/if';
+import useAppStore, { TabItemType } from '../stores/useAppStore';
+import { SideMenu, SideMenuActive } from '../types';
+import Filter from './filter';
+import MediaDetail from './media-detail/detail';
+import ListMedia from './media-list/list';
+import LinkUpload from './upload/link';
+import MenuUpload from './upload/menu';
+import S3StorageUpload from './upload/s3-storage';
+import WatchFolderUpload from './upload/watch-folder';
 
 type State = {
   sideMenu: SideMenu;
@@ -124,12 +123,12 @@ function Main() {
                         isShow={state.sideMenu.active === SideMenuActive.FILTER}
                         element={<Filter />}
                       />
-                      <If
+                      {/* <If
                         isShow={
                           state.sideMenu.active === SideMenuActive.LOCAL_FILES
                         }
                         element={<LocalFilesUpload />}
-                      />
+                      /> */}
                       <If
                         isShow={state.sideMenu.active === SideMenuActive.LINK}
                         element={<LinkUpload />}

@@ -11,7 +11,7 @@ export const createUppyInstance = (options?: any) => {
   })
     .use(Dashboard, {
       inline: true,
-      target: '#uppy-target',
+      target: '#browser-files',
       hideUploadButton: true,
     })
     .use(Tus, {

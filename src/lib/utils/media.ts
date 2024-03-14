@@ -13,8 +13,8 @@ export const getMediaUrl = (path: string | undefined | null) => {
 
 export const avatarUrl = (d?: AvatarThumb) => {
   if (!d || _isEmpty(d)) return '';
-  if (d.url_list.length && d.url_list[0] !== '') return d.url_list[0];
-  return d.uri;
+  if (d?.url_list?.length && d?.url_list[0] !== '') return d?.url_list[0];
+  return d?.uri;
 };
 
 export const formatBytes = (bytes: number, decimals = 2) => {
@@ -24,5 +24,4 @@ export const formatBytes = (bytes: number, decimals = 2) => {
   const i = Math.floor(Math.log(bytes) / Math.log(k));
   const convertedSize = parseFloat((bytes / Math.pow(k, i)).toFixed(decimals));
   return `${convertedSize} ${sizes[i]}`;
-}
-
+};

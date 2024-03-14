@@ -23,12 +23,6 @@ function LocalFilesUpload({}: PropsWithChildren<Props>) {
         organizationId={ORG_ID}
         templateId={TEMPLATE_ID}
         ref={uppyRef}
-        onFileAdded={(file, contentId) => {
-          console.log('File added:', file, contentId);
-        }}
-        onFileUpload={(contentIds, file) => {
-          console.log('File uploaded:', contentIds, file);
-        }}
       />
       <Button onClick={onUpload}>Tải lên</Button>
     </div>
