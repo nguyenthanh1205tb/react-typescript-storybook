@@ -3520,7 +3520,7 @@
     namespace-emitter "^2.0.1"
     p-retry "^6.1.0"
 
-"@uppy/core@^3.9.3":
+"@uppy/core@^3.5.1":
   version "3.9.3"
   resolved "https://registry.yarnpkg.com/@uppy/core/-/core-3.9.3.tgz#7d1cccba513225c24bc82a8fccae74f14189a03e"
   integrity sha512-sUgiJ9Ag3eq8qf3i1unn7BOpjcidBj2lwnpJ8xlMGRcnQqwNznBXP2m39tK8nWEFvrj4kPgIslMZyoR0Lelzxg==
@@ -3534,7 +3534,7 @@
     nanoid "^4.0.0"
     preact "^10.5.13"
 
-"@uppy/dashboard@^3.7.5":
+"@uppy/dashboard@^3.5.4":
   version "3.7.5"
   resolved "https://registry.yarnpkg.com/@uppy/dashboard/-/dashboard-3.7.5.tgz#b4d9540da637137eeede562334913d555eaa67da"
   integrity sha512-XIAZTp5sG0dPCBAP6o6hzV07CL7ip/Rt8Hobb11DFgrfrmEXfUG3rRH+QROtBEnrGb1sCdIx1mkvPEY2HzNyNA==
@@ -3594,7 +3594,7 @@
     "@uppy/utils" "^5.7.2"
     exifr "^7.0.0"
 
-"@uppy/tus@^3.5.3":
+"@uppy/tus@^3.3.1":
   version "3.5.3"
   resolved "https://registry.yarnpkg.com/@uppy/tus/-/tus-3.5.3.tgz#b7932bbffc107755efec40b55aba7b07c3dbe55c"
   integrity sha512-YUdeIZquFgnLfssZrweqf24Iui3+zYCaFC36W21/lmeWZl5oPUioICvoBUFOV3q7jnqpsK4pAUMQfR4KH04Plg==

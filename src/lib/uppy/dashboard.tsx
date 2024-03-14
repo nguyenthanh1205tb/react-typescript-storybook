@@ -149,6 +149,9 @@ const UppyDashboard = React.forwardRef((props: Props, ref) => {
       .on('complete', (result) => {
         const successFiles = result?.successful || [];
         successFiles.map((f) => deleteFileContentId(f.id));
+      })
+      .on('error', (error) => {
+        console.log('Error:', error);
       });
   }, [organizationId]);
 
