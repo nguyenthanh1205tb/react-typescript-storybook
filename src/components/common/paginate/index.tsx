@@ -1,4 +1,4 @@
-import React, { PropsWithChildren, useMemo } from 'react';
+import React, { PropsWithChildren, useCallback, useMemo } from 'react';
 import {
   Pagination,
   PaginationContent,
@@ -23,20 +23,25 @@ interface Props {
 function Paginate(props: PropsWithChildren<Props>) {
   const totalPage = Math.ceil(props.totalCount / props.limit);
 
-  const onClickPrevNext = (
-    e: React.MouseEvent<HTMLAnchorElement, MouseEvent>,
-    type: 'next' | 'prev'
-  ) => {
-    e.preventDefault();
-    switch (type) {
-      case 'prev':
-        if (props.onPrev) props.onPrev();
-      case 'next':
-        if (props.onNext) props.onNext();
-      default:
-        return;
-    }
-  };
+  const onClickPrevNext = useCallback(
+    (
+      e: React.MouseEvent<HTMLAnchorElement, MouseEvent>,
+      type: 'next' | 'prev'
+    ) => {
+      e.preventDefault();
+      switch (type) {
+        case 'prev':
+          if (props.onPrev) props.onPrev();
+          break;
+        case 'next':
+          if (props.onNext) props.onNext();
+          break;
+        default:
+          return;
+      }
+    },
+    [props.current]
+  );
 
   const onChangePage = (
     e: React.MouseEvent<HTMLAnchorElement, MouseEvent>,

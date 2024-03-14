@@ -1,4 +1,4 @@
-import { useCallback, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { request } from '../lib/request';
 import { APIConfigs } from '../lib/request/core/ApiConfig';
 import {
@@ -24,18 +24,23 @@ const useListMedia = () => {
     fileType: FileType.VIDEO,
   });
 
-  const getListMedia = (payload?: Partial<GetListMediaRequest>) => {
-    const queries = { ...requestData, ...payload };
-    return useQuery<GetListMediaResponse>({
-      queryKey: ['getListMedia', requestData],
-      queryFn: () =>
-        request<GetListMediaResponse>(APIConfigs(), {
-          url: '/media/files',
-          method: 'GET',
-          query: queries,
-        }),
-    });
-  };
+  const getListMedia = useCallback(
+    (payload?: Partial<GetListMediaRequest>) => {
+      const queries = { ...requestData, ...payload };
+      return useQuery<GetListMediaResponse>({
+        queryKey: ['getListMedia', queries],
+        staleTime: 0,
+        refetchInterval: 5000,
+        queryFn: () =>
+          request<GetListMediaResponse>(APIConfigs(), {
+            url: '/media/files',
+            method: 'GET',
+            query: queries,
+          }),
+      });
+    },
+    [requestData]
+  );
 
   const onChangePagination = (page: number) =>
     setRequestData((prev) => ({
@@ -43,23 +48,22 @@ const useListMedia = () => {
       page,
     }));
 
-  const onNextPagination = () => {
+  const onNextPagination = useCallback(() => {
     if ((requestData.page ?? 1) >= Math.ceil(totalCount / PAGINATE_LIMIT))
       return;
     setRequestData((prev) => ({
       ...prev,
       page: (prev.page ?? 1) + 1,
     }));
-  };
+  }, [totalCount, requestData]);
 
-  const onPrevPagination = () => {
+  const onPrevPagination = useCallback(() => {
     if ((requestData.page ?? 1) <= 1) return;
-    console.log((requestData.page ?? 1) - 1);
     setRequestData((prev) => ({
       ...prev,
       page: (prev.page ?? 1) - 1,
     }));
-  };
+  }, [requestData]);
 
   // const getListMediaByImage = () => {
   //   setRequestData((prev) => ({...prev, }));
