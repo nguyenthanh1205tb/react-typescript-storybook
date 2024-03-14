@@ -3,4 +3,4 @@ node_modules/
 dist/
 build/
 .idea/
-/src/assets/css/index.css
+./src/assets/css/index.css
