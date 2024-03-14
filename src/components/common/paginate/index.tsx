@@ -23,25 +23,22 @@ interface Props {
 function Paginate(props: PropsWithChildren<Props>) {
   const totalPage = Math.ceil(props.totalCount / props.limit);
 
-  const onClickPrevNext = useCallback(
-    (
-      e: React.MouseEvent<HTMLAnchorElement, MouseEvent>,
-      type: 'next' | 'prev'
-    ) => {
-      e.preventDefault();
-      switch (type) {
-        case 'prev':
-          if (props.onPrev) props.onPrev();
-          break;
-        case 'next':
-          if (props.onNext) props.onNext();
-          break;
-        default:
-          return;
-      }
-    },
-    [props.current]
-  );
+  const onClickPrevNext = (
+    e: React.MouseEvent<HTMLAnchorElement, MouseEvent>,
+    type: 'next' | 'prev'
+  ) => {
+    e.preventDefault();
+    switch (type) {
+      case 'prev':
+        if (props.onPrev) props.onPrev();
+        break;
+      case 'next':
+        if (props.onNext) props.onNext();
+        break;
+      default:
+        return;
+    }
+  };
 
   const onChangePage = (
     e: React.MouseEvent<HTMLAnchorElement, MouseEvent>,
