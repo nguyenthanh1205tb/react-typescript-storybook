@@ -1,5 +1,5 @@
 import React, { useMemo, useState } from 'react';
-import { Dot, ChevronsUpDown, LibraryBig } from 'lucide-react';
+import { Dot, ChevronsUpDown, LibraryBig, Eraser } from 'lucide-react';
 
 import { Button } from '@/src/components/ui/button';
 import {
@@ -21,6 +21,8 @@ import { ScrollArea } from '../../ui/scroll-area';
 import { ComboboxOption } from '@/src/types';
 import { flatArray } from '@/src/lib/utils/array';
 import _find from 'lodash/find';
+import If from '@/src/hooks/if';
+import { cn } from '@/src/lib/utils';
 
 interface Props {
   options: Array<ComboboxOption>;
@@ -104,9 +106,24 @@ export function Combobox(props: Props) {
           aria-expanded={open}
           className="tw-w-full tw-justify-between"
         >
-          {value
-            ? optionsFlatten.find((item) => item.value === value)?.label
-            : placeholder}
+          <div className="tw-flex tw-items-center tw-gap-2 tw-relative">
+            <If
+              isShow={typeof value !== 'undefined' && value !== ''}
+              element={
+                <div
+                  className="tw-absolute hover:tw-text-red-500 tw-transition-colors"
+                  onClick={() => onChange && onChange('')}
+                >
+                  <Eraser size={16} />
+                </div>
+              }
+            />
+            <span className={cn({ 'tw-text-blue-500 tw-pl-6': value })}>
+              {value
+                ? optionsFlatten.find((item) => item.value === value)?.label
+                : placeholder}
+            </span>
+          </div>
           <ChevronsUpDown className="tw-ml-2 tw-h-4 tw-w-4 tw-shrink-0 tw-opacity-50" />
         </Button>
       </PopoverTrigger>

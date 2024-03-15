@@ -43,7 +43,7 @@ function Item({ data }: PropsWithChildren<Props>) {
       >
         <div className="tw-mb-2 tw-flex tw-flex-col tw-gap-1">
           <Image src={avatarUrl(data.avatar_thumb)} />
-          <div className="tw-absolute tw-left-3 tw-bg-black/50 tw-text-sm tw-text-white tw-top-[90px] tw-py-1 tw-px-2 tw-rounded-md tw-backdrop-blur-md">
+          <div className="tw-absolute tw-left-3 tw-bg-black/20 tw-text-sm tw-text-white tw-top-[90px] tw-py-1 tw-px-2 tw-rounded-md tw-backdrop-blur-sm">
             {convertDuration(data.durations)}
           </div>
           <p className="tw-text-sm tw-line-clamp-2" title={data.name}>
@@ -53,7 +53,7 @@ function Item({ data }: PropsWithChildren<Props>) {
         <p className="tw-flex tw-items-center tw-gap-1 tw-text-xs tw-text-gray-600">
           <CalendarFold size={16} />
           <span className="tw-capitalize">
-            {moment(data.createdAt).format('dddd, DD/MM/YYYY HH:mm')}
+            {moment(data.createdAt).format('dddd, DD/MM/YYYY')}
           </span>
         </p>
       </div>
