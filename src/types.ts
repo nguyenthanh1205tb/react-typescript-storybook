@@ -133,6 +133,7 @@ export interface GetListMediaRequest {
   endDate?: string;
   categoryId?: string;
   fileType?: FileType;
+  isMyFile: boolean;
 }
 export interface GetListMediaResponse {
   data: MediaEntity[];

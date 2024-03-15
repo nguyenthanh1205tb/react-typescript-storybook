@@ -1,5 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
-import { useCallback, useState } from 'react';
+import { useCallback, useState, useEffect } from 'react';
 import { PAGINATE_LIMIT } from '../configs';
 import { request } from '../lib/request';
 import { APIConfigs } from '../lib/request/core/ApiConfig';
@@ -9,14 +9,18 @@ import {
   GetListCategoriesResponse,
   GetListMediaRequest,
   GetListMediaResponse,
+  GetListMediaTimeRange,
   HookState,
   OrderByType,
   OrderType,
 } from '../types';
 
 const useListMedia = () => {
+  const [tempDate, setTempDate] = useState<{ start?: string; end?: string }>({
+    start: undefined,
+    end: undefined,
+  });
   const { listMediaQueries, setListMediaQueries } = useAppStore();
-  console.log('listMediaQueries', listMediaQueries);
   const [totalCount, setTotalCount] = useState(0);
 
   const getListMedia = (payload?: Partial<GetListMediaRequest>) => {
@@ -55,7 +59,40 @@ const useListMedia = () => {
     setListMediaQueries({ categoryId: payload });
   };
 
+  const onChangeTimeRange = (time: GetListMediaTimeRange) => {
+    if (time !== GetListMediaTimeRange.custom) {
+      setTempDate({});
+      return setListMediaQueries({
+        timeRange: time,
+        startDate: undefined,
+        endDate: undefined,
+      });
+    }
+    return setListMediaQueries({ timeRange: time });
+  };
+
+  const onChangeVideoOfMine = (payload: boolean) => {
+    setListMediaQueries({ isMyFile: payload });
+  };
+
+  const onChangeTimeRangeCustom = (t: 'start' | 'end', date?: Date) => {
+    if (!date) return;
+    switch (t) {
+      case 'start':
+        return setTempDate((prev) => ({ ...prev, start: date.toISOString() }));
+      case 'end':
+        return setTempDate((prev) => ({ ...prev, end: date.toISOString() }));
+    }
+  };
+
+  useEffect(() => {
+    if (tempDate.start && tempDate.end) {
+      setListMediaQueries({ startDate: tempDate.start, endDate: tempDate.end });
+    }
+  }, [tempDate]);
+
   return {
+    timeRangeCustom: tempDate,
     getListMedia,
     totalCount,
     setTotalCount,
@@ -64,6 +101,9 @@ const useListMedia = () => {
     onPrevPagination,
     onChangeOrder,
     onChangeCategory,
+    onChangeTimeRange,
+    onChangeVideoOfMine,
+    onChangeTimeRangeCustom,
   };
 };
 

@@ -5,6 +5,7 @@ import {
   ConfigEntity,
   GetDetailMediaResponse,
   GetListMediaRequest,
+  GetListMediaTimeRange,
   MediaEntity,
   OrderByType,
   OrderType,
@@ -51,6 +52,8 @@ const useAppStore = create<State>((set) => ({
     take: PAGINATE_LIMIT,
     order: OrderType.DESC,
     orderBy: OrderByType.CREATED_AT,
+    timeRange: GetListMediaTimeRange.ALL,
+    isMyFile: false,
   },
 
   // Functions
