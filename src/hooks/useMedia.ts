@@ -56,8 +56,9 @@ const useListMedia = () => {
     setListMediaQueries({ orderBy, order: orderType });
   };
 
-  const onChangeCategory = (payload: string) => {
-    setListMediaQueries({ categoryId: payload });
+  const onChangeCategory = (id: string) => {
+    console.log(id);
+    setListMediaQueries({ categoryId: id });
   };
 
   const onChangeTimeRange = (time: GetListMediaTimeRange) => {

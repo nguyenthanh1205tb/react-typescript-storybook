@@ -130,15 +130,14 @@ export function Combobox(props: Props) {
                   item.children ? (
                     withChild(item)
                   ) : (
-                    <CommandGroup>
-                      <CommandItem
-                        className="tw-cursor-pointer"
-                        value={item.value}
-                      >
-                        <Dot className="tw-mr-2 tw-h-4 tw-w-4" />
-                        <span>{item.label}</span>
-                      </CommandItem>
-                    </CommandGroup>
+                    <CommandItem
+                      className="tw-cursor-pointer"
+                      value={item.value}
+                      onSelect={onChange}
+                    >
+                      <LibraryBig className="tw-mr-2 tw-h-4 tw-w-4" />
+                      <span>{item.label}</span>
+                    </CommandItem>
                   )
                 }
               />
