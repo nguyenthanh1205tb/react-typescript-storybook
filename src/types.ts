@@ -4,6 +4,12 @@ export interface HookState<T> {
   err: null | Error;
 }
 
+export interface ComboboxOption {
+  label: string;
+  value: string;
+  children: Array<ComboboxOption> | null;
+}
+
 export enum SideMenuActive {
   FILTER = 'filter',
   LOCAL_FILES = 'local-file',
@@ -136,4 +142,26 @@ export interface GetListMediaResponse {
 export interface GetDetailMediaResponse {
   data: MediaEntity;
   success: boolean;
+}
+
+export interface CategoryChildren {
+  id: string;
+  name: string;
+  children: any;
+  createdAt: string;
+  updatedAt: string;
+  description: any;
+}
+export interface Category {
+  id: string;
+  name: string;
+  description?: string;
+  children?: CategoryChildren[];
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface GetListCategoriesResponse {
+  success: boolean;
+  data: Category[];
 }

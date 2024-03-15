@@ -1,5 +1,13 @@
 import { create } from 'zustand';
-import { GetDetailMediaResponse, MediaEntity } from '../types';
+import {
+  Category,
+  GetDetailMediaResponse,
+  GetListMediaRequest,
+  MediaEntity,
+  OrderByType,
+  OrderType,
+} from '../types';
+import { PAGINATE_LIMIT } from '../configs';
 
 export enum TabItemType {
   VIDEO = 'video',
@@ -13,6 +21,8 @@ type State = {
   tabActivated: TabItemType;
   mediaSelectedID: string | null;
   mediaSelectedData: GetDetailMediaResponse | null;
+  listMediaQueries: GetListMediaRequest;
+  listCategories: Category[];
 
   // Functions
   setMediaDialog: (payload: boolean) => void;
@@ -20,6 +30,8 @@ type State = {
   setListMedia: (payload: MediaEntity[]) => void;
   setMediaSelectedID: (payload: string) => void;
   setMediaSelectedData: (payload: GetDetailMediaResponse | null) => void;
+  setListMediaQueries: (payload: Partial<GetListMediaRequest>) => void;
+  setListCategories: (payload: Category[]) => void;
 };
 
 const useAppStore = create<State>((set) => ({
@@ -29,19 +41,24 @@ const useAppStore = create<State>((set) => ({
   tabActivated: TabItemType.VIDEO,
   mediaSelectedID: null,
   mediaSelectedData: null,
+  listCategories: [],
+  listMediaQueries: {
+    page: 1,
+    take: PAGINATE_LIMIT,
+    order: OrderType.DESC,
+    orderBy: OrderByType.CREATED_AT,
+  },
 
   // Functions
   /**
    * Set media dialog on/off
    * @param payload boolean
-   * @returns void
    */
   setMediaDialog: (payload: boolean) => set(() => ({ openMedia: payload })),
 
   /**
    * Switch tab media [video/image]
    * @param payload TabItemType
-   * @returns void
    */
   setTabActivated: (payload: TabItemType) =>
     set(() => ({ tabActivated: payload })),
@@ -49,14 +66,12 @@ const useAppStore = create<State>((set) => ({
   /**
    * Set list media
    * @param payload Array<MediaEntity>
-   * @returns void
    */
   setListMedia: (payload: MediaEntity[]) => set(() => ({ listMedia: payload })),
 
   /**
    * Set media selected
    * @param payload string
-   * @returns void
    */
   setMediaSelectedID: (payload: string) =>
     set(() => ({ mediaSelectedID: payload })),
@@ -64,13 +79,27 @@ const useAppStore = create<State>((set) => ({
   /**
    * Set media selected data
    * @param payload GetDetailMediaResponse
-   * @returns void
    */
   setMediaSelectedData: (payload: GetDetailMediaResponse | null) =>
     set((state) => ({
       mediaSelectedData: payload,
       mediaSelectedID: payload ? state.mediaSelectedID : payload,
     })),
+
+  /**
+   * Set request for API get list media
+   * @param payload Partial<GetListMediaRequest>
+   */
+  setListMediaQueries: (payload) =>
+    set((state) => ({
+      listMediaQueries: { ...state.listMediaQueries, ...payload },
+    })),
+
+  /**
+   * Set list categories
+   * @param payload Array<Category>
+   */
+  setListCategories: (payload) => set(() => ({ listCategories: payload })),
 }));
 
 export default useAppStore;

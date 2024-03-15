@@ -23,11 +23,10 @@ interface Props {
 function ListMedia({ type }: PropsWithChildren<Props>) {
   const listRef = useRef<HTMLDivElement>(null);
   const [colNum, setColNum] = useState(5);
-  const { listMedia, setListMedia } = useAppStore();
+  const { listMedia, setListMedia, listMediaQueries } = useAppStore();
   const {
     getListMedia,
     totalCount,
-    requestData,
     setTotalCount,
     onChangePagination,
     onNextPagination,
@@ -37,7 +36,7 @@ function ListMedia({ type }: PropsWithChildren<Props>) {
   const { data, isLoading } = getListMedia({ fileType: type });
 
   const showPaginateMeta = useMemo(() => {
-    const currentPage = requestData.page ?? 1;
+    const currentPage = listMediaQueries.page ?? 1;
     const first =
       currentPage === 1 ? 1 : currentPage * PAGINATE_LIMIT - PAGINATE_LIMIT + 1;
     const end =
@@ -45,7 +44,7 @@ function ListMedia({ type }: PropsWithChildren<Props>) {
     return `Hiển thị ${first} - ${
       end > totalCount ? totalCount : end
     } / ${totalCount}`;
-  }, [requestData, totalCount]);
+  }, [listMediaQueries, totalCount]);
 
   const listResize = () => {
     if (!listRef || !listRef.current) return;
@@ -76,8 +75,8 @@ function ListMedia({ type }: PropsWithChildren<Props>) {
         <div className="tw-text-sm tw-font-semibold">{showPaginateMeta}</div>
         <Paginate
           totalCount={totalCount}
-          limit={requestData.take ?? PAGINATE_LIMIT}
-          current={requestData.page ?? 1}
+          limit={listMediaQueries.take ?? PAGINATE_LIMIT}
+          current={listMediaQueries.page ?? 1}
           onChangePage={onChangePagination}
           onNext={onNextPagination}
           onPrev={onPrevPagination}

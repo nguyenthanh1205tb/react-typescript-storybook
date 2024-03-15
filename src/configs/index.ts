@@ -1,5 +1,5 @@
 const AUTH_TOKEN =
-  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImFkbWluQG1lZmkudm4iLCJmdWxsTmFtZSI6IkFkbWluaXN0cmF0b3IgIiwiX2lkIjoiNjVhZTMxOTg1MzJhOTI1MDBkZDMwYjZhIiwiaWF0IjoxNzEwNDA0OTY5LCJleHAiOjE3MTA0OTEzNjl9.kiR9MSU3Td6LaVsRngrdJrXTBv2kKGBF18NEW6HPFN4';
+  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImFkbWluQG1lZmkudm4iLCJmdWxsTmFtZSI6IkFkbWluaXN0cmF0b3IgIiwiX2lkIjoiNjVhZTMxOTg1MzJhOTI1MDBkZDMwYjZhIiwiaWF0IjoxNzEwNDc3NTM2LCJleHAiOjE3MTA1NjM5MzZ9.KCs8Gd-qvBa4NNxTpklvpS6Ycz4wccpD9UfeRn0cJHk';
 const UPLOAD_ENDPOINT = 'https://uat.upload.plcplatform.net/files/';
 const MEDIA_BASE_ENDPOINT = 'https://uat.upload.plcplatform.net/media';
 const ORG_ID = '65ae3593905f66bff177f068';

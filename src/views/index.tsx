@@ -41,9 +41,9 @@ import { Toaster } from '../components/ui/toaster';
 type State = {
   sideMenu: SideMenu;
 };
+const queryClient = new QueryClient();
 
 function Main() {
-  const queryClient = new QueryClient();
   const { setMediaDialog, openMedia, tabActivated, setTabActivated } =
     useAppStore();
   const [state, setState] = useState<State>({

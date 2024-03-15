@@ -3,6 +3,7 @@ import { request } from '../lib/request';
 import { APIConfigs } from '../lib/request/core/ApiConfig';
 import {
   GetDetailMediaResponse,
+  GetListCategoriesResponse,
   GetListMediaRequest,
   GetListMediaResponse,
   HookState,
@@ -14,16 +15,11 @@ import { PAGINATE_LIMIT } from '../configs';
 import { useQuery } from '@tanstack/react-query';
 
 const useListMedia = () => {
+  const { listMediaQueries, setListMediaQueries } = useAppStore();
   const [totalCount, setTotalCount] = useState(0);
-  const [requestData, setRequestData] = useState<GetListMediaRequest>({
-    page: 1,
-    take: PAGINATE_LIMIT,
-    order: OrderType.DESC,
-    orderBy: OrderByType.CREATED_AT,
-  });
 
   const getListMedia = (payload?: Partial<GetListMediaRequest>) => {
-    const queries = { ...requestData, ...payload };
+    const queries = { ...listMediaQueries, ...payload };
     return useQuery<GetListMediaResponse>({
       queryKey: ['getListMedia', queries],
       queryFn: () =>
@@ -35,48 +31,38 @@ const useListMedia = () => {
     });
   };
 
-  const onChangePagination = (page: number) =>
-    setRequestData((prev) => ({
-      ...prev,
-      page,
-    }));
+  const onChangePagination = (page: number) => setListMediaQueries({ page });
 
   const onNextPagination = useCallback(() => {
-    if ((requestData.page ?? 1) >= Math.ceil(totalCount / PAGINATE_LIMIT))
+    if ((listMediaQueries.page ?? 1) >= Math.ceil(totalCount / PAGINATE_LIMIT))
       return;
-    setRequestData((prev) => ({
-      ...prev,
-      page: (prev.page ?? 1) + 1,
-    }));
-  }, [totalCount, requestData]);
+    setListMediaQueries({ page: (listMediaQueries.page ?? 1) + 1 });
+  }, [totalCount, listMediaQueries]);
 
   const onPrevPagination = useCallback(() => {
-    if ((requestData.page ?? 1) <= 1) return;
-    setRequestData((prev) => ({
-      ...prev,
-      page: (prev.page ?? 1) - 1,
-    }));
-  }, [requestData]);
+    if ((listMediaQueries.page ?? 1) <= 1) return;
+    setListMediaQueries({ page: (listMediaQueries.page ?? 1) - 1 });
+  }, [listMediaQueries]);
 
   const onChangeOrder = (payload: string[]) => {
     const orderBy = payload[0] as OrderByType;
     const orderType = payload[1] as OrderType;
-    setRequestData((prev) => ({
-      ...prev,
-      orderBy,
-      order: orderType,
-    }));
+    setListMediaQueries({ orderBy, order: orderType });
+  };
+
+  const onChangeCategory = (payload: string) => {
+    setListMediaQueries({ categoryId: payload });
   };
 
   return {
     getListMedia,
     totalCount,
-    requestData,
     setTotalCount,
     onChangePagination,
     onNextPagination,
     onPrevPagination,
     onChangeOrder,
+    onChangeCategory,
   };
 };
 
@@ -111,4 +97,19 @@ const useDetailMedia = () => {
   return { response: state, getDetailMedia };
 };
 
-export { useListMedia, useDetailMedia };
+const useCategory = () => {
+  const getListCategories = () => {
+    return useQuery<GetListCategoriesResponse>({
+      queryKey: ['getListCategories'],
+      queryFn: () =>
+        request<GetListCategoriesResponse>(APIConfigs(), {
+          method: 'GET',
+          url: '/media/category',
+        }),
+    });
+  };
+
+  return { getListCategories };
+};
+
+export { useListMedia, useDetailMedia, useCategory };
