@@ -165,3 +165,13 @@ export interface GetListCategoriesResponse {
   success: boolean;
   data: Category[];
 }
+
+export interface ConfigResponse {
+  success: boolean;
+  data: ConfigEntity;
+}
+
+export interface ConfigEntity {
+  organizationId: string;
+  templateId: string;
+}

@@ -1,12 +1,14 @@
+import { useToast } from '@/src/components/ui/use-toast';
 import { createUppyInstance } from '@/src/configs/uppy';
+import useAppStore from '@/src/stores/useAppStore';
 import UppyStore from '@/src/stores/useUppyStore';
+import { useQueryClient } from '@tanstack/react-query';
 import type { Uppy } from '@uppy/core';
 import '@uppy/core/dist/style.min.css';
 import { Computer } from 'lucide-react';
 import React, { useEffect, useImperativeHandle, useState } from 'react';
 import { v4 as uuid } from 'uuid';
 import { cn } from '../utils';
-import { useToast } from '@/src/components/ui/use-toast';
 // import '@/assets/css/libs/uppy-dashboard.css';
 
 interface Props {
@@ -48,6 +50,8 @@ const UppyDashboard = React.forwardRef((props: Props, ref) => {
   const [isFileAdded, setIsFileAdded] = useState(false);
   const { updateUploadStatusMap } = UppyStore();
   const { toast } = useToast();
+  const { listMediaQueries, config } = useAppStore();
+  const queryClient = useQueryClient();
 
   useEffect(() => {
     if (isFileAdded) {
@@ -91,7 +95,7 @@ const UppyDashboard = React.forwardRef((props: Props, ref) => {
 
   // eslint-disable-next-line consistent-return
   useEffect(() => {
-    if (!organizationId) {
+    if (!config?.organizationId) {
       return () => {};
     }
 
@@ -111,7 +115,7 @@ const UppyDashboard = React.forwardRef((props: Props, ref) => {
       if (onChangeUploadPercent)
         onChangeUploadPercent(contentId || '', percent);
       updateUploadStatusMap(file?.id, {
-        organizationId,
+        organizationId: config.organizationId,
         file,
         bytesUploaded: progress.bytesUploaded,
         bytesTotal: progress.bytesTotal,
@@ -132,7 +136,7 @@ const UppyDashboard = React.forwardRef((props: Props, ref) => {
             bytesUploaded: 0,
             bytesTotal: 0,
             percent: 0,
-            organizationId,
+            organizationId: config.organizationId,
           });
         }
       })
@@ -147,8 +151,8 @@ const UppyDashboard = React.forwardRef((props: Props, ref) => {
 
         uppy.setFileMeta(file.id, {
           contentId,
-          organizationId,
-          templateId,
+          organizationId: config.organizationId,
+          templateId: config.templateId,
         });
 
         setIsFileAdded(true);
@@ -162,6 +166,11 @@ const UppyDashboard = React.forwardRef((props: Props, ref) => {
         console.log('ContentIds:', contentIds);
         console.log('File:', file);
         if (onFileUpload) onFileUpload(contentIds as string[], undefined);
+      })
+      .on('upload-success', (file, response) => {
+        queryClient.invalidateQueries({
+          queryKey: ['getListMedia', listMediaQueries],
+        });
       })
       .on('complete', (result) => {
         const successFiles = result?.successful || [];
@@ -177,7 +186,7 @@ const UppyDashboard = React.forwardRef((props: Props, ref) => {
           description: 'Tải lên thất bại',
         });
       });
-  }, [organizationId]);
+  }, [config]);
 
   return (
     <label

@@ -1,8 +1,8 @@
 /* eslint-disable consistent-return */
+import '@videojs/http-streaming';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import videojs from 'video.js';
 import Player from 'video.js/dist/types/player';
-import '@videojs/http-streaming';
 import 'video.js/dist/video-js.css';
 
 interface VideoPlayerProps {
@@ -51,15 +51,14 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
     if (player) {
       player.src(videoUrl);
       player.poster(thumbnailUrl);
-      player.load();
     }
   }, [player, videoUrl, thumbnailUrl]);
 
   return (
-    <div className="aspect-video w-full">
+    <div className="w-full aspect-video">
       <video
         ref={videoRef}
-        className="video-js vjs-default-skin vjs-16-9 w-full"
+        className="w-full video-js vjs-default-skin vjs-16-9"
       />
     </div>
   );

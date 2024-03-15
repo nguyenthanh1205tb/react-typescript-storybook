@@ -1,13 +1,14 @@
 import { create } from 'zustand';
+import { PAGINATE_LIMIT } from '../configs';
 import {
   Category,
+  ConfigEntity,
   GetDetailMediaResponse,
   GetListMediaRequest,
   MediaEntity,
   OrderByType,
   OrderType,
 } from '../types';
-import { PAGINATE_LIMIT } from '../configs';
 
 export enum TabItemType {
   VIDEO = 'video',
@@ -16,6 +17,7 @@ export enum TabItemType {
 
 type State = {
   // Vars
+  config: ConfigEntity | null;
   openMedia: boolean;
   listMedia: MediaEntity[];
   tabActivated: TabItemType;
@@ -25,6 +27,7 @@ type State = {
   listCategories: Category[];
 
   // Functions
+  setConfig: (payload: ConfigEntity) => void;
   setMediaDialog: (payload: boolean) => void;
   setTabActivated: (payload: TabItemType) => void;
   setListMedia: (payload: MediaEntity[]) => void;
@@ -36,6 +39,7 @@ type State = {
 
 const useAppStore = create<State>((set) => ({
   // Vars
+  config: null,
   openMedia: false,
   listMedia: [],
   tabActivated: TabItemType.VIDEO,
@@ -50,6 +54,11 @@ const useAppStore = create<State>((set) => ({
   },
 
   // Functions
+  /**
+   * Set media dialog on/off
+   * @param payload boolean
+   */
+  setConfig: (payload: ConfigEntity) => set(() => ({ config: payload })),
   /**
    * Set media dialog on/off
    * @param payload boolean

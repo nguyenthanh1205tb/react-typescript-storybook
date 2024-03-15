@@ -11,6 +11,6 @@ interface EachProps<T> {
  * @returns ReactNode
  */
 function Each<T>({ render, of }: EachProps<T>) {
-  return Children.toArray(of.map((item, index) => render(item, index)));
+  return Children?.toArray(of?.map((item, index) => render(item, index)));
 }
 export default Each;

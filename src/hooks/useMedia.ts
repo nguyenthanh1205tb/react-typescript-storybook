@@ -1,6 +1,9 @@
+import { useQuery } from '@tanstack/react-query';
 import { useCallback, useState } from 'react';
+import { PAGINATE_LIMIT } from '../configs';
 import { request } from '../lib/request';
 import { APIConfigs } from '../lib/request/core/ApiConfig';
+import useAppStore from '../stores/useAppStore';
 import {
   GetDetailMediaResponse,
   GetListCategoriesResponse,
@@ -10,12 +13,10 @@ import {
   OrderByType,
   OrderType,
 } from '../types';
-import useAppStore from '../stores/useAppStore';
-import { PAGINATE_LIMIT } from '../configs';
-import { useQuery } from '@tanstack/react-query';
 
 const useListMedia = () => {
   const { listMediaQueries, setListMediaQueries } = useAppStore();
+  console.log('listMediaQueries', listMediaQueries);
   const [totalCount, setTotalCount] = useState(0);
 
   const getListMedia = (payload?: Partial<GetListMediaRequest>) => {
@@ -112,4 +113,4 @@ const useCategory = () => {
   return { getListCategories };
 };
 
-export { useListMedia, useDetailMedia, useCategory };
+export { useCategory, useDetailMedia, useListMedia };

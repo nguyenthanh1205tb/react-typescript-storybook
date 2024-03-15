@@ -1,20 +1,17 @@
-import React, {
-  PropsWithChildren,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from 'react';
-import Item from './item';
-import useAppStore from '@/src/stores/useAppStore';
-import { useListMedia } from '@/src/hooks/useMedia';
-import If from '@/src/hooks/if';
-import { SkeletonCard } from '@/src/components/common/skeleton-card';
-import Each from '@/src/hooks/each';
-import { cn } from '@/src/lib/utils';
 import Paginate from '@/src/components/common/paginate';
+import { SkeletonCard } from '@/src/components/common/skeleton-card';
 import { PAGINATE_LIMIT } from '@/src/configs';
-import { FileType } from '@/src/types';
+import Each from '@/src/hooks/each';
+import If from '@/src/hooks/if';
+import { useListMedia } from '@/src/hooks/useMedia';
+import { request } from '@/src/lib/request';
+import { APIConfigs } from '@/src/lib/request/core/ApiConfig';
+import { cn } from '@/src/lib/utils';
+import useAppStore from '@/src/stores/useAppStore';
+import { ConfigResponse, FileType } from '@/src/types';
+import { useQuery } from '@tanstack/react-query';
+import { PropsWithChildren, useEffect, useMemo, useRef, useState } from 'react';
+import Item from './item';
 
 const BASE_ITEM_WIDTH = 239;
 interface Props {
@@ -23,7 +20,13 @@ interface Props {
 function ListMedia({ type }: PropsWithChildren<Props>) {
   const listRef = useRef<HTMLDivElement>(null);
   const [colNum, setColNum] = useState(5);
-  const { listMedia, setListMedia, listMediaQueries } = useAppStore();
+  const {
+    listMedia,
+    setListMedia,
+    listMediaQueries,
+    setListMediaQueries,
+    setConfig,
+  } = useAppStore();
   const {
     getListMedia,
     totalCount,
@@ -34,6 +37,13 @@ function ListMedia({ type }: PropsWithChildren<Props>) {
   } = useListMedia();
 
   const { data, isLoading } = getListMedia({ fileType: type });
+
+  useEffect(() => {
+    setListMediaQueries({
+      ...listMediaQueries,
+      fileType: type,
+    });
+  }, [type]);
 
   const showPaginateMeta = useMemo(() => {
     const currentPage = listMediaQueries.page ?? 1;
@@ -69,6 +79,21 @@ function ListMedia({ type }: PropsWithChildren<Props>) {
     }
   }, [listRef]);
 
+  const { data: configResponse } = useQuery<ConfigResponse>({
+    queryKey: ['getConfigs'],
+    queryFn: () =>
+      request<ConfigResponse>(APIConfigs(), {
+        url: '/media/package/configs',
+        method: 'GET',
+      }),
+  });
+
+  useEffect(() => {
+    if (configResponse) {
+      setConfig(configResponse.data);
+    }
+  }, [configResponse]);
+
   return (
     <div className="tw-flex tw-flex-col tw-gap-2">
       <div className="tw-flex tw-items-center tw-justify-between tw-w-full">
@@ -89,13 +114,16 @@ function ListMedia({ type }: PropsWithChildren<Props>) {
         <If
           isShow={isLoading}
           element={
-            <Each of={new Array(20).fill(0)} render={() => <SkeletonCard />} />
+            <Each of={new Array(20)?.fill(0)} render={() => <SkeletonCard />} />
           }
         />
         <If
           isShow={!isLoading && data !== null}
           element={
-            <Each of={listMedia} render={(item) => <Item data={item} />} />
+            <Each
+              of={listMedia || []}
+              render={(item) => <Item data={item} />}
+            />
           }
         />
       </div>
