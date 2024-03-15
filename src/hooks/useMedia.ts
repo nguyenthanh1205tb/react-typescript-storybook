@@ -4,6 +4,7 @@ import { PAGINATE_LIMIT } from '../configs';
 import { request } from '../lib/request';
 import { APIConfigs } from '../lib/request/core/ApiConfig';
 import useAppStore from '../stores/useAppStore';
+import _debounce from 'lodash/debounce';
 import {
   GetDetailMediaResponse,
   GetListCategoriesResponse,
@@ -85,6 +86,10 @@ const useListMedia = () => {
     }
   };
 
+  const onSearchByText = _debounce((text: string) => {
+    setListMediaQueries({ keyword: text });
+  }, 1000);
+
   useEffect(() => {
     if (tempDate.start && tempDate.end) {
       setListMediaQueries({ startDate: tempDate.start, endDate: tempDate.end });
@@ -104,6 +109,7 @@ const useListMedia = () => {
     onChangeTimeRange,
     onChangeVideoOfMine,
     onChangeTimeRangeCustom,
+    onSearchByText,
   };
 };
 

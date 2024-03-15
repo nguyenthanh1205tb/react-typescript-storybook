@@ -13,6 +13,7 @@ import { useQuery } from '@tanstack/react-query';
 import { PropsWithChildren, useEffect, useMemo, useRef, useState } from 'react';
 import Item from './item';
 import Typo from '@/src/components/common/typo';
+import { PackageOpen } from 'lucide-react';
 
 const BASE_ITEM_WIDTH = 239;
 interface Props {
@@ -72,7 +73,9 @@ function ListMedia({ type }: PropsWithChildren<Props>) {
     if (!isLoading && data) {
       setListMedia(data.data);
       setTotalCount(data.meta.itemCount);
-      setMediaSelectedID(data.data[0].id);
+      if (data.data.length) {
+        setMediaSelectedID(data.data[0].id);
+      }
     }
   }, [data, isLoading]);
 
@@ -125,6 +128,17 @@ function ListMedia({ type }: PropsWithChildren<Props>) {
           isShow={isLoading}
           element={
             <Each of={new Array(20)?.fill(0)} render={() => <SkeletonCard />} />
+          }
+        />
+        <If
+          isShow={!listMedia.length && !isLoading}
+          element={
+            <div className="tw-w-full tw-h-full tw-flex tw-items-center tw-justify-center tw-absolute tw-left-0 tw-top-0">
+              <div className="tw-flex tw-flex-col tw-items-center tw-gap-2 tw-text-gray-400">
+                <PackageOpen size={120} />
+                <Typo.H2>Không có dữ liệu</Typo.H2>
+              </div>
+            </div>
           }
         />
         <If

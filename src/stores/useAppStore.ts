@@ -26,6 +26,7 @@ type State = {
   mediaSelectedData: GetDetailMediaResponse | null;
   listMediaQueries: GetListMediaRequest;
   listCategories: Category[];
+  selectMultiMode: boolean;
 
   // Functions
   setConfig: (payload: ConfigEntity) => void;
@@ -36,6 +37,7 @@ type State = {
   setMediaSelectedData: (payload: GetDetailMediaResponse | null) => void;
   setListMediaQueries: (payload: Partial<GetListMediaRequest>) => void;
   setListCategories: (payload: Category[]) => void;
+  setSelectMultiMode: (payload: boolean) => void;
 };
 
 const useAppStore = create<State>((set) => ({
@@ -47,6 +49,7 @@ const useAppStore = create<State>((set) => ({
   mediaSelectedID: null,
   mediaSelectedData: null,
   listCategories: [],
+  selectMultiMode: false,
   listMediaQueries: {
     page: 1,
     take: PAGINATE_LIMIT,
@@ -112,6 +115,12 @@ const useAppStore = create<State>((set) => ({
    * @param payload Array<Category>
    */
   setListCategories: (payload) => set(() => ({ listCategories: payload })),
+
+  /**
+   * Set select multi mode
+   * @param payload Boolean
+   */
+  setSelectMultiMode: (payload) => set(() => ({ selectMultiMode: payload })),
 }));
 
 export default useAppStore;

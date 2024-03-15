@@ -37,6 +37,7 @@ import MenuUpload from './upload/menu';
 import S3StorageUpload from './upload/s3-storage';
 import WatchFolderUpload from './upload/watch-folder';
 import { Toaster } from '../components/ui/toaster';
+import { useListMedia } from '../hooks/useMedia';
 
 type State = {
   sideMenu: SideMenu;
@@ -44,6 +45,7 @@ type State = {
 const queryClient = new QueryClient();
 
 function Main() {
+  const { onSearchByText } = useListMedia();
   const { setMediaDialog, openMedia, tabActivated, setTabActivated } =
     useAppStore();
   const [state, setState] = useState<State>({
@@ -75,7 +77,7 @@ function Main() {
           Open Media MefiPlatform
         </Button>
         <Dialog open={openMedia} onOpenChange={(open) => setMediaDialog(open)}>
-          <DialogContent className="!tw-max-w-[90vw] !tw-flex tw-flex-col tw-min-h-[800px] tw-max-h-[800px] tw-overflow-hidden">
+          <DialogContent className="!tw-max-w-[95vw] !tw-flex tw-flex-col tw-min-h-[800px] tw-max-h-[800px] tw-overflow-hidden">
             <DialogHeader>
               <DialogTitle>Quản lý Media</DialogTitle>
             </DialogHeader>
@@ -113,7 +115,11 @@ function Main() {
                         size={16}
                         className="tw-absolute tw-left-2 tw-top-[52%] -tw-translate-y-1/2 tw-transform tw-text-gray-600"
                       />
-                      <Input placeholder="Tìm kiếm" className="tw-pl-8" />
+                      <Input
+                        placeholder="Tìm kiếm"
+                        className="tw-pl-8"
+                        onChange={(e) => onSearchByText(e.currentTarget.value)}
+                      />
                     </div>
                   </div>
                 </div>
