@@ -1,5 +1,4 @@
 import { MultiSelect } from '@/src/components/common/multi-select';
-import VideoPlayer from '@/src/components/common/video-player';
 import {
   Accordion,
   AccordionContent,
@@ -7,7 +6,6 @@ import {
   AccordionTrigger,
 } from '@/src/components/ui/accordion';
 import { Badge } from '@/src/components/ui/badge';
-import { Button } from '@/src/components/ui/button';
 import { Checkbox } from '@/src/components/ui/checkbox';
 import {
   Form,
@@ -25,7 +23,6 @@ import { useDetailMedia } from '@/src/hooks/useMedia';
 import { formatDate } from '@/src/lib/utils/date';
 import { avatarUrl, formatBytes } from '@/src/lib/utils/media';
 import { cn } from '@/src/lib/utils/merge-class';
-import useAppStore from '@/src/stores/useAppStore';
 import { MediaCodec, MediaPacks, Video } from '@/src/types';
 import { zodResolver } from '@hookform/resolvers/zod';
 import useAppStore, { TabItemType } from '@/src/stores/useAppStore';
@@ -46,6 +43,9 @@ import {
 import { useEffect, useMemo } from 'react';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
+import moment from 'moment';
+import { Button } from '@/src/components/ui/button';
+import VideoPlayer from '@/src/components/common/video-player';
 
 const formSchema = z.object({
   username: z.string().min(2, {
@@ -68,13 +68,6 @@ const formSchema = z.object({
   categories: z.array(z.string()),
   types: z.array(z.string()),
 });
-import { avatarUrl, formatBytes } from '@/src/lib/utils/media';
-import { cn } from '@/src/lib/utils/merge-class';
-import VideoPlayer from '@/src/components/common/video-player';
-import If from '@/src/hooks/if';
-import { MediaCodec, MediaPacks, Video } from '@/src/types';
-import { Button } from '@/src/components/ui/button';
-import moment from 'moment';
 
 const Detail = () => {
   const {

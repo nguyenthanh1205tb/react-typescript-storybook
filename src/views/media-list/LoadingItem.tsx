@@ -6,7 +6,7 @@ import { MediaEntity, MediaStatus } from '@/src/types';
 import { PropsWithChildren } from 'react';
 
 interface Props {
-  data: MediaEntity;
+  data: any;
 }
 
 import { Loader2 } from 'lucide-react';
