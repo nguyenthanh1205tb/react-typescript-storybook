@@ -12,6 +12,7 @@ import { ConfigResponse, FileType } from '@/src/types';
 import { useQuery } from '@tanstack/react-query';
 import { PropsWithChildren, useEffect, useMemo, useRef, useState } from 'react';
 import Item from './item';
+import Typo from '@/src/components/common/typo';
 
 const BASE_ITEM_WIDTH = 239;
 interface Props {
@@ -26,6 +27,7 @@ function ListMedia({ type }: PropsWithChildren<Props>) {
     listMediaQueries,
     setListMediaQueries,
     setConfig,
+    setMediaSelectedID,
   } = useAppStore();
   const {
     getListMedia,
@@ -70,6 +72,7 @@ function ListMedia({ type }: PropsWithChildren<Props>) {
     if (!isLoading && data) {
       setListMedia(data.data);
       setTotalCount(data.meta.itemCount);
+      setMediaSelectedID(data.data[0].id);
     }
   }, [data, isLoading]);
 
@@ -97,15 +100,22 @@ function ListMedia({ type }: PropsWithChildren<Props>) {
   return (
     <div className="tw-flex tw-flex-col tw-gap-2">
       <div className="tw-flex tw-items-center tw-justify-between tw-w-full">
-        <div className="tw-text-sm tw-font-semibold">{showPaginateMeta}</div>
-        <Paginate
-          totalCount={totalCount}
-          limit={listMediaQueries.take ?? PAGINATE_LIMIT}
-          current={listMediaQueries.page ?? 1}
-          onChangePage={onChangePagination}
-          onNext={onNextPagination}
-          onPrev={onPrevPagination}
-        />
+        <div>
+          <Typo.Paragraph className="tw-text-red-500 tw-cursor-pointer">
+            Chọn nhiều
+          </Typo.Paragraph>
+        </div>
+        <div className="tw-flex tw-items-center tw-gap-2">
+          <div className="tw-text-sm tw-font-semibold">{showPaginateMeta}</div>
+          <Paginate
+            totalCount={totalCount}
+            limit={listMediaQueries.take ?? PAGINATE_LIMIT}
+            current={listMediaQueries.page ?? 1}
+            onChangePage={onChangePagination}
+            onNext={onNextPagination}
+            onPrev={onPrevPagination}
+          />
+        </div>
       </div>
       <div
         className={cn('tw-grid tw-gap-4 tw-w-full', `tw-grid-cols-${colNum}`)}

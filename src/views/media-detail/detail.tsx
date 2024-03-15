@@ -10,6 +10,7 @@ import { useDetailMedia } from '@/src/hooks/useMedia';
 import useAppStore from '@/src/stores/useAppStore';
 import {
   CalendarClock,
+  CircleFadingPlus,
   Code,
   Download,
   Frame,
@@ -27,6 +28,7 @@ import VideoPlayer from '@/src/components/common/video-player';
 import If from '@/src/hooks/if';
 import { MediaCodec, MediaPacks, Video } from '@/src/types';
 import { formatDate } from '@/src/lib/utils/date';
+import { Button } from '@/src/components/ui/button';
 
 const Detail = () => {
   const { mediaSelectedID, mediaSelectedData, setMediaSelectedData } =
@@ -194,6 +196,14 @@ const Detail = () => {
                   ) : null
                 )}
               </Accordion>
+            </div>
+            <div className="tw-absolute tw-bottom-0 tw-w-full tw-flex tw-items-center tw-justify-center">
+              <Button>
+                <div className="tw-flex tw-items-center tw-justify-center tw-gap-2">
+                  <CircleFadingPlus size={16} />
+                  <span>Chèn</span>
+                </div>
+              </Button>
             </div>
           </div>
         )}

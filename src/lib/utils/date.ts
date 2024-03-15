@@ -18,4 +18,22 @@ const formatDate = (dateString: string) => {
   return date.toLocaleString('vi-VN', options).replace(',', '');
 };
 
-export { formatDate };
+function convertDuration(seconds: number) {
+  // Calculate hours:
+  const hours = Math.floor(seconds / 3600);
+
+  // Calculate remaining minutes:
+  const remainingMinutes = Math.floor((seconds % 3600) / 60);
+
+  // Calculate remaining seconds:
+  const remainingSeconds = Math.floor(seconds % 60);
+
+  // Pad values with zeros for consistent formatting:
+  const paddedHours = hours.toString().padStart(2, '0');
+  const paddedMinutes = remainingMinutes.toString().padStart(2, '0');
+  const paddedSeconds = remainingSeconds.toString().padStart(2, '0');
+
+  return `${paddedHours}:${paddedMinutes}:${paddedSeconds}`;
+}
+
+export { formatDate, convertDuration };

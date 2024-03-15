@@ -4,16 +4,19 @@ import { cn } from '@/src/lib/utils/merge-class';
 import useAppStore from '@/src/stores/useAppStore';
 import { MediaEntity, MediaStatus } from '@/src/types';
 import { avatarUrl } from '@/src/lib/utils/media';
+import { convertDuration } from '@/src/lib/utils/date';
 
 interface Props {
   data: MediaEntity;
 }
 function Item({ data }: PropsWithChildren<Props>) {
-  const { setMediaSelectedID } = useAppStore();
+  const { setMediaSelectedID, mediaSelectedID } = useAppStore();
 
   return (
     <div
-      className="tw-border tw-p-2 tw-rounded-lg tw-relative"
+      className={cn('tw-border-2 tw-p-2 tw-rounded-lg tw-relative', {
+        'tw-border-red-400': mediaSelectedID === data.id,
+      })}
       onClick={() => setMediaSelectedID(data.id)}
     >
       <div className="tw-absolute tw-left-3 tw-top-3 tw-z-10">
@@ -33,6 +36,9 @@ function Item({ data }: PropsWithChildren<Props>) {
         })}
       >
         <Image src={avatarUrl(data.avatar_thumb)} />
+        <div className="tw-absolute tw-left-3 tw-bg-black/50 tw-text-sm tw-text-white tw-top-[90px] tw-py-1 tw-px-2 tw-rounded-md tw-backdrop-blur-md">
+          {convertDuration(data.durations)}
+        </div>
         <p className="tw-text-sm tw-line-clamp-2" title={data.name}>
           {data.name}
         </p>
