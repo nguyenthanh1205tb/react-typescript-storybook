@@ -37,13 +37,10 @@ export const deleteFileContentId = (fileId: string) => {
 
 const UppyDashboard = React.forwardRef((props: Props, ref) => {
   const {
-    organizationId,
-    templateId,
     onFileAdded,
     onChangeUploadPercent,
     onFileUpload,
     setIsDisabledUploadButton,
-    // type,
   } = props;
 
   const [uppyInstance, setUppyInstance] = useState<Uppy>();

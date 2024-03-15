@@ -11,6 +11,7 @@ import useAppStore from '@/src/stores/useAppStore';
 import { ConfigResponse, FileType } from '@/src/types';
 import { useQuery } from '@tanstack/react-query';
 import { PropsWithChildren, useEffect, useMemo, useRef, useState } from 'react';
+import LoadingItem from './LoadingItem';
 import Item from './item';
 import Typo from '@/src/components/common/typo';
 import { PackageOpen } from 'lucide-react';
@@ -130,6 +131,7 @@ function ListMedia({ type }: PropsWithChildren<Props>) {
             <Each of={new Array(20)?.fill(0)} render={() => <SkeletonCard />} />
           }
         />
+        <LoadingItem data={{}} />
         <If
           isShow={!listMedia.length && !isLoading}
           element={

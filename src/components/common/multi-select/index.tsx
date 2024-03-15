@@ -1,7 +1,7 @@
-import * as React from 'react';
 import { cn } from '@/src/lib/utils';
+import * as React from 'react';
 
-import { Check, X, ChevronsUpDown } from 'lucide-react';
+import { Badge } from '@/src/components/ui/badge';
 import { Button } from '@/src/components/ui/button';
 import {
   Command,
@@ -16,7 +16,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from '@/src/components/ui/popover';
-import { Badge } from '@/src/components/ui/badge';
+import { Check, ChevronsUpDown, X } from 'lucide-react';
 
 export type OptionType = {
   label: string;
@@ -28,6 +28,9 @@ interface MultiSelectProps {
   selected: string[];
   onChange: React.Dispatch<React.SetStateAction<string[]>>;
   className?: string;
+  inputClassName?: string;
+  name?: string;
+  placeholder?: string;
 }
 
 function MultiSelect({
@@ -35,8 +38,10 @@ function MultiSelect({
   selected,
   onChange,
   className,
+  inputClassName,
   ...props
 }: MultiSelectProps) {
+  // const { register } = useFormContext(); // Get the useFormContext hook
   const [open, setOpen] = React.useState(false);
 
   const handleUnselect = (item: string) => {
@@ -50,7 +55,7 @@ function MultiSelect({
           variant="outline"
           role="combobox"
           aria-expanded={open}
-          className={`tw-w-full tw-justify-between ${
+          className={`tw-w-full tw-justify-between ${inputClassName}  ${
             selected.length > 1 ? 'tw-h-full' : 'tw-h-10'
           }`}
           onClick={() => setOpen(!open)}

@@ -1,4 +1,5 @@
-import React, { useEffect, useMemo } from 'react';
+import { MultiSelect } from '@/src/components/common/multi-select';
+import VideoPlayer from '@/src/components/common/video-player';
 import {
   Accordion,
   AccordionContent,
@@ -6,7 +7,27 @@ import {
   AccordionTrigger,
 } from '@/src/components/ui/accordion';
 import { Badge } from '@/src/components/ui/badge';
+import { Button } from '@/src/components/ui/button';
+import { Checkbox } from '@/src/components/ui/checkbox';
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from '@/src/components/ui/form';
+import { Input } from '@/src/components/ui/input';
+import { ScrollArea } from '@/src/components/ui/scroll-area';
+import { Textarea } from '@/src/components/ui/textarea';
+import If from '@/src/hooks/if';
 import { useDetailMedia } from '@/src/hooks/useMedia';
+import { formatDate } from '@/src/lib/utils/date';
+import { avatarUrl, formatBytes } from '@/src/lib/utils/media';
+import { cn } from '@/src/lib/utils/merge-class';
+import useAppStore from '@/src/stores/useAppStore';
+import { MediaCodec, MediaPacks, Video } from '@/src/types';
+import { zodResolver } from '@hookform/resolvers/zod';
 import useAppStore, { TabItemType } from '@/src/stores/useAppStore';
 import {
   CalendarFold,
@@ -22,6 +43,31 @@ import {
   Scissors,
   X,
 } from 'lucide-react';
+import { useEffect, useMemo } from 'react';
+import { useForm } from 'react-hook-form';
+import { z } from 'zod';
+
+const formSchema = z.object({
+  username: z.string().min(2, {
+    message: 'Username must be at least 2 characters.',
+  }),
+  title: z.string().min(2, {
+    message: 'Title must be at least 2 characters.',
+  }),
+  description: z.string().min(2, {
+    message: 'Description must be at least 2 characters.',
+  }),
+  right: z.string().min(2, {
+    message: 'Right must be at least 2 characters.',
+  }),
+  isDrm: z.boolean(),
+  author: z.string().min(2, {
+    message: 'Author must be at least 2 characters.',
+  }),
+  tags: z.array(z.string()),
+  categories: z.array(z.string()),
+  types: z.array(z.string()),
+});
 import { avatarUrl, formatBytes } from '@/src/lib/utils/media';
 import { cn } from '@/src/lib/utils/merge-class';
 import VideoPlayer from '@/src/components/common/video-player';
@@ -38,6 +84,23 @@ const Detail = () => {
     tabActivated,
   } = useAppStore();
   const { response, getDetailMedia } = useDetailMedia();
+
+  // 1. Define your form.
+  const form = useForm<z.infer<typeof formSchema>>({
+    resolver: zodResolver(formSchema),
+    defaultValues: {
+      username: '',
+      title: '',
+      description: '',
+    },
+  });
+
+  // 2. Define a submit handler.
+  function onSubmit(values: z.infer<typeof formSchema>) {
+    // Do something with the form values.
+    // ✅ This will be type-safe and validated.
+    console.log(values);
+  }
 
   const mediaAccords = [
     {
@@ -202,8 +265,222 @@ const Detail = () => {
                       <AccordionTrigger className="hover:tw-no-underline !tw-py-2">
                         {item.headerName}
                       </AccordionTrigger>
-                      <AccordionContent className="tw-px-2 tw-text-sm">
-                        Yes. It adheres to the WAI-ARIA design pattern.
+                      <AccordionContent className="!tw-pt-5 tw-px-2 tw-text-sm ">
+                        <ScrollArea className="tw-h-[250px] tw-pr-5">
+                          <Form {...form}>
+                            <form
+                              onSubmit={form.handleSubmit(onSubmit)}
+                              className="tw-pt-3 tw-space-y-8 tw-px-3"
+                            >
+                              <FormField
+                                control={form.control}
+                                name="title"
+                                render={({ field }) => (
+                                  <FormItem>
+                                    <FormLabel>Tiêu đề</FormLabel>
+                                    <FormControl>
+                                      <Textarea
+                                        className="!tw-bg-black tw-border-none"
+                                        {...field}
+                                      />
+                                    </FormControl>
+                                    <FormMessage />
+                                  </FormItem>
+                                )}
+                              />
+                              <FormField
+                                control={form.control}
+                                name="description"
+                                render={({ field }) => (
+                                  <FormItem>
+                                    <FormLabel>Chú thích</FormLabel>
+                                    <FormControl>
+                                      <Textarea
+                                        className="!tw-bg-black tw-border-none"
+                                        {...field}
+                                      />
+                                    </FormControl>
+
+                                    <FormMessage />
+                                  </FormItem>
+                                )}
+                              />
+                              <FormField
+                                control={form.control}
+                                name="right"
+                                render={({ field }) => (
+                                  <FormItem>
+                                    <FormLabel>Bản quyền</FormLabel>
+                                    <FormControl>
+                                      <Input
+                                        className="!tw-bg-black tw-border-none"
+                                        {...field}
+                                      />
+                                    </FormControl>
+                                    <FormMessage />
+                                  </FormItem>
+                                )}
+                              />
+                              <FormField
+                                control={form.control}
+                                name="isDrm"
+                                render={({ field }) => (
+                                  <FormItem className="tw-flex tw-gap-3 tw-items-center">
+                                    <FormControl>
+                                      <Checkbox
+                                        className="!tw-bg-black"
+                                        checked={field.value}
+                                        onCheckedChange={field.onChange}
+                                      />
+                                    </FormControl>
+                                    <FormLabel className="!tw-m-0">
+                                      {' '}
+                                      Video độc quyền?
+                                    </FormLabel>
+                                    <FormMessage />
+                                  </FormItem>
+                                )}
+                              />
+                              <FormField
+                                control={form.control}
+                                name="author"
+                                render={({ field }) => (
+                                  <FormItem>
+                                    <FormLabel>Tác giả</FormLabel>
+                                    <FormControl>
+                                      <Input
+                                        className="!tw-bg-black tw-border-none"
+                                        {...field}
+                                      />
+                                    </FormControl>
+                                    <FormMessage />
+                                  </FormItem>
+                                )}
+                              />
+                              <FormField
+                                control={form.control}
+                                name="tags"
+                                render={({ field }) => (
+                                  <FormItem>
+                                    <FormLabel>Chuyên mục</FormLabel>
+                                    <FormControl>
+                                      <MultiSelect
+                                        inputClassName="!tw-bg-black tw-border-none"
+                                        selected={[]}
+                                        options={[
+                                          {
+                                            value: 'remix',
+                                            label: 'Remix',
+                                          },
+                                          {
+                                            value: 'astro',
+                                            label: 'Astro',
+                                          },
+                                          {
+                                            value: 'wordpress',
+                                            label: 'WordPress',
+                                          },
+                                          {
+                                            value: 'express.js',
+                                            label: 'Express.js',
+                                          },
+                                        ]}
+                                        onChange={(value) => {
+                                          console.log(value);
+                                        }}
+                                        // className="!tw-bg-black tw-border-none"
+                                        // {...field}
+                                      />
+                                    </FormControl>
+                                    <FormMessage />
+                                  </FormItem>
+                                )}
+                              />
+                              <FormField
+                                control={form.control}
+                                name="categories"
+                                render={({ field }) => (
+                                  <FormItem>
+                                    <FormLabel>Thể loại</FormLabel>
+                                    <FormControl>
+                                      <MultiSelect
+                                        inputClassName="!tw-bg-black tw-border-none"
+                                        selected={[]}
+                                        options={[
+                                          {
+                                            value: 'remix',
+                                            label: 'Remix',
+                                          },
+                                          {
+                                            value: 'astro',
+                                            label: 'Astro',
+                                          },
+                                          {
+                                            value: 'wordpress',
+                                            label: 'WordPress',
+                                          },
+                                          {
+                                            value: 'express.js',
+                                            label: 'Express.js',
+                                          },
+                                        ]}
+                                        onChange={(value) => {
+                                          console.log(value);
+                                        }}
+                                        // className="!tw-bg-black tw-border-none"
+                                        // {...field}
+                                      />
+                                    </FormControl>
+                                    <FormMessage />
+                                  </FormItem>
+                                )}
+                              />
+                              <FormField
+                                control={form.control}
+                                name="types"
+                                render={({ field }) => (
+                                  <FormItem>
+                                    <FormLabel>Thể loại</FormLabel>
+                                    <FormControl>
+                                      <MultiSelect
+                                        inputClassName="!tw-bg-black tw-border-none"
+                                        selected={[]}
+                                        options={[
+                                          {
+                                            value: 'remix',
+                                            label: 'Remix',
+                                          },
+                                          {
+                                            value: 'astro',
+                                            label: 'Astro',
+                                          },
+                                          {
+                                            value: 'wordpress',
+                                            label: 'WordPress',
+                                          },
+                                          {
+                                            value: 'express.js',
+                                            label: 'Express.js',
+                                          },
+                                        ]}
+                                        onChange={(value) => {
+                                          console.log(value);
+                                        }}
+                                        // className="!tw-bg-black tw-border-none"
+                                        // {...field}
+                                      />
+                                    </FormControl>
+                                    <FormMessage />
+                                  </FormItem>
+                                )}
+                              />
+
+                              <Button className="tw-mt-5" type="submit">
+                                Submit
+                              </Button>
+                            </form>
+                          </Form>
+                        </ScrollArea>
                       </AccordionContent>
                     </AccordionItem>
                   ) : null
