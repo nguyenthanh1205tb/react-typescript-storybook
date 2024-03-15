@@ -2,8 +2,9 @@ import { cn } from '@/src/lib/utils/merge-class';
 import React, { PropsWithChildren, useState } from 'react';
 import { Skeleton } from '../../ui/skeleton';
 import If from '@/src/hooks/if';
-import { Image as ImageIcon } from 'lucide-react';
+import { Ban, Image as ImageIcon, Loader } from 'lucide-react';
 import errorImg from '@/src/assets/images/error-img.png';
+import { Tooltip, TooltipContent, TooltipTrigger } from '../../ui/tooltip';
 
 interface Props
   extends React.DetailedHTMLProps<
@@ -29,7 +30,18 @@ function Image({
         element={
           <div className="tw-relative">
             <div className="tw-absolute tw-w-full tw-h-full tw-left-0 tw-top-0 tw-flex tw-justify-center tw-items-center">
-              <ImageIcon size={30} />
+              <Tooltip>
+                <TooltipTrigger>
+                  <ImageIcon size={40} />
+                </TooltipTrigger>
+                <TooltipContent
+                  side="top"
+                  className="tw-bg-slate-800 tw-text-white tw-flex tw-items-center tw-gap-2"
+                >
+                  <Loader size={16} className="tw-animate-spin" />
+                  <p>Hình ảnh đang được load</p>
+                </TooltipContent>
+              </Tooltip>
             </div>
             <Skeleton className="tw-w-full tw-rounded-xl" style={{ height }} />
           </div>
@@ -41,7 +53,18 @@ function Image({
         element={
           <div className="tw-relative">
             <div className="tw-absolute tw-w-full tw-h-full tw-left-0 tw-top-0 tw-flex tw-justify-center tw-items-center">
-              <img src={errorImg} alt="error when loading" />
+              <Tooltip>
+                <TooltipTrigger>
+                  <img src={errorImg} alt="error when loading" />
+                </TooltipTrigger>
+                <TooltipContent
+                  side="top"
+                  className="tw-bg-slate-800 tw-text-white tw-flex tw-items-center tw-gap-2"
+                >
+                  <Ban size={16} />
+                  <p>Hình ảnh bị lỗi</p>
+                </TooltipContent>
+              </Tooltip>
             </div>
             <div
               className="tw-w-full tw-bg-gray-50 tw-rounded-xl"

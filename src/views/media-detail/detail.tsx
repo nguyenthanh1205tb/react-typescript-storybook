@@ -7,9 +7,9 @@ import {
 } from '@/src/components/ui/accordion';
 import { Badge } from '@/src/components/ui/badge';
 import { useDetailMedia } from '@/src/hooks/useMedia';
-import useAppStore from '@/src/stores/useAppStore';
+import useAppStore, { TabItemType } from '@/src/stores/useAppStore';
 import {
-  CalendarClock,
+  CalendarFold,
   CircleFadingPlus,
   Code,
   Download,
@@ -27,12 +27,16 @@ import { cn } from '@/src/lib/utils/merge-class';
 import VideoPlayer from '@/src/components/common/video-player';
 import If from '@/src/hooks/if';
 import { MediaCodec, MediaPacks, Video } from '@/src/types';
-import { formatDate } from '@/src/lib/utils/date';
 import { Button } from '@/src/components/ui/button';
+import moment from 'moment';
 
 const Detail = () => {
-  const { mediaSelectedID, mediaSelectedData, setMediaSelectedData } =
-    useAppStore();
+  const {
+    mediaSelectedID,
+    mediaSelectedData,
+    setMediaSelectedData,
+    tabActivated,
+  } = useAppStore();
   const { response, getDetailMedia } = useDetailMedia();
 
   const mediaAccords = [
@@ -61,7 +65,7 @@ const Detail = () => {
     if (!d) return;
     const defaultUri = d?.uri;
     const hls = d.play_url.hls;
-
+    if (!hls || !hls.length) return defaultUri;
     const item = hls.find(
       (val) => val.codec === MediaCodec.H264 && val.pack === MediaPacks.HLS
     );
@@ -114,10 +118,17 @@ const Detail = () => {
         isShow={haveMediaSelectedID}
         element={() => (
           <div className="tw-flex tw-flex-col">
-            <VideoPlayer
-              videoUrl={videoUrl(mediaSelectedData?.data.video) as string}
-              thumbnailUrl={avatarUrl(mediaSelectedData?.data.avatar_thumb)}
-            />
+            {tabActivated === TabItemType.VIDEO ? (
+              <VideoPlayer
+                videoUrl={videoUrl(mediaSelectedData?.data.video) as string}
+                thumbnailUrl={avatarUrl(mediaSelectedData?.data.avatar_thumb)}
+              />
+            ) : (
+              <img
+                className="tw-h-[253px] tw-object-contain"
+                src={avatarUrl(mediaSelectedData?.data.avatar_thumb)}
+              />
+            )}
             <div className="tw-flex tw-gap-2 tw-justify-between tw-bg-slate-600 tw-p-3">
               <div className="tw-flex tw-gap-4">
                 <div className="tw-flex tw-gap-1 tw-items-center">
@@ -131,9 +142,11 @@ const Detail = () => {
                   </span>
                 </div>
                 <div className="tw-flex tw-gap-1 tw-items-center">
-                  <CalendarClock size={16} />
-                  <span className="tw-text-xs">
-                    {formatDate(mediaSelectedData?.data?.createdAt as string)}
+                  <CalendarFold size={16} />
+                  <span className="tw-text-xs tw-capitalize">
+                    {moment(mediaSelectedData?.data?.createdAt).format(
+                      'dddd, DD/MM/YYYY HH:mm:ss'
+                    )}
                   </span>
                 </div>
               </div>

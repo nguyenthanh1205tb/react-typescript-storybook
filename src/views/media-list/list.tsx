@@ -101,7 +101,7 @@ function ListMedia({ type }: PropsWithChildren<Props>) {
   }, [configResponse]);
 
   return (
-    <div className="tw-flex tw-flex-col tw-gap-2">
+    <div className="tw-flex tw-flex-col tw-gap-2 tw-relative">
       <div className="tw-flex tw-items-center tw-justify-between tw-w-full">
         <div>
           <Typo.Paragraph className="tw-text-red-500 tw-cursor-pointer">
@@ -109,7 +109,7 @@ function ListMedia({ type }: PropsWithChildren<Props>) {
           </Typo.Paragraph>
         </div>
         <div className="tw-flex tw-items-center tw-gap-2">
-          <div className="tw-text-sm tw-font-semibold">{showPaginateMeta}</div>
+          <div className="tw-text-xs">{showPaginateMeta}</div>
           <Paginate
             totalCount={totalCount}
             limit={listMediaQueries.take ?? PAGINATE_LIMIT}

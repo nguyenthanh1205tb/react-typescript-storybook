@@ -38,6 +38,7 @@ import S3StorageUpload from './upload/s3-storage';
 import WatchFolderUpload from './upload/watch-folder';
 import { Toaster } from '../components/ui/toaster';
 import { useListMedia } from '../hooks/useMedia';
+import moment from 'moment';
 
 type State = {
   sideMenu: SideMenu;
@@ -45,6 +46,7 @@ type State = {
 const queryClient = new QueryClient();
 
 function Main() {
+  moment.locale('vi-VN');
   const { onSearchByText } = useListMedia();
   const { setMediaDialog, openMedia, tabActivated, setTabActivated } =
     useAppStore();
