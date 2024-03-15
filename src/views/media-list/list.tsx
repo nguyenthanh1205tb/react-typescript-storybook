@@ -101,7 +101,7 @@ function ListMedia({ type }: PropsWithChildren<Props>) {
   }, [configResponse]);
 
   return (
-    <div className="tw-flex tw-flex-col tw-gap-2 tw-relative">
+    <div className="tw-flex tw-flex-col tw-gap-2">
       <div className="tw-flex tw-items-center tw-justify-between tw-w-full">
         <div>
           <Typo.Paragraph className="tw-text-red-500 tw-cursor-pointer">
