@@ -1,17 +1,17 @@
-import ts from 'typescript';
-import commonjs from '@rollup/plugin-commonjs';
-import nodeResolve from '@rollup/plugin-node-resolve';
-import replace from '@rollup/plugin-replace';
-import peerDepsExternal from 'rollup-plugin-peer-deps-external';
-import postcss from 'rollup-plugin-postcss';
-import { terser } from 'rollup-plugin-terser';
-import tsTrans from 'rollup-plugin-typescript2';
-import imageResolve from '@rollup/plugin-image';
-import alias from '@rollup/plugin-alias';
-import sass from 'rollup-plugin-sass';
-import path from 'path';
+import ts from 'typescript'
+import commonjs from '@rollup/plugin-commonjs'
+import nodeResolve from '@rollup/plugin-node-resolve'
+import replace from '@rollup/plugin-replace'
+import peerDepsExternal from 'rollup-plugin-peer-deps-external'
+import postcss from 'rollup-plugin-postcss'
+import { terser } from 'rollup-plugin-terser'
+import tsTrans from 'rollup-plugin-typescript2'
+import imageResolve from '@rollup/plugin-image'
+import alias from '@rollup/plugin-alias'
+import sass from 'rollup-plugin-sass'
+import path from 'path'
 
-const tailwindcss = require('tailwindcss');
+const tailwindcss = require('tailwindcss')
 
 export default {
   context: 'this',
@@ -35,17 +35,7 @@ export default {
       constants: 'constants',
     },
   },
-  external: [
-    'react',
-    'path',
-    'fs',
-    'http',
-    'https',
-    'crypto',
-    'stream',
-    'constants',
-    '@/src/assets',
-  ],
+  external: ['react', 'path', 'fs', 'http', 'https', 'crypto', 'stream', 'constants', '@/src/assets'],
   plugins: [
     peerDepsExternal(),
     alias({
@@ -63,11 +53,7 @@ export default {
     commonjs(),
     tsTrans({
       useTsconfigDeclarationDir: true,
-      exclude: [
-        'node_modules/tus-js-client/**/*',
-        '**/__tests__/**',
-        '**/*.stories.tsx',
-      ],
+      exclude: ['node_modules/tus-js-client/**/*', '**/__tests__/**', '**/*.stories.tsx'],
       clean: true,
       typescript: ts,
     }),
@@ -83,4 +69,4 @@ export default {
       extensions: ['.scss', '.sass', '.css'],
     }),
   ],
-};
+}
