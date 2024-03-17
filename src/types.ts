@@ -145,19 +145,11 @@ export interface GetDetailMediaResponse {
   success: boolean
 }
 
-export interface CategoryChildren {
-  id: string
-  name: string
-  children: any
-  createdAt: string
-  updatedAt: string
-  description: any
-}
 export interface Category {
   id: string
   name: string
   description?: string
-  children?: CategoryChildren[]
+  children?: Category[]
   createdAt: string
   updatedAt: string
 }
