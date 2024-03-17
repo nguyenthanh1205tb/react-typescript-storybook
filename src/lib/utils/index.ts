@@ -1,1 +1,1 @@
-export { cn } from './merge-class';
+export { cn } from './merge-class'

@@ -1,12 +1,12 @@
-import { PropsWithChildren, ReactNode } from 'react';
+import { PropsWithChildren, ReactNode } from 'react'
 
-type ElementRendered = () => ReactNode | string;
+type ElementRendered = () => ReactNode | string
 
 interface Props {
-  isShow: boolean;
-  element: ReactNode | ElementRendered;
+  isShow: boolean
+  element: ReactNode | ElementRendered
 }
 function If({ isShow, element }: PropsWithChildren<Props>) {
-  return isShow ? (typeof element === 'function' ? element() : element) : null;
+  return isShow ? (typeof element === 'function' ? element() : element) : null
 }
-export default If;
+export default If

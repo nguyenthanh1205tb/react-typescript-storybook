@@ -1,4 +1,4 @@
-import React, { PropsWithChildren, useCallback, useMemo } from 'react';
+import React, { PropsWithChildren, useCallback, useMemo } from 'react'
 import {
   Pagination,
   PaginationContent,
@@ -7,79 +7,65 @@ import {
   PaginationLink,
   PaginationNext,
   PaginationPrevious,
-} from '../../ui/pagination';
-import { renderPagination } from '@/src/lib/utils/common';
-import { MAX_PAGINATE_BUTTON_SHOWED } from '@/src/configs';
-import Each from '@/src/hooks/each';
+} from '../../ui/pagination'
+import { renderPagination } from '@/src/lib/utils/common'
+import { MAX_PAGINATE_BUTTON_SHOWED } from '@/src/configs'
+import Each from '@/src/hooks/each'
 
 interface Props {
-  totalCount: number;
-  current: number;
-  limit: number;
-  onChangePage?: (page: number) => void;
-  onNext?: () => void;
-  onPrev?: () => void;
+  totalCount: number
+  current: number
+  limit: number
+  onChangePage?: (page: number) => void
+  onNext?: () => void
+  onPrev?: () => void
 }
 function Paginate(props: PropsWithChildren<Props>) {
-  const totalPage = Math.ceil(props.totalCount / props.limit);
+  const totalPage = Math.ceil(props.totalCount / props.limit)
 
-  const onClickPrevNext = (
-    e: React.MouseEvent<HTMLAnchorElement, MouseEvent>,
-    type: 'next' | 'prev'
-  ) => {
-    e.preventDefault();
+  const onClickPrevNext = (e: React.MouseEvent<HTMLAnchorElement, MouseEvent>, type: 'next' | 'prev') => {
+    e.preventDefault()
     switch (type) {
       case 'prev':
-        if (props.onPrev) props.onPrev();
-        break;
+        if (props.onPrev) props.onPrev()
+        break
       case 'next':
-        if (props.onNext) props.onNext();
-        break;
+        if (props.onNext) props.onNext()
+        break
       default:
-        return;
+        return
     }
-  };
+  }
 
-  const onChangePage = (
-    e: React.MouseEvent<HTMLAnchorElement, MouseEvent>,
-    page: number
-  ) => {
-    e.preventDefault();
+  const onChangePage = (e: React.MouseEvent<HTMLAnchorElement, MouseEvent>, page: number) => {
+    e.preventDefault()
     if (props.onChangePage) {
-      props.onChangePage(page);
+      props.onChangePage(page)
     }
-  };
+  }
 
   const item = (p: number) => (
     <PaginationItem>
-      <PaginationLink
-        href="#"
-        isActive={props.current === p}
-        onClick={(e) => onChangePage(e, p)}
-      >
+      <PaginationLink href="#" isActive={props.current === p} onClick={e => onChangePage(e, p)}>
         {p}
       </PaginationLink>
     </PaginationItem>
-  );
+  )
 
   const paginateListed = useMemo(
-    () =>
-      renderPagination(MAX_PAGINATE_BUTTON_SHOWED)(props.current, totalPage),
-    [totalPage, props.current]
-  );
+    () => renderPagination(MAX_PAGINATE_BUTTON_SHOWED)(props.current, totalPage),
+    [totalPage, props.current],
+  )
 
   return (
     <Pagination className="!tw-w-auto !tw-mx-0">
       <PaginationContent>
         <PaginationItem>
-          <PaginationPrevious
-            className="tw-cursor-pointer"
-            onClick={(e) => onClickPrevNext(e, 'prev')}
-          />
+          <PaginationPrevious className="tw-cursor-pointer" onClick={e => onClickPrevNext(e, 'prev')} />
         </PaginationItem>
         <Each
           of={paginateListed}
-          render={(val) =>
+          render={val =>
             val === '#' ? (
               <PaginationItem>
                 <PaginationEllipsis />
@@ -91,13 +77,10 @@ function Paginate(props: PropsWithChildren<Props>) {
         />
 
         <PaginationItem>
-          <PaginationNext
-            className="tw-cursor-pointer"
-            onClick={(e) => onClickPrevNext(e, 'next')}
-          />
+          <PaginationNext className="tw-cursor-pointer" onClick={e => onClickPrevNext(e, 'next')} />
         </PaginationItem>
       </PaginationContent>
     </Pagination>
-  );
+  )
 }
-export default Paginate;
+export default Paginate

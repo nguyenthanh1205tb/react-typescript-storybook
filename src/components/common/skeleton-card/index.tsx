@@ -1,4 +1,5 @@
-import { Skeleton } from '@/src/components/ui/skeleton';
+import React from 'react'
+import { Skeleton } from '@/src/components/ui/skeleton'
 
 export function SkeletonCard() {
   return (
@@ -9,5 +10,5 @@ export function SkeletonCard() {
         <Skeleton className="tw-h-4 tw-w-full" />
       </div>
     </div>
-  );
+  )
 }

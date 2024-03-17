@@ -1,3 +1,4 @@
+import React from 'react'
 import {
   Toast,
   ToastClose,
@@ -5,8 +6,8 @@ import {
   ToastProvider,
   ToastTitle,
   ToastViewport,
-} from "@/src/components/ui/toast"
-import { useToast } from "@/src/components/ui/use-toast"
+} from '@/src/components/ui/toast'
+import { useToast } from '@/src/components/ui/use-toast'
 
 export function Toaster() {
   const { toasts } = useToast()
@@ -18,9 +19,7 @@ export function Toaster() {
           <Toast key={id} {...props}>
             <div className="tw-grid tw-gap-1">
               {title && <ToastTitle>{title}</ToastTitle>}
-              {description && (
-                <ToastDescription>{description}</ToastDescription>
-              )}
+              {description && <ToastDescription>{description}</ToastDescription>}
             </div>
             {action}
             <ToastClose />

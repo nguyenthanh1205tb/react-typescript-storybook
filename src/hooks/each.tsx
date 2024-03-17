@@ -1,8 +1,8 @@
-import { Children, ReactNode } from 'react';
+import { Children, ReactNode } from 'react'
 
 interface EachProps<T> {
-  render: (item: T, index: number) => ReactNode;
-  of: T[];
+  render: (item: T, index: number) => ReactNode
+  of: T[]
 }
 /**
  * Lưu ý: Đối với những component dùng key để xử lý logic thì dùng component Each sẽ gây ra lỗi
@@ -11,6 +11,6 @@ interface EachProps<T> {
  * @returns ReactNode
  */
 function Each<T>({ render, of }: EachProps<T>) {
-  return Children?.toArray(of?.map((item, index) => render(item, index)));
+  return Children?.toArray(of?.map((item, index) => render(item, index)))
 }
-export default Each;
+export default Each

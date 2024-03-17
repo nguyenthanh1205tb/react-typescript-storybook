@@ -1,7 +1,7 @@
-import React, { PropsWithChildren } from 'react';
+import React, { PropsWithChildren } from 'react'
 
 interface Props {}
 function MediaMultiSelected({}: PropsWithChildren<Props>) {
-  return <div></div>;
+  return <div></div>
 }
-export default MediaMultiSelected;
+export default MediaMultiSelected

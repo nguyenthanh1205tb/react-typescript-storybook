@@ -1,31 +1,17 @@
-import { Combobox } from '@/src/components/common/combobox';
-import { DatePicker } from '@/src/components/common/date-picker';
-import { MultiSelect } from '@/src/components/common/multi-select';
-import Typo from '@/src/components/common/typo';
-import { Badge } from '@/src/components/ui/badge';
-import { ScrollArea } from '@/src/components/ui/scroll-area';
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/src/components/ui/select';
-import { Separator } from '@/src/components/ui/separator';
-import { Switch } from '@/src/components/ui/switch';
-import Each from '@/src/hooks/each';
-import If from '@/src/hooks/if';
-import { useCategory, useListMedia } from '@/src/hooks/useMedia';
-import { cn } from '@/src/lib/utils';
-import useAppStore from '@/src/stores/useAppStore';
-import {
-  Category,
-  ComboboxOption,
-  GetListMediaTimeRange,
-  OrderByType,
-  OrderType,
-} from '@/src/types';
-import React, { PropsWithChildren, useEffect, useMemo } from 'react';
+import React, { PropsWithChildren, useEffect, useMemo } from 'react'
+import { Combobox } from '@/src/components/common/combobox'
+import { DatePicker } from '@/src/components/common/date-picker'
+import { MultiSelect } from '@/src/components/common/multi-select'
+import Typo from '@/src/components/common/typo'
+import { ScrollArea } from '@/src/components/ui/scroll-area'
+import { Separator } from '@/src/components/ui/separator'
+import { Switch } from '@/src/components/ui/switch'
+import Each from '@/src/hooks/each'
+import If from '@/src/hooks/if'
+import { useCategory, useListMedia } from '@/src/hooks/useMedia'
+import { cn } from '@/src/lib/utils'
+import useAppStore from '@/src/stores/useAppStore'
+import { Category, ComboboxOption, GetListMediaTimeRange, OrderByType, OrderType } from '@/src/types'
 
 interface Props {}
 
@@ -46,7 +32,7 @@ const sorts = [
     name: 'Tên Z-A',
     val: [OrderByType.NAME, OrderType.DESC],
   },
-];
+]
 
 const timeRange = [
   {
@@ -73,13 +59,12 @@ const timeRange = [
     name: 'Tự chọn thời gian',
     val: GetListMediaTimeRange.custom,
   },
-];
+]
 
 function Filter({}: PropsWithChildren<Props>) {
-  const { listMediaQueries, setListCategories } = useAppStore();
-  const { getListCategories } = useCategory();
-  const { data: categoriesData, isLoading: isGetListCategoriesLoading } =
-    getListCategories();
+  const { listMediaQueries, setListCategories } = useAppStore()
+  const { getListCategories } = useCategory()
+  const { data: categoriesData, isLoading: isGetListCategoriesLoading } = getListCategories()
 
   const {
     onChangeOrder,
@@ -88,30 +73,30 @@ function Filter({}: PropsWithChildren<Props>) {
     onChangeVideoOfMine,
     onChangeTimeRangeCustom,
     timeRangeCustom,
-  } = useListMedia();
+  } = useListMedia()
 
   const extractCategories = (list: Category[]): Array<ComboboxOption> => {
-    const result = list.map((item) => {
+    const result = list.map(item => {
       return {
         label: item.name,
         value: item.id,
         children: item.children ? extractCategories(item.children) : null,
-      };
-    });
+      }
+    })
 
-    return result;
-  };
+    return result
+  }
 
   const categoriesFiltered = useMemo(() => {
-    if (!categoriesData) return [];
-    return extractCategories(categoriesData.data ?? []);
-  }, [categoriesData]);
+    if (!categoriesData) return []
+    return extractCategories(categoriesData.data ?? [])
+  }, [categoriesData])
 
   useEffect(() => {
     if (!isGetListCategoriesLoading && categoriesData) {
-      setListCategories(categoriesData.data);
+      setListCategories(categoriesData.data)
     }
-  }, [isGetListCategoriesLoading, categoriesData]);
+  }, [isGetListCategoriesLoading, categoriesData])
 
   return (
     <ScrollArea className="tw-h-[650px] tw-pr-2">
@@ -133,7 +118,7 @@ function Filter({}: PropsWithChildren<Props>) {
           <Switch
             id="airplane-mode"
             checked={listMediaQueries.isMyFile}
-            onCheckedChange={(val) => onChangeVideoOfMine(val)}
+            onCheckedChange={val => onChangeVideoOfMine(val)}
           />
         </div>
 
@@ -141,11 +126,7 @@ function Filter({}: PropsWithChildren<Props>) {
 
         <div className="tw-flex tw-flex-col tw-gap-2">
           <Typo.H2>Từ khoá</Typo.H2>
-          <MultiSelect
-            options={[]}
-            onChange={(val) => console.log(val)}
-            selected={[]}
-          />
+          <MultiSelect options={[]} onChange={val => console.log(val)} selected={[]} />
         </div>
 
         <Separator />
@@ -155,18 +136,16 @@ function Filter({}: PropsWithChildren<Props>) {
           <div className="tw-flex tw-flex-wrap tw-gap-2">
             <Each
               of={sorts}
-              render={(item) => (
+              render={item => (
                 <div
                   className={cn(
                     'tw-transition-all tw-h-[35px] tw-w-[120px] tw-cursor-pointer tw-bg-slate-100 tw-flex tw-items-center tw-justify-center tw-text-black tw-rounded-2xl tw-text-sm hover:tw-text-white hover:tw-bg-red-400',
                     {
                       'tw-text-white !tw-bg-red-500':
-                        item.val.includes(listMediaQueries.order) &&
-                        item.val.includes(listMediaQueries.orderBy),
-                    }
+                        item.val.includes(listMediaQueries.order) && item.val.includes(listMediaQueries.orderBy),
+                    },
                   )}
-                  onClick={() => onChangeOrder(item.val)}
-                >
+                  onClick={() => onChangeOrder(item.val)}>
                   <span>{item.name}</span>
                 </div>
               )}
@@ -181,17 +160,15 @@ function Filter({}: PropsWithChildren<Props>) {
           <div className="tw-flex tw-flex-wrap tw-gap-2">
             <Each
               of={timeRange}
-              render={(item) => (
+              render={item => (
                 <div
                   className={cn(
                     'tw-transition-all tw-h-[35px] tw-w-[120px] tw-cursor-pointer tw-bg-slate-100 tw-flex tw-items-center tw-justify-center tw-text-black tw-rounded-2xl tw-text-sm hover:tw-text-white hover:tw-bg-red-400',
                     {
-                      'tw-text-white !tw-bg-red-500':
-                        item.val === listMediaQueries.timeRange,
-                    }
+                      'tw-text-white !tw-bg-red-500': item.val === listMediaQueries.timeRange,
+                    },
                   )}
-                  onClick={() => onChangeTimeRange(item.val)}
-                >
+                  onClick={() => onChangeTimeRange(item.val)}>
                   <span>{item.name}</span>
                 </div>
               )}
@@ -202,29 +179,20 @@ function Filter({}: PropsWithChildren<Props>) {
             element={
               <>
                 <DatePicker
-                  value={
-                    timeRangeCustom.start
-                      ? new Date(timeRangeCustom.start)
-                      : undefined
-                  }
-                  onChange={(val) => onChangeTimeRangeCustom('start', val)}
+                  value={timeRangeCustom.start ? new Date(timeRangeCustom.start) : undefined}
+                  onChange={val => onChangeTimeRangeCustom('start', val)}
                   placeholder="Chọn ngày bắt đầu"
                 />
                 <DatePicker
-                  value={
-                    timeRangeCustom.end
-                      ? new Date(timeRangeCustom.end)
-                      : undefined
-                  }
-                  onChange={(val) => onChangeTimeRangeCustom('end', val)}
+                  value={timeRangeCustom.end ? new Date(timeRangeCustom.end) : undefined}
+                  onChange={val => onChangeTimeRangeCustom('end', val)}
                   placeholder="Chọn ngày kết thúc"
                 />
               </>
-            }
-          ></If>
+            }></If>
         </div>
       </div>
     </ScrollArea>
-  );
+  )
 }
-export default Filter;
+export default Filter

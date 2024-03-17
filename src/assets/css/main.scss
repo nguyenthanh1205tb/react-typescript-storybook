@@ -1,4 +1,4 @@
-@import url('./uppy-dashboard.css');
+@import url('./uppy-dashboard.scss');
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -37,16 +37,20 @@
   }
 
   .progress-bar {
-    width: 18px; /* Set width and height of the progress bar */
+    width: 18px;
+    /* Set width and height of the progress bar */
     height: 18px;
-    position: relative; /* Make the circle position relative to the container */
+    position: relative;
+    /* Make the circle position relative to the container */
   }
 
   .progress-bar-circle {
     width: 100%;
     height: 100%;
-    border-radius: 50%; /* Make the circle */
-    background-color: #f3f4f6; /* Background color of the circle */
+    border-radius: 50%;
+    /* Make the circle */
+    background-color: #f3f4f6;
+    /* Background color of the circle */
   }
 
   .progress-bar-fill {
@@ -55,9 +59,12 @@
     left: 0;
     width: 100%;
     height: 100%;
-    border-radius: 50%; /* Make the filled part of the circle */
-    background-color: #6ee7b7; /* Fill color of the progress */
-    transform-origin: center; /* Set the transform origin to the center */
+    border-radius: 50%;
+    /* Make the filled part of the circle */
+    background-color: #6ee7b7;
+    /* Fill color of the progress */
+    transform-origin: center;
+    /* Set the transform origin to the center */
   }
 
   .loading-cirle {
@@ -108,6 +115,7 @@
   * {
     @apply tw-border-border;
   }
+
   body {
     @apply tw-bg-background tw-text-foreground;
   }

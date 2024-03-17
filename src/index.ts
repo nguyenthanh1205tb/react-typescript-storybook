@@ -1,4 +1,4 @@
-import './assets/css/main.css';
-import Init from '@/src/init';
+import './assets/css/main.scss'
+import Init from '@/src/init'
 
-export { Init };
+export { Init }

@@ -1,31 +1,20 @@
-import { MultiSelect } from '@/src/components/common/multi-select';
-import {
-  Accordion,
-  AccordionContent,
-  AccordionItem,
-  AccordionTrigger,
-} from '@/src/components/ui/accordion';
-import { Badge } from '@/src/components/ui/badge';
-import { Checkbox } from '@/src/components/ui/checkbox';
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from '@/src/components/ui/form';
-import { Input } from '@/src/components/ui/input';
-import { ScrollArea } from '@/src/components/ui/scroll-area';
-import { Textarea } from '@/src/components/ui/textarea';
-import If from '@/src/hooks/if';
-import { useDetailMedia } from '@/src/hooks/useMedia';
-import { formatDate } from '@/src/lib/utils/date';
-import { avatarUrl, formatBytes } from '@/src/lib/utils/media';
-import { cn } from '@/src/lib/utils/merge-class';
-import { MediaCodec, MediaPacks, Video } from '@/src/types';
-import { zodResolver } from '@hookform/resolvers/zod';
-import useAppStore, { TabItemType } from '@/src/stores/useAppStore';
+import React from 'react'
+import { MultiSelect } from '@/src/components/common/multi-select'
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/src/components/ui/accordion'
+import { Badge } from '@/src/components/ui/badge'
+import { Checkbox } from '@/src/components/ui/checkbox'
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/src/components/ui/form'
+import { Input } from '@/src/components/ui/input'
+import { ScrollArea } from '@/src/components/ui/scroll-area'
+import { Textarea } from '@/src/components/ui/textarea'
+import If from '@/src/hooks/if'
+import { useDetailMedia } from '@/src/hooks/useMedia'
+import { formatDate } from '@/src/lib/utils/date'
+import { avatarUrl, formatBytes } from '@/src/lib/utils/media'
+import { cn } from '@/src/lib/utils/merge-class'
+import { MediaCodec, MediaPacks, Video } from '@/src/types'
+import { zodResolver } from '@hookform/resolvers/zod'
+import useAppStore, { TabItemType } from '@/src/stores/useAppStore'
 import {
   CalendarFold,
   CircleFadingPlus,
@@ -39,13 +28,13 @@ import {
   Ruler,
   Scissors,
   X,
-} from 'lucide-react';
-import { useEffect, useMemo } from 'react';
-import { useForm } from 'react-hook-form';
-import { z } from 'zod';
-import moment from 'moment';
-import { Button } from '@/src/components/ui/button';
-import VideoPlayer from '@/src/components/common/video-player';
+} from 'lucide-react'
+import { useEffect, useMemo } from 'react'
+import { useForm } from 'react-hook-form'
+import { z } from 'zod'
+import moment from 'moment'
+import { Button } from '@/src/components/ui/button'
+import VideoPlayer from '@/src/components/common/video-player'
 
 const formSchema = z.object({
   username: z.string().min(2, {
@@ -67,16 +56,11 @@ const formSchema = z.object({
   tags: z.array(z.string()),
   categories: z.array(z.string()),
   types: z.array(z.string()),
-});
+})
 
 const Detail = () => {
-  const {
-    mediaSelectedID,
-    mediaSelectedData,
-    setMediaSelectedData,
-    tabActivated,
-  } = useAppStore();
-  const { response, getDetailMedia } = useDetailMedia();
+  const { mediaSelectedID, mediaSelectedData, setMediaSelectedData, tabActivated } = useAppStore()
+  const { response, getDetailMedia } = useDetailMedia()
 
   // 1. Define your form.
   const form = useForm<z.infer<typeof formSchema>>({
@@ -86,13 +70,13 @@ const Detail = () => {
       title: '',
       description: '',
     },
-  });
+  })
 
   // 2. Define a submit handler.
   function onSubmit(values: z.infer<typeof formSchema>) {
     // Do something with the form values.
     // ✅ This will be type-safe and validated.
-    console.log(values);
+    console.log(values)
   }
 
   const mediaAccords = [
@@ -115,50 +99,40 @@ const Detail = () => {
       headerName: 'Thông tin quảng cáo',
       hide: true,
     },
-  ];
+  ]
 
   const videoUrl = (d?: Video) => {
-    if (!d) return;
-    const defaultUri = d?.uri;
-    const hls = d.play_url.hls;
-    if (!hls || !hls.length) return defaultUri;
-    const item = hls.find(
-      (val) => val.codec === MediaCodec.H264 && val.pack === MediaPacks.HLS
-    );
-    if (!item) return defaultUri;
-    return item.uri;
-  };
+    if (!d) return
+    const defaultUri = d?.uri
+    const hls = d.play_url.hls
+    if (!hls || !hls.length) return defaultUri
+    const item = hls.find(val => val.codec === MediaCodec.H264 && val.pack === MediaPacks.HLS)
+    if (!item) return defaultUri
+    return item.uri
+  }
 
-  const haveMediaSelectedID = useMemo(
-    () => mediaSelectedID !== null && mediaSelectedID !== '',
-    [mediaSelectedID]
-  );
+  const haveMediaSelectedID = useMemo(() => mediaSelectedID !== null && mediaSelectedID !== '', [mediaSelectedID])
 
   useEffect(() => {
     if (mediaSelectedID) {
-      getDetailMedia(mediaSelectedID);
+      getDetailMedia(mediaSelectedID)
     }
-  }, [mediaSelectedID]);
+  }, [mediaSelectedID])
 
   return (
     <div
-      className={cn(
-        'tw-bg-slate-800 tw-text-white tw-relative tw-h-full tw-w-full tw-flex-none tw-transition-all',
-        {
-          'tw-max-w-[450px]': haveMediaSelectedID,
-          'tw-max-w-0': !haveMediaSelectedID,
-        }
-      )}
-    >
+      className={cn('tw-bg-slate-800 tw-text-white tw-relative tw-h-full tw-w-full tw-flex-none tw-transition-all', {
+        'tw-max-w-[450px]': haveMediaSelectedID,
+        'tw-max-w-0': !haveMediaSelectedID,
+      })}>
       <div
         className={cn(
           'tw-absolute -tw-left-8 tw-top-1/2 tw-bg-slate-800 tw-w-8 tw-h-10 tw-flex tw-items-center tw-justify-center tw-rounded-tl-lg tw-rounded-bl-lg tw-cursor-pointer',
           {
             '!tw-hidden': !haveMediaSelectedID || response.loading,
-          }
+          },
         )}
-        onClick={() => setMediaSelectedData(null)}
-      >
+        onClick={() => setMediaSelectedData(null)}>
         <X color="#ffffff" size={18} />
       </div>
       <If
@@ -180,10 +154,7 @@ const Detail = () => {
                 thumbnailUrl={avatarUrl(mediaSelectedData?.data.avatar_thumb)}
               />
             ) : (
-              <img
-                className="tw-h-[253px] tw-object-contain"
-                src={avatarUrl(mediaSelectedData?.data.avatar_thumb)}
-              />
+              <img className="tw-h-[253px] tw-object-contain" src={avatarUrl(mediaSelectedData?.data.avatar_thumb)} />
             )}
             <div className="tw-flex tw-gap-2 tw-justify-between tw-bg-slate-600 tw-p-3">
               <div className="tw-flex tw-gap-4">
@@ -193,16 +164,12 @@ const Detail = () => {
                 </div>
                 <div className="tw-flex tw-gap-1 tw-items-center">
                   <Ruler size={16} />
-                  <span className="tw-text-xs">
-                    {formatBytes(mediaSelectedData?.data?.size as number)}
-                  </span>
+                  <span className="tw-text-xs">{formatBytes(mediaSelectedData?.data?.size as number)}</span>
                 </div>
                 <div className="tw-flex tw-gap-1 tw-items-center">
                   <CalendarFold size={16} />
                   <span className="tw-text-xs tw-capitalize">
-                    {moment(mediaSelectedData?.data?.createdAt).format(
-                      'dddd, DD/MM/YYYY HH:mm:ss'
-                    )}
+                    {moment(mediaSelectedData?.data?.createdAt).format('dddd, DD/MM/YYYY HH:mm:ss')}
                   </span>
                 </div>
               </div>
@@ -216,22 +183,19 @@ const Detail = () => {
               <div className="tw-gap-2 tw-flex">
                 <Badge
                   variant="secondary"
-                  className="tw-h-[30px] tw-flex tw-items-center tw-justify-center tw-gap-1 tw-cursor-pointer tw-bg-slate-600 tw-text-white hover:tw-bg-slate-400"
-                >
+                  className="tw-h-[30px] tw-flex tw-items-center tw-justify-center tw-gap-1 tw-cursor-pointer tw-bg-slate-600 tw-text-white hover:tw-bg-slate-400">
                   <Images size={16} />
                   <span>Thay thumbnail</span>
                 </Badge>
                 <Badge
                   variant="secondary"
-                  className="tw-h-[30px] tw-flex tw-items-center tw-justify-center tw-gap-1 tw-cursor-pointer tw-bg-slate-600 tw-text-white hover:tw-bg-slate-400"
-                >
+                  className="tw-h-[30px] tw-flex tw-items-center tw-justify-center tw-gap-1 tw-cursor-pointer tw-bg-slate-600 tw-text-white hover:tw-bg-slate-400">
                   <Code size={16} />
                   <span>Mã nhúng</span>
                 </Badge>
                 <Badge
                   variant="secondary"
-                  className="tw-h-[30px] tw-flex tw-items-center tw-justify-center tw-gap-1 tw-cursor-pointer tw-bg-slate-600 tw-text-white hover:tw-bg-slate-400"
-                >
+                  className="tw-h-[30px] tw-flex tw-items-center tw-justify-center tw-gap-1 tw-cursor-pointer tw-bg-slate-600 tw-text-white hover:tw-bg-slate-400">
                   <Scissors size={16} />
                   <span>Cắt</span>
                 </Badge>
@@ -250,21 +214,12 @@ const Detail = () => {
               <Accordion type="multiple" className="w-full">
                 {mediaAccords.map((item, index: number) =>
                   !item.hide ? (
-                    <AccordionItem
-                      value={`item-${index}`}
-                      key={index}
-                      className="tw-border-slate-700"
-                    >
-                      <AccordionTrigger className="hover:tw-no-underline !tw-py-2">
-                        {item.headerName}
-                      </AccordionTrigger>
+                    <AccordionItem value={`item-${index}`} key={index} className="tw-border-slate-700">
+                      <AccordionTrigger className="hover:tw-no-underline !tw-py-2">{item.headerName}</AccordionTrigger>
                       <AccordionContent className="!tw-pt-5 tw-px-2 tw-text-sm ">
                         <ScrollArea className="tw-h-[250px] tw-pr-5">
                           <Form {...form}>
-                            <form
-                              onSubmit={form.handleSubmit(onSubmit)}
-                              className="tw-pt-3 tw-space-y-8 tw-px-3"
-                            >
+                            <form onSubmit={form.handleSubmit(onSubmit)} className="tw-pt-3 tw-space-y-8 tw-px-3">
                               <FormField
                                 control={form.control}
                                 name="title"
@@ -272,10 +227,7 @@ const Detail = () => {
                                   <FormItem>
                                     <FormLabel>Tiêu đề</FormLabel>
                                     <FormControl>
-                                      <Textarea
-                                        className="!tw-bg-black tw-border-none"
-                                        {...field}
-                                      />
+                                      <Textarea className="!tw-bg-black tw-border-none" {...field} />
                                     </FormControl>
                                     <FormMessage />
                                   </FormItem>
@@ -288,10 +240,7 @@ const Detail = () => {
                                   <FormItem>
                                     <FormLabel>Chú thích</FormLabel>
                                     <FormControl>
-                                      <Textarea
-                                        className="!tw-bg-black tw-border-none"
-                                        {...field}
-                                      />
+                                      <Textarea className="!tw-bg-black tw-border-none" {...field} />
                                     </FormControl>
 
                                     <FormMessage />
@@ -305,10 +254,7 @@ const Detail = () => {
                                   <FormItem>
                                     <FormLabel>Bản quyền</FormLabel>
                                     <FormControl>
-                                      <Input
-                                        className="!tw-bg-black tw-border-none"
-                                        {...field}
-                                      />
+                                      <Input className="!tw-bg-black tw-border-none" {...field} />
                                     </FormControl>
                                     <FormMessage />
                                   </FormItem>
@@ -326,10 +272,7 @@ const Detail = () => {
                                         onCheckedChange={field.onChange}
                                       />
                                     </FormControl>
-                                    <FormLabel className="!tw-m-0">
-                                      {' '}
-                                      Video độc quyền?
-                                    </FormLabel>
+                                    <FormLabel className="!tw-m-0"> Video độc quyền?</FormLabel>
                                     <FormMessage />
                                   </FormItem>
                                 )}
@@ -341,10 +284,7 @@ const Detail = () => {
                                   <FormItem>
                                     <FormLabel>Tác giả</FormLabel>
                                     <FormControl>
-                                      <Input
-                                        className="!tw-bg-black tw-border-none"
-                                        {...field}
-                                      />
+                                      <Input className="!tw-bg-black tw-border-none" {...field} />
                                     </FormControl>
                                     <FormMessage />
                                   </FormItem>
@@ -378,8 +318,8 @@ const Detail = () => {
                                             label: 'Express.js',
                                           },
                                         ]}
-                                        onChange={(value) => {
-                                          console.log(value);
+                                        onChange={value => {
+                                          console.log(value)
                                         }}
                                         // className="!tw-bg-black tw-border-none"
                                         // {...field}
@@ -417,8 +357,8 @@ const Detail = () => {
                                             label: 'Express.js',
                                           },
                                         ]}
-                                        onChange={(value) => {
-                                          console.log(value);
+                                        onChange={value => {
+                                          console.log(value)
                                         }}
                                         // className="!tw-bg-black tw-border-none"
                                         // {...field}
@@ -456,8 +396,8 @@ const Detail = () => {
                                             label: 'Express.js',
                                           },
                                         ]}
-                                        onChange={(value) => {
-                                          console.log(value);
+                                        onChange={value => {
+                                          console.log(value)
                                         }}
                                         // className="!tw-bg-black tw-border-none"
                                         // {...field}
@@ -476,7 +416,7 @@ const Detail = () => {
                         </ScrollArea>
                       </AccordionContent>
                     </AccordionItem>
-                  ) : null
+                  ) : null,
                 )}
               </Accordion>
             </div>
@@ -492,7 +432,7 @@ const Detail = () => {
         )}
       />
     </div>
-  );
-};
+  )
+}
 
-export default Detail;
+export default Detail

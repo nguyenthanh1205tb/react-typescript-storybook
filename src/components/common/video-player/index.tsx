@@ -1,25 +1,22 @@
 /* eslint-disable consistent-return */
-import '@videojs/http-streaming';
-import React, { useCallback, useEffect, useRef, useState } from 'react';
-import videojs from 'video.js';
-import Player from 'video.js/dist/types/player';
-import 'video.js/dist/video-js.css';
+import '@videojs/http-streaming'
+import React, { useCallback, useEffect, useRef, useState } from 'react'
+import videojs from 'video.js'
+import Player from 'video.js/dist/types/player'
+import 'video.js/dist/video-js.css'
 
 interface VideoPlayerProps {
-  videoUrl: string;
-  thumbnailUrl: string;
+  videoUrl: string
+  thumbnailUrl: string
 }
 
-const VideoPlayer: React.FC<VideoPlayerProps> = ({
-  videoUrl,
-  thumbnailUrl,
-}) => {
-  const videoRef = useRef<HTMLVideoElement>(null);
-  const [player, setPlayer] = useState<Player>();
+const VideoPlayer: React.FC<VideoPlayerProps> = ({ videoUrl, thumbnailUrl }) => {
+  const videoRef = useRef<HTMLVideoElement>(null)
+  const [player, setPlayer] = useState<Player>()
 
   const initVideoPlayer = useCallback(() => {
     if (!videoRef.current) {
-      return;
+      return
     }
 
     const pl = videojs(videoRef.current, {
@@ -32,36 +29,33 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
           type: 'application/x-mpegURL',
         },
       ],
-    });
+    })
 
-    setPlayer(pl);
-  }, [videoRef]);
+    setPlayer(pl)
+  }, [videoRef])
 
   useEffect(() => {
-    initVideoPlayer();
+    initVideoPlayer()
 
     return () => {
       if (player) {
-        player.dispose();
+        player.dispose()
       }
-    };
-  }, []);
+    }
+  }, [])
 
   useEffect(() => {
     if (player) {
-      player.src(videoUrl);
-      player.poster(thumbnailUrl);
+      player.src(videoUrl)
+      player.poster(thumbnailUrl)
     }
-  }, [player, videoUrl, thumbnailUrl]);
+  }, [player, videoUrl, thumbnailUrl])
 
   return (
     <div className="w-full aspect-video">
-      <video
-        ref={videoRef}
-        className="w-full video-js vjs-default-skin vjs-16-9"
-      />
+      <video ref={videoRef} className="w-full video-js vjs-default-skin vjs-16-9" />
     </div>
-  );
-};
+  )
+}
 
-export default VideoPlayer;
+export default VideoPlayer

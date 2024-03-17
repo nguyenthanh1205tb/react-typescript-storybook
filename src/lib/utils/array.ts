@@ -1,18 +1,18 @@
-type NestedArray<T> = Array<T | NestedArray<T>>;
+type NestedArray<T> = Array<T | NestedArray<T>>
 
 export const flatArray = <T>(arr: NestedArray<T>): Array<T> => {
-  const flattened: Array<T> = [];
+  const flattened: Array<T> = []
 
   const flattenHelper = (nestedArr: NestedArray<T>) => {
     for (const el of nestedArr) {
       if (el instanceof Array) {
-        flattenHelper(el);
+        flattenHelper(el)
       } else {
-        flattened.push(el);
+        flattened.push(el)
       }
     }
-  };
+  }
 
-  flattenHelper(arr);
-  return flattened;
-};
+  flattenHelper(arr)
+  return flattened
+}

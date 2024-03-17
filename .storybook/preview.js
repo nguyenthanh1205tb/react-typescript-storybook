@@ -1,5 +1,5 @@
 import React from 'react';
-import '../src/assets/css/index.css';
+import '../src/assets/css/main.scss';
 
 const preview = {
   decorators: [

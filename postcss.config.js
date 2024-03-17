@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-var-requires */
+/* eslint-disable no-undef */
 module.exports = {
   plugins: [
     require('postcss-import'),
@@ -5,4 +7,4 @@ module.exports = {
     require('autoprefixer'),
     require('cssnano')({ preset: 'default' }),
   ],
-};
+}

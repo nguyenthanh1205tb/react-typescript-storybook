@@ -3,17 +3,16 @@ const vi_VN = {
   strings: {},
   pluralize(n: number) {
     if (n === 1) {
-      return 0;
+      return 0
     }
-    return 1;
+    return 1
   },
-};
+}
 vi_VN.strings = {
   addMore: 'Thêm',
   addMoreFiles: 'Thêm tập tin',
   addingMoreFiles: 'Đang thêm các tập tin',
-  allowAccessDescription:
-    'Để chụp ảnh hoặc quay video bằng camera, vui lòng cho phép trang web truy cập camera.',
+  allowAccessDescription: 'Để chụp ảnh hoặc quay video bằng camera, vui lòng cho phép trang web truy cập camera.',
   allowAccessTitle: 'Vui lòng cho phép truy cập camera',
   authenticateWith: 'Kết nối đến %{pluginName}',
   authenticateWithTitle: 'Xác thực với %{pluginName} để chọn tập tin',
@@ -25,8 +24,7 @@ vi_VN.strings = {
   chooseFiles: 'Chọn tập tin',
   closeModal: 'Đóng cửa sổ',
   companionError: 'Kết nối thất bại',
-  companionUnauthorizeHint:
-    'Để huỷ uỷ quyền tài khoản %{provider}, truy cập %{url}',
+  companionUnauthorizeHint: 'Để huỷ uỷ quyền tài khoản %{provider}, truy cập %{url}',
   complete: 'Xong',
   connectedToInternet: 'Đã kết nối Internet',
   copyLink: 'Sao chép liên kết',
@@ -50,8 +48,7 @@ vi_VN.strings = {
   editing: 'Đang sửa %{file}',
   emptyFolderAdded: 'Không có tập tin nào được thêm từ thư mục trống',
   encoding: 'Đang encode...',
-  enterCorrectUrl:
-    'URL sai: Đảm bảo rằng bạn đang nhập một liên kết trực tiếp đến một tập tin',
+  enterCorrectUrl: 'URL sai: Đảm bảo rằng bạn đang nhập một liên kết trực tiếp đến một tập tin',
   enterUrlToImport: 'Nhập URL để nhập tập tin',
   exceedsSize: 'Tập tin này vượt quá kích thước tối đa cho phép của %{size}',
   failedToFetch: 'Thất bại khi lấy từ URL, hãy sửa lại cho đúng',
@@ -138,12 +135,12 @@ vi_VN.strings = {
     '0': 'Chọn ít nhất %{smart_count} tập tin',
     '1': 'Chọn ít nhất %{smart_count} tập tin',
   },
-};
+}
 
 // TODO: remove this in the next major?
 // @ts-expect-error Uppy can be a global in legacy bundle
 if (typeof Uppy !== 'undefined') {
   // @ts-expect-error Uppy can be a global in legacy bundle
-  globalThis.Uppy.locales.vi_VN = vi_VN;
+  globalThis.Uppy.locales.vi_VN = vi_VN
 }
-export default vi_VN;
+export default vi_VN

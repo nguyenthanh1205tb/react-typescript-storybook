@@ -8,6 +8,7 @@ import { terser } from 'rollup-plugin-terser';
 import tsTrans from 'rollup-plugin-typescript2';
 import imageResolve from '@rollup/plugin-image';
 import alias from '@rollup/plugin-alias';
+import sass from 'rollup-plugin-sass';
 import path from 'path';
 
 const tailwindcss = require('tailwindcss');
@@ -21,6 +22,7 @@ export default {
     format: 'iife',
     sourcemap: false,
     name: '$MMedia',
+    preserveModules: false,
     globals: {
       react: 'React',
       'react-dom/client': 'ReactDOM',
@@ -78,6 +80,7 @@ export default {
         require('cssnano')({ preset: 'default' }),
       ],
       minimize: true,
+      extensions: ['.scss', '.sass', '.css'],
     }),
   ],
 };

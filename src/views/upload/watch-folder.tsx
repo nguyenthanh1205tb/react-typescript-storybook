@@ -1,7 +1,8 @@
-import { PropsWithChildren } from 'react';
+import React from 'react'
+import { PropsWithChildren } from 'react'
 
 interface Props {}
 function WatchFolderUpload({}: PropsWithChildren<Props>) {
-  return <div>watch folder upload</div>;
+  return <div>watch folder upload</div>
 }
-export default WatchFolderUpload;
+export default WatchFolderUpload
