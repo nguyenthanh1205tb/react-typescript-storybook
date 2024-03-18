@@ -1,66 +1,63 @@
-import React from 'react'
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/src/components/ui/tooltip'
 import { ORG_ID, TEMPLATE_ID } from '@/src/configs'
-import { createUppyInstance } from '@/src/configs/uppy'
-import UppyDashboard, { getContentId, saveContentIdToLocalStorage } from '@/src/lib/uppy/dashboard'
+import UppyDashboard from '@/src/lib/uppy/dashboard'
 import { cn } from '@/src/lib/utils'
 import { SideMenuActive } from '@/src/types'
-import { uniqueId } from 'lodash'
 import { FilterIcon } from 'lucide-react'
-import { PropsWithChildren, useEffect, useRef, useState } from 'react'
+import React, { PropsWithChildren } from 'react'
 
 interface Props {
   onChangeMenu: (menu: SideMenuActive) => void
   active: SideMenuActive
 }
 function MenuUpload({ onChangeMenu, active }: PropsWithChildren<Props>) {
-  const uppyRef = useRef<any>(null)
-  const [isFileAdded, setIsFileAdded] = useState(false)
+  // const uppyRef = useRef<any>(null)
+  // const [isFileAdded, setIsFileAdded] = useState(false)
 
-  useEffect(() => {
-    if (isFileAdded) {
-      uppyRef.current?.upload()
-    }
-  }, [isFileAdded])
+  // useEffect(() => {
+  //   if (isFileAdded) {
+  //     uppyRef.current?.upload()
+  //   }
+  // }, [isFileAdded])
 
-  useEffect(() => {
-    if (!ORG_ID) {
-      return () => {}
-    }
+  // useEffect(() => {
+  //   if (!ORG_ID) {
+  //     return () => {}
+  //   }
 
-    uppyRef.current = createUppyInstance({
-      autoProceed: false, // Set to false to manually start upload
-    })
+  //   uppyRef.current = createUppyInstance({
+  //     autoProceed: false, // Set to false to manually start upload
+  //   })
 
-    uppyRef.current.on('file-added', (file: any) => {
-      const contentId = getContentId(file.id) || uniqueId()
-      saveContentIdToLocalStorage(file.id, contentId)
+  //   uppyRef.current.on('file-added', (file: any) => {
+  //     const contentId = getContentId(file.id) || uniqueId()
+  //     saveContentIdToLocalStorage(file.id, contentId)
 
-      // eslint-disable-next-line @typescript-eslint/no-unused-expressions
-      console.log('File added>>>>:', file, contentId)
-      uppyRef.current.setFileMeta(file.id, {
-        contentId,
-        ORG_ID,
-        TEMPLATE_ID,
-      })
+  //     // eslint-disable-next-line @typescript-eslint/no-unused-expressions
+  //     console.log('File added>>>>:', file, contentId)
+  //     uppyRef.current.setFileMeta(file.id, {
+  //       contentId,
+  //       ORG_ID,
+  //       TEMPLATE_ID,
+  //     })
 
-      setIsFileAdded(true)
-    })
+  //     setIsFileAdded(true)
+  //   })
 
-    return () => {
-      uppyRef.current.close() // Close Uppy instance when component unmounts
-    }
-  }, [ORG_ID, TEMPLATE_ID])
+  //   return () => {
+  //     uppyRef.current.close() // Close Uppy instance when component unmounts
+  //   }
+  // }, [ORG_ID, TEMPLATE_ID])
 
-  const handleFileInputChange = (event: any) => {
-    const files = event.target.files
-    if (files.length > 0) {
-      // Add selected files to Uppy instance
-      uppyRef.current.addFiles(files)
-      // Optionally, you can start the upload process here
-      uppyRef.current.upload()
-    }
-  }
+  // const handleFileInputChange = (event: any) => {
+  //   const files = event.target.files
+  //   if (files.length > 0) {
+  //     // Add selected files to Uppy instance
+  //     uppyRef.current.addFiles(files)
+  //     // Optionally, you can start the upload process here
+  //     uppyRef.current.upload()
+  //   }
+  // }
 
   return (
     <div className="tw-w-[50px] tw-flex-none tw-bg-gray-50 tw-h-full tw-rounded-lg">

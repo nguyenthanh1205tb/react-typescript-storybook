@@ -1,4 +1,6 @@
 import React, { useEffect, useImperativeHandle, useState } from 'react'
+/* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable react/display-name */
 import { useToast } from '@/src/components/ui/use-toast'
 import { createUppyInstance } from '@/src/configs/uppy'
 import useAppStore from '@/src/stores/useAppStore'
@@ -6,6 +8,7 @@ import UppyStore from '@/src/stores/useUppyStore'
 import { useQueryClient } from '@tanstack/react-query'
 import type { Uppy } from '@uppy/core'
 import '@uppy/core/dist/style.min.css'
+import ThumbnailGenerator from '@uppy/thumbnail-generator'
 import { Computer } from 'lucide-react'
 import { v4 as uuid } from 'uuid'
 import { cn } from '../utils'
@@ -13,9 +16,9 @@ import { cn } from '../utils'
 interface Props {
   organizationId: string
   templateId: string
-  onFileAdded?: (file: any, contentId: string) => void
+  onFileAdded?: (file: Blob | unknown, contentId: string) => void
   onChangeUploadPercent?: (contentId: string, percent: number) => void
-  onFileUpload?: (contentIds: string[], file: any) => void
+  onFileUpload?: (contentIds: string[], file: Blob | unknown) => void
   setIsDisabledUploadButton?: (value: boolean) => void
 }
 
@@ -38,7 +41,8 @@ const UppyDashboard = React.forwardRef((props: Props, ref) => {
   const [isFileAdded, setIsFileAdded] = useState(false)
   const { updateUploadStatusMap } = UppyStore()
   const { toast } = useToast()
-  const { listMediaQueries, config } = useAppStore()
+  const { listMediaQueries, config, setListFileAdded, listFileAdded, setListFileProgress, listFileProgress } =
+    useAppStore()
   const queryClient = useQueryClient()
 
   useEffect(() => {
@@ -89,6 +93,8 @@ const UppyDashboard = React.forwardRef((props: Props, ref) => {
 
     const uppy = createUppyInstance({})
 
+    uppy.use(ThumbnailGenerator)
+
     setUppyInstance(uppy)
 
     uppy.on('upload-progress', (file, progress) => {
@@ -113,7 +119,6 @@ const UppyDashboard = React.forwardRef((props: Props, ref) => {
         if (files?.length === 1) {
           return
         }
-
         // uppy?.upload();
         for (const file of files) {
           updateUploadStatusMap(file?.id, {
@@ -124,6 +129,8 @@ const UppyDashboard = React.forwardRef((props: Props, ref) => {
             organizationId: config.organizationId,
           })
         }
+
+        console.log('files-added', files)
       })
       .on('file-added', file => {
         if (setIsDisabledUploadButton) setIsDisabledUploadButton(false)
@@ -132,7 +139,6 @@ const UppyDashboard = React.forwardRef((props: Props, ref) => {
 
         // eslint-disable-next-line @typescript-eslint/no-unused-expressions
         typeof onFileAdded === 'function' && onFileAdded(file, contentId)
-        console.log('File added:', file, contentId)
 
         uppy.setFileMeta(file.id, {
           contentId,
@@ -142,20 +148,42 @@ const UppyDashboard = React.forwardRef((props: Props, ref) => {
 
         setIsFileAdded(true)
       })
+      .on('thumbnail:generated', (file, preview) => {
+        uppy.setFileMeta(file.id, { preview })
+      })
       .on('file-removed', () => {
         if (setIsDisabledUploadButton) setIsDisabledUploadButton(true)
       })
       .on('upload', file => {
         const ids = file?.fileIDs
         const contentIds = ids?.map(id => getContentId(id)).filter(Boolean)
-        console.log('ContentIds:', contentIds)
-        console.log('File:', file)
         if (onFileUpload) onFileUpload(contentIds as string[], undefined)
       })
-      .on('upload-success', (file, response) => {
+      .on('upload-progress', (file, progress) => {
+        const contentId = getContentId(file?.id as any) || uuid()
+        const percent = Math.round((progress.bytesUploaded / progress.bytesTotal) * 100)
+        setListFileAdded([
+          ...listFileAdded,
+          {
+            id: file?.id as any,
+            contentId,
+            name: file?.name as any,
+          },
+        ])
+        setListFileProgress([
+          ...listFileProgress,
+          {
+            id: file?.id as any,
+            percent,
+          },
+        ])
+      })
+      .on('upload-success', () => {
         queryClient.invalidateQueries({
           queryKey: ['getListMedia', listMediaQueries],
         })
+        setListFileAdded([])
+        setListFileProgress([])
       })
       .on('complete', result => {
         const successFiles = result?.successful || []
@@ -165,7 +193,7 @@ const UppyDashboard = React.forwardRef((props: Props, ref) => {
           description: 'Tải lên thành công',
         })
       })
-      .on('error', error => {
+      .on('error', () => {
         setIsFileAdded(false)
         toast({
           description: 'Tải lên thất bại',
@@ -191,7 +219,6 @@ const UppyDashboard = React.forwardRef((props: Props, ref) => {
           // handleFileInputChange
           e => {
             if (e?.target?.files) {
-              console.log('Files:', e.target.files)
               uppyInstance?.addFiles(e.target.files as any)
             }
           }

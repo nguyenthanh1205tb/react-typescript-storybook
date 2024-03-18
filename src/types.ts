@@ -120,6 +120,7 @@ export interface MediaEntity {
   tags?: string[]
   createdAt: string
   updatedAt: string
+  categories: Category[]
 }
 
 export interface GetListMediaRequest {
@@ -167,4 +168,15 @@ export interface ConfigResponse {
 export interface ConfigEntity {
   organizationId: string
   templateId: string
+}
+
+export interface FileAdded {
+  id: string
+  contentId: string
+  name: string
+}
+
+export interface FileProgressType {
+  id: string
+  percent: number
 }

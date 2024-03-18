@@ -1,6 +1,7 @@
-import React from 'react'
+import LoadingItem from '@/src/components/common/media-loading-item/loading-item'
 import Paginate from '@/src/components/common/paginate'
 import { SkeletonCard } from '@/src/components/common/skeleton-card'
+import Typo from '@/src/components/common/typo'
 import { PAGINATE_LIMIT } from '@/src/configs'
 import Each from '@/src/hooks/each'
 import If from '@/src/hooks/if'
@@ -11,10 +12,9 @@ import { cn } from '@/src/lib/utils'
 import useAppStore from '@/src/stores/useAppStore'
 import { ConfigResponse, FileType } from '@/src/types'
 import { useQuery } from '@tanstack/react-query'
-import { PropsWithChildren, useEffect, useMemo, useRef, useState } from 'react'
-import Item from './item'
-import Typo from '@/src/components/common/typo'
 import { CheckCheck, PackageOpen, X } from 'lucide-react'
+import React, { PropsWithChildren, useEffect, useMemo, useRef, useState } from 'react'
+import Item from './item'
 
 const BASE_ITEM_WIDTH = 230
 interface Props {
@@ -28,6 +28,7 @@ function ListMedia({ type }: PropsWithChildren<Props>) {
     listMediaQueries,
     selectMultiMode,
     listMediaSelected,
+    listFileAdded,
     setListMedia,
     setListMediaQueries,
     setConfig,
@@ -150,7 +151,10 @@ function ListMedia({ type }: PropsWithChildren<Props>) {
       </div>
       <div className={cn('tw-grid tw-gap-4 tw-w-full', `tw-grid-cols-${colNum}`)} ref={listRef}>
         <If isShow={isLoading} element={<Each of={new Array(20)?.fill(0)} render={() => <SkeletonCard />} />} />
-        {/* <LoadingItem data={{}} /> */}
+        <If
+          isShow={!!listFileAdded}
+          element={<Each of={listFileAdded} render={item => <LoadingItem key={item?.contentId} data={item} />} />}
+        />
         <If
           isShow={!listMedia.length && !isLoading}
           element={

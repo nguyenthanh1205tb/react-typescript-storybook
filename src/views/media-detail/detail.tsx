@@ -1,19 +1,20 @@
-import React from 'react'
-import { MultiSelect } from '@/src/components/common/multi-select'
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import { MultiSelectChild } from '@/src/components/common/dropdown/dropdown-with-child'
+import { MultiSelectField } from '@/src/components/common/multi-select/muti-select-field'
+import VideoPlayer from '@/src/components/common/video-player'
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/src/components/ui/accordion'
 import { Badge } from '@/src/components/ui/badge'
+import { Button } from '@/src/components/ui/button'
 import { Checkbox } from '@/src/components/ui/checkbox'
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/src/components/ui/form'
 import { Input } from '@/src/components/ui/input'
 import { ScrollArea } from '@/src/components/ui/scroll-area'
 import { Textarea } from '@/src/components/ui/textarea'
 import If from '@/src/hooks/if'
-import { useDetailMedia } from '@/src/hooks/useMedia'
-import { avatarUrl, formatBytes } from '@/src/lib/utils/media'
-import { cn } from '@/src/lib/utils/merge-class'
-import { MediaCodec, MediaPacks, Video } from '@/src/types'
-import { zodResolver } from '@hookform/resolvers/zod'
-import useAppStore, { VideoTabItemType } from '@/src/stores/useAppStore'
+import { request } from '@/src/lib/request'
+import { APIConfigs } from '@/src/lib/request/core/ApiConfig'
+import { useMutation, useQueryClient } from '@tanstack/react-query'
+import cn from 'classnames'
 import {
   CalendarFold,
   CircleFadingPlus,
@@ -28,55 +29,39 @@ import {
   Scissors,
   X,
 } from 'lucide-react'
-import { useEffect, useMemo } from 'react'
-import { useForm } from 'react-hook-form'
-import { z } from 'zod'
 import moment from 'moment'
-import { Button } from '@/src/components/ui/button'
-import VideoPlayer from '@/src/components/common/video-player'
-
-const formSchema = z.object({
-  username: z.string().min(2, {
-    message: 'Username must be at least 2 characters.',
-  }),
-  title: z.string().min(2, {
-    message: 'Title must be at least 2 characters.',
-  }),
-  description: z.string().min(2, {
-    message: 'Description must be at least 2 characters.',
-  }),
-  right: z.string().min(2, {
-    message: 'Right must be at least 2 characters.',
-  }),
-  isDrm: z.boolean(),
-  author: z.string().min(2, {
-    message: 'Author must be at least 2 characters.',
-  }),
-  tags: z.array(z.string()),
-  categories: z.array(z.string()),
-  types: z.array(z.string()),
-})
+import React, { useEffect, useMemo } from 'react'
+import { useForm } from 'react-hook-form'
+import { useCategory, useDetailMedia } from '../../hooks/useMedia'
+import { avatarUrl, formatBytes } from '../../lib/utils/media'
+import useAppStore, { VideoTabItemType } from '../../stores/useAppStore'
+import { Category, ComboboxOption, MediaCodec, MediaPacks, Video } from '../../types'
 
 const Detail = () => {
   const { mediaSelectedID, mediaSelectedData, setMediaSelectedData, tabActivated } = useAppStore()
   const { response, getDetailMedia } = useDetailMedia()
+  const { getListCategories } = useCategory()
+  const { data: categoriesData } = getListCategories()
+
+  const extractCategories = (list: Category[]): Array<ComboboxOption> => {
+    const result = list.map(item => {
+      return {
+        label: item.name,
+        value: item.id,
+        children: item.children ? extractCategories(item.children) : null,
+      }
+    })
+
+    return result
+  }
+
+  const categoriesFiltered = useMemo(() => {
+    if (!categoriesData) return []
+    return extractCategories(categoriesData.data ?? [])
+  }, [categoriesData])
 
   // 1. Define your form.
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
-    defaultValues: {
-      username: '',
-      title: '',
-      description: '',
-    },
-  })
-
-  // 2. Define a submit handler.
-  function onSubmit(values: z.infer<typeof formSchema>) {
-    // Do something with the form values.
-    // ✅ This will be type-safe and validated.
-    console.log(values)
-  }
+  const form = useForm()
 
   const mediaAccords = [
     {
@@ -117,6 +102,38 @@ const Detail = () => {
       getDetailMedia(mediaSelectedID)
     }
   }, [mediaSelectedID])
+
+  const queryClient = useQueryClient()
+
+  const { mutateAsync: onSubmitMedia } = useMutation({
+    mutationFn: (values: any) =>
+      request<any>(APIConfigs(), {
+        url: `/media/${mediaSelectedID}`,
+        method: 'PUT',
+        body: values,
+      }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: ['getListMedia'],
+      })
+    },
+  })
+
+  // 2. Define a submit handler.
+  function onSubmit(values: { name: string; description: string; categoryIds: string[]; tags: string[] }) {
+    onSubmitMedia(values)
+  }
+
+  useEffect(() => {
+    if (mediaSelectedData?.data) {
+      form.reset({
+        name: mediaSelectedData.data.name,
+        description: mediaSelectedData.data.description,
+        categoryIds: mediaSelectedData.data.categories?.map(item => item.id) ?? [],
+        tags: mediaSelectedData.data.tags || [],
+      })
+    }
+  }, [response.data?.data])
 
   return (
     <div
@@ -221,7 +238,7 @@ const Detail = () => {
                             <form onSubmit={form.handleSubmit(onSubmit)} className="tw-pt-3 tw-space-y-8 tw-px-3">
                               <FormField
                                 control={form.control}
-                                name="title"
+                                name="name"
                                 render={({ field }) => (
                                   <FormItem>
                                     <FormLabel>Tiêu đề</FormLabel>
@@ -293,12 +310,17 @@ const Detail = () => {
                                 control={form.control}
                                 name="tags"
                                 render={({ field }) => (
-                                  <FormItem>
-                                    <FormLabel>Chuyên mục</FormLabel>
+                                  <FormItem {...field}>
+                                    <FormLabel>Từ khoá</FormLabel>
                                     <FormControl>
-                                      <MultiSelect
+                                      <MultiSelectField
+                                        key={field.name}
                                         inputClassName="!tw-bg-black tw-border-none"
-                                        selected={[]}
+                                        name="tags"
+                                        value={field.value}
+                                        onChange={value => {
+                                          field.onChange(value)
+                                        }}
                                         options={[
                                           {
                                             value: 'remix',
@@ -317,11 +339,6 @@ const Detail = () => {
                                             label: 'Express.js',
                                           },
                                         ]}
-                                        onChange={value => {
-                                          console.log(value)
-                                        }}
-                                        // className="!tw-bg-black tw-border-none"
-                                        // {...field}
                                       />
                                     </FormControl>
                                     <FormMessage />
@@ -330,37 +347,19 @@ const Detail = () => {
                               />
                               <FormField
                                 control={form.control}
-                                name="categories"
+                                name="categoryIds"
                                 render={({ field }) => (
-                                  <FormItem>
-                                    <FormLabel>Thể loại</FormLabel>
+                                  <FormItem {...field}>
+                                    <FormLabel>Chuyên mục</FormLabel>
                                     <FormControl>
-                                      <MultiSelect
+                                      <MultiSelectChild
+                                        value={field.value}
                                         inputClassName="!tw-bg-black tw-border-none"
-                                        selected={[]}
-                                        options={[
-                                          {
-                                            value: 'remix',
-                                            label: 'Remix',
-                                          },
-                                          {
-                                            value: 'astro',
-                                            label: 'Astro',
-                                          },
-                                          {
-                                            value: 'wordpress',
-                                            label: 'WordPress',
-                                          },
-                                          {
-                                            value: 'express.js',
-                                            label: 'Express.js',
-                                          },
-                                        ]}
-                                        onChange={value => {
-                                          console.log(value)
-                                        }}
-                                        // className="!tw-bg-black tw-border-none"
-                                        // {...field}
+                                        options={categoriesFiltered}
+                                        // placeholder="Chọn chuyên mục..."
+                                        // // value={listMediaQueries.categoryId}
+                                        // value={field.value}
+                                        onChange={field.onChange}
                                       />
                                     </FormControl>
                                     <FormMessage />
@@ -371,12 +370,16 @@ const Detail = () => {
                                 control={form.control}
                                 name="types"
                                 render={({ field }) => (
-                                  <FormItem>
+                                  <FormItem {...field}>
                                     <FormLabel>Thể loại</FormLabel>
                                     <FormControl>
-                                      <MultiSelect
+                                      <MultiSelectField
+                                        key={field.name}
                                         inputClassName="!tw-bg-black tw-border-none"
-                                        selected={[]}
+                                        name="tags"
+                                        onChange={value => {
+                                          field.onChange(value)
+                                        }}
                                         options={[
                                           {
                                             value: 'remix',
@@ -395,11 +398,6 @@ const Detail = () => {
                                             label: 'Express.js',
                                           },
                                         ]}
-                                        onChange={value => {
-                                          console.log(value)
-                                        }}
-                                        // className="!tw-bg-black tw-border-none"
-                                        // {...field}
                                       />
                                     </FormControl>
                                     <FormMessage />

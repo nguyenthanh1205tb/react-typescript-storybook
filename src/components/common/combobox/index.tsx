@@ -1,10 +1,9 @@
-import React, { useMemo, useState } from 'react'
-import { Dot, ChevronsUpDown, LibraryBig, Eraser } from 'lucide-react'
+import { ChevronsUpDown, Dot, Eraser, LibraryBig } from 'lucide-react'
+import React, { useMemo } from 'react'
 
 import { Button } from '@/src/components/ui/button'
 import {
   Command,
-  CommandEmpty,
   CommandGroup,
   CommandInput,
   CommandItem,
@@ -13,21 +12,21 @@ import {
 } from '@/src/components/ui/command'
 import { Popover, PopoverContent, PopoverTrigger } from '@/src/components/ui/popover'
 import Each from '@/src/hooks/each'
-import { ScrollArea } from '../../ui/scroll-area'
-import { ComboboxOption } from '@/src/types'
-import { flatArray } from '@/src/lib/utils/array'
-import _find from 'lodash/find'
 import If from '@/src/hooks/if'
 import { cn } from '@/src/lib/utils'
+import { flatArray } from '@/src/lib/utils/array'
+import { ComboboxOption } from '@/src/types'
+import { ScrollArea } from '../../ui/scroll-area'
 
 interface Props {
   options: Array<ComboboxOption>
   placeholder?: string
   value?: string
   onChange?: (val: string) => void
+  classnames?: string
 }
 export function Combobox(props: Props) {
-  const { options, placeholder, value, onChange } = props
+  const { options, placeholder, value, classnames, onChange } = props
   const [open, setOpen] = React.useState(false)
 
   const search = (list: Array<ComboboxOption>, text: string) => {
@@ -86,7 +85,11 @@ export function Combobox(props: Props) {
   return (
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
-        <Button variant="outline" role="combobox" aria-expanded={open} className="tw-w-full tw-justify-between">
+        <Button
+          variant="outline"
+          role="combobox"
+          aria-expanded={open}
+          className={` tw-w-full tw-justify-between ${classnames}`}>
           <div className="tw-flex tw-items-center tw-gap-2 tw-relative">
             <If
               isShow={typeof value !== 'undefined' && value !== ''}

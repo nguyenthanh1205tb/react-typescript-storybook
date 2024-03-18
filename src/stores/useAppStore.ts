@@ -3,6 +3,8 @@ import { PAGINATE_LIMIT } from '../configs'
 import {
   Category,
   ConfigEntity,
+  FileAdded,
+  FileProgressType,
   GetDetailMediaResponse,
   GetListMediaRequest,
   GetListMediaTimeRange,
@@ -27,9 +29,13 @@ type State = {
   listMediaQueries: GetListMediaRequest
   listCategories: Category[]
   selectMultiMode: boolean
+  listFileAdded: FileAdded[]
+  listFileProgress: FileProgressType[]
   listMediaSelected: MediaEntity[]
 
   // Functions
+  setListFileProgress: (payload: FileProgressType[]) => void
+  setListFileAdded: (payload: FileAdded[]) => void
   setConfig: (payload: ConfigEntity) => void
   setMediaDialog: (payload: boolean) => void
   setTabActivated: (payload: VideoTabItemType) => void
@@ -44,6 +50,8 @@ type State = {
 
 const useAppStore = create<State>(set => ({
   // Vars
+  listFileProgress: [],
+  listFileAdded: [],
   config: null,
   openMedia: false,
   listMedia: [],
@@ -63,6 +71,17 @@ const useAppStore = create<State>(set => ({
   },
 
   // Functions
+  /**
+   * Set list file progress
+   * @param payload FileProgressType[]
+   */
+  setListFileProgress: payload => set(() => ({ listFileProgress: payload })),
+
+  /**
+   * Set list file added
+   * @param payload string[]
+   */
+  setListFileAdded: payload => set(() => ({ listFileAdded: payload })),
   /**
    * Set media dialog on/off
    * @param payload boolean

@@ -41,6 +41,7 @@
     "@tanstack/react-query": "^5.28.0",
     "@uppy/core": "^3.9.3",
     "@uppy/dashboard": "^3.7.5",
+    "@uppy/thumbnail-generator": "^3.0.8",
     "@uppy/tus": "^3.5.3",
     "@videojs/http-streaming": "^3.10.0",
     "autoprefixer": "9.8.8",
