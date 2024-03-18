@@ -48,7 +48,11 @@ function Main() {
   return (
     <QueryClientProvider client={queryClient}>
       <TooltipProvider delayDuration={100}>
+<<<<<<< Updated upstream
         <div className="tw-hidden tw-grid-cols-1 tw-grid-cols-2 tw-grid-cols-3 tw-grid-cols-4 tw-grid-cols-5 tw-grid-cols-6"></div>
+=======
+        <div className="tw-grid-cols-1 tw-grid-cols-2 tw-grid-cols-3 tw-grid-cols-4 tw-grid-cols-5 tw-grid-cols-6"></div>
+>>>>>>> Stashed changes
         <Toaster />
 
         <Button onClick={() => setMediaDialog(true)}>Open Media MefiPlatform</Button>
