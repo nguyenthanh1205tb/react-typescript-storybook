@@ -1,3 +1,4 @@
+import React, { useEffect, useImperativeHandle, useState } from 'react'
 import { useToast } from '@/src/components/ui/use-toast'
 import { createUppyInstance } from '@/src/configs/uppy'
 import useAppStore from '@/src/stores/useAppStore'
@@ -6,7 +7,6 @@ import { useQueryClient } from '@tanstack/react-query'
 import type { Uppy } from '@uppy/core'
 import '@uppy/core/dist/style.min.css'
 import { Computer } from 'lucide-react'
-import React, { useEffect, useImperativeHandle, useState } from 'react'
 import { v4 as uuid } from 'uuid'
 import { cn } from '../utils'
 
@@ -201,5 +201,5 @@ const UppyDashboard = React.forwardRef((props: Props, ref) => {
     </label>
   )
 })
-
+UppyDashboard.displayName = 'UppyDashboard'
 export default UppyDashboard

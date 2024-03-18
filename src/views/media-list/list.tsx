@@ -12,24 +12,44 @@ import useAppStore from '@/src/stores/useAppStore'
 import { ConfigResponse, FileType } from '@/src/types'
 import { useQuery } from '@tanstack/react-query'
 import { PropsWithChildren, useEffect, useMemo, useRef, useState } from 'react'
-import LoadingItem from './LoadingItem'
 import Item from './item'
 import Typo from '@/src/components/common/typo'
-import { PackageOpen } from 'lucide-react'
+import { CheckCheck, PackageOpen, X } from 'lucide-react'
 
-const BASE_ITEM_WIDTH = 239
+const BASE_ITEM_WIDTH = 230
 interface Props {
   type: FileType
 }
 function ListMedia({ type }: PropsWithChildren<Props>) {
   const listRef = useRef<HTMLDivElement>(null)
   const [colNum, setColNum] = useState(5)
-  const { listMedia, setListMedia, listMediaQueries, setListMediaQueries, setConfig, setMediaSelectedID } =
-    useAppStore()
+  const {
+    listMedia,
+    listMediaQueries,
+    selectMultiMode,
+    listMediaSelected,
+    setListMedia,
+    setListMediaQueries,
+    setConfig,
+    setMediaSelectedID,
+    setSelectMultiMode,
+    setListMediaSelected,
+  } = useAppStore()
   const { getListMedia, totalCount, setTotalCount, onChangePagination, onNextPagination, onPrevPagination } =
     useListMedia()
 
   const { data, isLoading } = getListMedia({ fileType: type })
+
+  const selectAllMediaInPage = () => {
+    const _list = [...listMediaSelected]
+    for (const media of listMedia) {
+      const m = _list.filter(o => o.id === media.id)
+      if (m.length <= 0) {
+        _list.push(media)
+      }
+    }
+    setListMediaSelected(_list)
+  }
 
   useEffect(() => {
     setListMediaQueries({
@@ -90,7 +110,31 @@ function ListMedia({ type }: PropsWithChildren<Props>) {
     <div className="tw-flex tw-flex-col tw-gap-2">
       <div className="tw-flex tw-items-center tw-justify-between tw-w-full">
         <div>
-          <Typo.Paragraph className="tw-text-red-500 tw-cursor-pointer">Chọn nhiều</Typo.Paragraph>
+          <If
+            isShow={!selectMultiMode}
+            element={
+              <Typo.Paragraph className="tw-text-red-500 tw-cursor-pointer" onClick={() => setSelectMultiMode(true)}>
+                Chọn nhiều
+              </Typo.Paragraph>
+            }
+          />
+          <If
+            isShow={selectMultiMode}
+            element={
+              <div className="tw-flex tw-items-center tw-space-x-4">
+                <div className="tw-flex tw-items-center tw-gap-1 tw-text-emerald-500" onClick={selectAllMediaInPage}>
+                  <CheckCheck size={18} />
+                  <Typo.Paragraph className="tw-cursor-pointer">Chọn tất cả trong trang</Typo.Paragraph>
+                </div>
+                <div
+                  className="tw-flex tw-items-center tw-gap-1 tw-text-red-500"
+                  onClick={() => setSelectMultiMode(false)}>
+                  <X size={18} />
+                  <Typo.Paragraph className="tw-cursor-pointer">Huỷ</Typo.Paragraph>
+                </div>
+              </div>
+            }
+          />
         </div>
         <div className="tw-flex tw-items-center tw-gap-2">
           <div className="tw-text-xs">{showPaginateMeta}</div>
@@ -106,7 +150,7 @@ function ListMedia({ type }: PropsWithChildren<Props>) {
       </div>
       <div className={cn('tw-grid tw-gap-4 tw-w-full', `tw-grid-cols-${colNum}`)} ref={listRef}>
         <If isShow={isLoading} element={<Each of={new Array(20)?.fill(0)} render={() => <SkeletonCard />} />} />
-        <LoadingItem data={{}} />
+        {/* <LoadingItem data={{}} /> */}
         <If
           isShow={!listMedia.length && !isLoading}
           element={

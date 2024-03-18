@@ -12,14 +12,36 @@ interface Props {
   data: MediaEntity
 }
 function Item({ data }: PropsWithChildren<Props>) {
-  const { setMediaSelectedID, mediaSelectedID } = useAppStore()
+  const { setMediaSelectedID, mediaSelectedID, setListMediaSelected, selectMultiMode, listMediaSelected } =
+    useAppStore()
+
+  const selectHandler = (media: MediaEntity) => {
+    switch (selectMultiMode) {
+      case true:
+        setMediaSelectedID(null)
+        return setListMediaSelected(media)
+      case false:
+      default:
+        return setMediaSelectedID(media.id)
+    }
+  }
+
+  const activated = (media: MediaEntity) => {
+    switch (selectMultiMode) {
+      case true:
+        return listMediaSelected.filter(o => o.id === media.id).length >= 1
+      case false:
+      default:
+        return mediaSelectedID === media.id
+    }
+  }
 
   return (
     <div
       className={cn('tw-border-2 tw-p-2 tw-rounded-lg tw-relative', {
-        'tw-border-red-400': mediaSelectedID === data.id,
+        'tw-border-red-400': activated(data),
       })}
-      onClick={() => setMediaSelectedID(data.id)}>
+      onClick={() => selectHandler(data)}>
       <div className="tw-absolute tw-left-3 tw-top-3 tw-z-10">
         <div
           className={cn('tw-w-4 tw-h-4 tw-rounded-full tw-border tw-border-white', {

@@ -15,13 +15,11 @@ import { FileType, SideMenu, SideMenuActive } from '../types'
 import Filter from './filter'
 import MediaDetail from './media-detail/detail'
 import ListMedia from './media-list/list'
-import LinkUpload from './upload/link'
 import MenuUpload from './upload/menu'
-import S3StorageUpload from './upload/s3-storage'
-import WatchFolderUpload from './upload/watch-folder'
 import { Toaster } from '../components/ui/toaster'
 import { useListMedia } from '../hooks/useMedia'
 import moment from 'moment'
+import MediaMultiSelected from './media-multi-selected'
 
 type State = {
   sideMenu: SideMenu
@@ -31,7 +29,7 @@ const queryClient = new QueryClient()
 function Main() {
   moment.locale('vi-VN')
   const { onSearchByText } = useListMedia()
-  const { setMediaDialog, openMedia, tabActivated, setTabActivated } = useAppStore()
+  const { setMediaDialog, openMedia, tabActivated, setTabActivated, selectMultiMode } = useAppStore()
   const [state, setState] = useState<State>({
     sideMenu: {
       active: SideMenuActive.FILTER,
@@ -48,7 +46,7 @@ function Main() {
   return (
     <QueryClientProvider client={queryClient}>
       <TooltipProvider delayDuration={100}>
-        <div className="tw-grid-cols-1 tw-grid-cols-2 tw-grid-cols-3 tw-grid-cols-4 tw-grid-cols-5 tw-grid-cols-6"></div>
+        <div className="tw-grid-cols-1 tw-grid-cols-2 tw-grid-cols-3 tw-grid-cols-4 tw-grid-cols-5 tw-grid-cols-6 tw-grid-cols-7 tw-grid-cols-8 tw-grid-cols-9"></div>
         <Toaster />
 
         <Button onClick={() => setMediaDialog(true)}>Open Media MefiPlatform</Button>
@@ -108,12 +106,12 @@ function Main() {
                         }
                         element={<LocalFilesUpload />}
                       /> */}
-                      <If isShow={state.sideMenu.active === SideMenuActive.LINK} element={<LinkUpload />} />
+                      {/* <If isShow={state.sideMenu.active === SideMenuActive.LINK} element={<LinkUpload />} />
                       <If
                         isShow={state.sideMenu.active === SideMenuActive.WATCH_FOLDER}
                         element={<WatchFolderUpload />}
                       />
-                      <If isShow={state.sideMenu.active === SideMenuActive.S3_STORAGE} element={<S3StorageUpload />} />
+                      <If isShow={state.sideMenu.active === SideMenuActive.S3_STORAGE} element={<S3StorageUpload />} /> */}
                     </div>
                   </div>
 
@@ -126,7 +124,8 @@ function Main() {
                         <ListMedia type={FileType.IMAGE} />
                       </TabsContent>
                     </ScrollArea>
-                    <MediaDetail />
+                    <If isShow={selectMultiMode} element={<MediaMultiSelected />} />
+                    <If isShow={!selectMultiMode} element={<MediaDetail />} />
                   </div>
                 </div>
               </Tabs>

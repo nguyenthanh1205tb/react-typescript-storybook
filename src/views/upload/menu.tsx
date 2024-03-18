@@ -6,7 +6,7 @@ import UppyDashboard, { getContentId, saveContentIdToLocalStorage } from '@/src/
 import { cn } from '@/src/lib/utils'
 import { SideMenuActive } from '@/src/types'
 import { uniqueId } from 'lodash'
-import { FilterIcon, FolderOpen, Link, UploadCloud } from 'lucide-react'
+import { FilterIcon } from 'lucide-react'
 import { PropsWithChildren, useEffect, useRef, useState } from 'react'
 
 interface Props {
@@ -94,7 +94,7 @@ function MenuUpload({ onChangeMenu, active }: PropsWithChildren<Props>) {
             </TooltipContent>
           </Tooltip>
         </li>
-        <li className="tw-flex tw-items-center tw-justify-center">
+        {/* <li className="tw-flex tw-items-center tw-justify-center">
           <Tooltip>
             <TooltipTrigger>
               <div
@@ -150,7 +150,7 @@ function MenuUpload({ onChangeMenu, active }: PropsWithChildren<Props>) {
               <p>Upload từ S3 storage</p>
             </TooltipContent>
           </Tooltip>
-        </li>
+        </li> */}
       </ul>
     </div>
   )

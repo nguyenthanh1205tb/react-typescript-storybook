@@ -27,17 +27,19 @@ type State = {
   listMediaQueries: GetListMediaRequest
   listCategories: Category[]
   selectMultiMode: boolean
+  listMediaSelected: MediaEntity[]
 
   // Functions
   setConfig: (payload: ConfigEntity) => void
   setMediaDialog: (payload: boolean) => void
   setTabActivated: (payload: TabItemType) => void
   setListMedia: (payload: MediaEntity[]) => void
-  setMediaSelectedID: (payload: string) => void
+  setMediaSelectedID: (payload: string | null) => void
   setMediaSelectedData: (payload: GetDetailMediaResponse | null) => void
   setListMediaQueries: (payload: Partial<GetListMediaRequest>) => void
   setListCategories: (payload: Category[]) => void
   setSelectMultiMode: (payload: boolean) => void
+  setListMediaSelected: (payload: MediaEntity | MediaEntity[]) => void
 }
 
 const useAppStore = create<State>(set => ({
@@ -49,6 +51,7 @@ const useAppStore = create<State>(set => ({
   mediaSelectedID: null,
   mediaSelectedData: null,
   listCategories: [],
+  listMediaSelected: [],
   selectMultiMode: false,
   listMediaQueries: {
     page: 1,
@@ -64,36 +67,37 @@ const useAppStore = create<State>(set => ({
    * Set media dialog on/off
    * @param payload boolean
    */
-  setConfig: (payload: ConfigEntity) => set(() => ({ config: payload })),
+  setConfig: payload => set(() => ({ config: payload })),
+
   /**
    * Set media dialog on/off
    * @param payload boolean
    */
-  setMediaDialog: (payload: boolean) => set(() => ({ openMedia: payload })),
+  setMediaDialog: payload => set(() => ({ openMedia: payload })),
 
   /**
    * Switch tab media [video/image]
    * @param payload TabItemType
    */
-  setTabActivated: (payload: TabItemType) => set(() => ({ tabActivated: payload })),
+  setTabActivated: payload => set(() => ({ tabActivated: payload })),
 
   /**
    * Set list media
    * @param payload Array<MediaEntity>
    */
-  setListMedia: (payload: MediaEntity[]) => set(() => ({ listMedia: payload })),
+  setListMedia: payload => set(() => ({ listMedia: payload })),
 
   /**
    * Set media selected
    * @param payload string
    */
-  setMediaSelectedID: (payload: string) => set(() => ({ mediaSelectedID: payload })),
+  setMediaSelectedID: payload => set(() => ({ mediaSelectedID: payload })),
 
   /**
    * Set media selected data
    * @param payload GetDetailMediaResponse
    */
-  setMediaSelectedData: (payload: GetDetailMediaResponse | null) =>
+  setMediaSelectedData: payload =>
     set(state => ({
       mediaSelectedData: payload,
       mediaSelectedID: payload ? state.mediaSelectedID : payload,
@@ -118,7 +122,33 @@ const useAppStore = create<State>(set => ({
    * Set select multi mode
    * @param payload Boolean
    */
-  setSelectMultiMode: payload => set(() => ({ selectMultiMode: payload })),
+  setSelectMultiMode: payload => set(() => ({ selectMultiMode: payload, listMediaSelected: [] })),
+
+  /**
+   * Set list media selected in multi mode
+   * @param payload Array<MediaEntity>
+   */
+  setListMediaSelected: payload =>
+    set(state => {
+      // Add list
+      if (Array.isArray(payload)) {
+        return { listMediaSelected: payload }
+      }
+
+      // clone list
+      const _list = [...state.listMediaSelected]
+
+      const idRemoved = state.listMediaSelected.filter(o => o.id === payload.id)
+
+      // Remove from list
+      if (idRemoved.length) {
+        const newList = _list.filter(o => o.id !== payload.id)
+        return { listMediaSelected: newList }
+      }
+      // Add per item
+      _list.push(payload)
+      return { listMediaSelected: _list }
+    }),
 }))
 
 export default useAppStore

@@ -5,11 +5,13 @@ import If from '@/src/hooks/if'
 import { Ban, Image as ImageIcon, Loader } from 'lucide-react'
 import errorImg from '@/src/assets/images/error-img.png'
 import { Tooltip, TooltipContent, TooltipTrigger } from '../../ui/tooltip'
+import Typo from '../typo'
 
 interface Props extends React.DetailedHTMLProps<React.ImgHTMLAttributes<HTMLImageElement>, HTMLImageElement> {
   height?: string
+  iconLoadingSize?: number
 }
-function Image({ src, className, height = '118px', style, ...rest }: PropsWithChildren<Props>) {
+function Image({ src, className, height = '118px', style, iconLoadingSize = 40, ...rest }: PropsWithChildren<Props>) {
   const [imgLoaded, setImgLoaded] = useState(false)
   const [isError, setIsError] = useState(false)
 
@@ -22,7 +24,7 @@ function Image({ src, className, height = '118px', style, ...rest }: PropsWithCh
             <div className="tw-absolute tw-w-full tw-h-full tw-left-0 tw-top-0 tw-flex tw-justify-center tw-items-center">
               <Tooltip>
                 <TooltipTrigger>
-                  <ImageIcon size={40} />
+                  <ImageIcon size={iconLoadingSize} />
                 </TooltipTrigger>
                 <TooltipContent side="top" className="tw-bg-slate-800 tw-text-white tw-flex tw-items-center tw-gap-2">
                   <Loader size={16} className="tw-animate-spin" />
@@ -30,7 +32,7 @@ function Image({ src, className, height = '118px', style, ...rest }: PropsWithCh
                 </TooltipContent>
               </Tooltip>
             </div>
-            <Skeleton className="tw-w-full tw-rounded-xl" style={{ height }} />
+            <Skeleton className="tw-w-full tw-rounded-lg" style={{ height }} />
           </div>
         }
       />
@@ -46,11 +48,11 @@ function Image({ src, className, height = '118px', style, ...rest }: PropsWithCh
                 </TooltipTrigger>
                 <TooltipContent side="top" className="tw-bg-slate-800 tw-text-white tw-flex tw-items-center tw-gap-2">
                   <Ban size={16} />
-                  <p>Hình ảnh bị lỗi</p>
+                  <Typo.Paragraph>Hình ảnh bị lỗi</Typo.Paragraph>
                 </TooltipContent>
               </Tooltip>
             </div>
-            <div className="tw-w-full tw-bg-gray-50 tw-rounded-xl" style={{ height }}></div>
+            <div className="tw-w-full tw-bg-gray-50 tw-rounded-lg" style={{ height }}></div>
           </div>
         }
       />
