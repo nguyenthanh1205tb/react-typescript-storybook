@@ -120,7 +120,7 @@ const Detail = () => {
   })
 
   // 2. Define a submit handler.
-  function onSubmit(values: { name: string; description: string; categoryIds: string[]; tags: string[] }) {
+  function onSubmit(values: any) {
     onSubmitMedia(values)
   }
 
