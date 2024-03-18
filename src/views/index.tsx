@@ -3,20 +3,12 @@ import { Button } from '@/src/components/ui/button'
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/src/components/ui/dialog'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { Image as ImageIcon, Search, Video } from 'lucide-react'
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { Input } from '../components/ui/input'
 import { ScrollArea } from '../components/ui/scroll-area'
 import { Separator } from '../components/ui/separator'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '../components/ui/tabs'
 import { TooltipProvider } from '../components/ui/tooltip'
-import {
-  AUTH_TOKEN,
-  LS_SELECTED_ORGANIZATION_KEY,
-  LS_SELECTED_TEMPLATE_KEY,
-  LS_SELECTED_TOKEN_KEY,
-  ORG_ID,
-  TEMPLATE_ID,
-} from '../configs'
 import If from '../hooks/if'
 import useAppStore, { TabItemType } from '../stores/useAppStore'
 import { FileType, SideMenu, SideMenuActive } from '../types'
@@ -52,12 +44,6 @@ function Main() {
       sideMenu: { ...prev.sideMenu, active: k },
     }))
   }
-
-  useEffect(() => {
-    localStorage.setItem(LS_SELECTED_ORGANIZATION_KEY, ORG_ID)
-    localStorage.setItem(LS_SELECTED_TOKEN_KEY, AUTH_TOKEN)
-    localStorage.setItem(LS_SELECTED_TEMPLATE_KEY, TEMPLATE_ID)
-  }, [])
 
   return (
     <QueryClientProvider client={queryClient}>
