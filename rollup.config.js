@@ -8,7 +8,6 @@ import { terser } from 'rollup-plugin-terser'
 import tsTrans from 'rollup-plugin-typescript2'
 import imageResolve from '@rollup/plugin-image'
 import alias from '@rollup/plugin-alias'
-import sass from 'rollup-plugin-sass'
 import path from 'path'
 
 const tailwindcss = require('tailwindcss')

@@ -1,8 +1,9 @@
 import Uppy from '@uppy/core'
 import Dashboard from '@uppy/dashboard'
 import Tus from '@uppy/tus'
-import { AUTH_TOKEN, UPLOAD_ENDPOINT } from '.'
+import { UPLOAD_ENDPOINT } from '.'
 import Vietnamese from './uppy.locale'
+import { AuthTokenType, getAuthToken } from '../lib/utils/auth'
 
 export const createUppyInstance = (options?: any) => {
   // TODO: Add English locale
@@ -19,7 +20,7 @@ export const createUppyInstance = (options?: any) => {
       resume: true,
       endpoint: UPLOAD_ENDPOINT,
       async onBeforeRequest(req) {
-        const token = AUTH_TOKEN
+        const token = getAuthToken(AuthTokenType.ACCESS)
         req.setHeader('Authorization', `Bearer ${token}`)
       },
       ...(options || {}),
