@@ -44,7 +44,7 @@ function Image({ src, className, height = '118px', style, iconLoadingSize = 40, 
             <div className="tw-absolute tw-w-full tw-h-full tw-left-0 tw-top-0 tw-flex tw-justify-center tw-items-center">
               <Tooltip>
                 <TooltipTrigger>
-                  <img src={errorImg} alt="error when loading" />
+                  <img src={errorImg} alt="." />
                 </TooltipTrigger>
                 <TooltipContent side="top" className="tw-bg-slate-800 tw-text-white tw-flex tw-items-center tw-gap-2">
                   <Ban size={16} />

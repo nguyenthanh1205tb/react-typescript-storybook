@@ -1,16 +1,15 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { Button } from '@/src/components/ui/button'
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/src/components/ui/dialog'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
-import { Image as ImageIcon, Search, Video } from 'lucide-react'
-import { useState } from 'react'
+import { Search, Video, Trash } from 'lucide-react'
 import { Input } from '../components/ui/input'
 import { ScrollArea } from '../components/ui/scroll-area'
 import { Separator } from '../components/ui/separator'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '../components/ui/tabs'
 import { TooltipProvider } from '../components/ui/tooltip'
 import If from '../hooks/if'
-import useAppStore, { TabItemType } from '../stores/useAppStore'
+import useAppStore, { VideoTabItemType } from '../stores/useAppStore'
 import { FileType, SideMenu, SideMenuActive } from '../types'
 import Filter from './filter'
 import MediaDetail from './media-detail/detail'
@@ -62,21 +61,21 @@ function Main() {
                 <div className="tw-flex tw-flex-row tw-justify-between tw-items-center tw-py-2 tw-flex-none">
                   <TabsList>
                     <TabsTrigger
-                      value={TabItemType.VIDEO}
+                      value={VideoTabItemType.VIDEO}
                       className="!tw-px-14"
-                      onClick={() => setTabActivated(TabItemType.VIDEO)}>
+                      onClick={() => setTabActivated(VideoTabItemType.VIDEO)}>
                       <div className="tw-flex tw-items-center">
                         <Video size={18} className="tw-mr-2" />
                         <p>Video</p>
                       </div>
                     </TabsTrigger>
                     <TabsTrigger
-                      value={TabItemType.IMAGE}
+                      value={VideoTabItemType.TRASH}
                       className="!tw-px-14"
-                      onClick={() => setTabActivated(TabItemType.IMAGE)}>
+                      onClick={() => setTabActivated(VideoTabItemType.TRASH)}>
                       <div className="tw-flex tw-items-center">
-                        <ImageIcon size={18} className="tw-mr-2" />
-                        <p>Hình ảnh</p>
+                        <Trash size={18} className="tw-mr-2" />
+                        <p>Thùng Rác</p>
                       </div>
                     </TabsTrigger>
                   </TabsList>
@@ -115,18 +114,14 @@ function Main() {
                     </div>
                   </div>
 
-                  <div className="tw-flex-1 tw-pl-2 tw-pt-2 tw-flex">
+                  <TabsContent value={VideoTabItemType.VIDEO} className="!tw-mt-0 tw-flex-1 tw-pl-2 tw-pt-2 tw-flex">
                     <ScrollArea className="tw-pr-4 tw-max-h-[650px] tw-border-r tw-flex-1">
-                      <TabsContent value={TabItemType.VIDEO} className="!tw-mt-0">
-                        <ListMedia type={FileType.VIDEO} />
-                      </TabsContent>
-                      <TabsContent value={TabItemType.IMAGE} className="!tw-mt-0">
-                        <ListMedia type={FileType.IMAGE} />
-                      </TabsContent>
+                      <ListMedia type={FileType.VIDEO} />
                     </ScrollArea>
                     <If isShow={selectMultiMode} element={<MediaMultiSelected />} />
                     <If isShow={!selectMultiMode} element={<MediaDetail />} />
-                  </div>
+                  </TabsContent>
+                  <TabsContent value={VideoTabItemType.TRASH} className="!tw-mt-0"></TabsContent>
                 </div>
               </Tabs>
             </div>

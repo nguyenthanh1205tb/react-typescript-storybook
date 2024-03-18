@@ -13,7 +13,7 @@ import { avatarUrl, formatBytes } from '@/src/lib/utils/media'
 import { cn } from '@/src/lib/utils/merge-class'
 import { MediaCodec, MediaPacks, Video } from '@/src/types'
 import { zodResolver } from '@hookform/resolvers/zod'
-import useAppStore, { TabItemType } from '@/src/stores/useAppStore'
+import useAppStore, { VideoTabItemType } from '@/src/stores/useAppStore'
 import {
   CalendarFold,
   CircleFadingPlus,
@@ -147,7 +147,7 @@ const Detail = () => {
         isShow={haveMediaSelectedID}
         element={() => (
           <div className="tw-flex tw-flex-col">
-            {tabActivated === TabItemType.VIDEO ? (
+            {tabActivated === VideoTabItemType.VIDEO ? (
               <VideoPlayer
                 videoUrl={videoUrl(mediaSelectedData?.data.video) as string}
                 thumbnailUrl={avatarUrl(mediaSelectedData?.data.avatar_thumb)}

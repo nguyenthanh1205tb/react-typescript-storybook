@@ -11,9 +11,9 @@ import {
   OrderType,
 } from '../types'
 
-export enum TabItemType {
+export enum VideoTabItemType {
   VIDEO = 'video',
-  IMAGE = 'image',
+  TRASH = 'trash',
 }
 
 type State = {
@@ -21,7 +21,7 @@ type State = {
   config: ConfigEntity | null
   openMedia: boolean
   listMedia: MediaEntity[]
-  tabActivated: TabItemType
+  tabActivated: VideoTabItemType
   mediaSelectedID: string | null
   mediaSelectedData: GetDetailMediaResponse | null
   listMediaQueries: GetListMediaRequest
@@ -32,7 +32,7 @@ type State = {
   // Functions
   setConfig: (payload: ConfigEntity) => void
   setMediaDialog: (payload: boolean) => void
-  setTabActivated: (payload: TabItemType) => void
+  setTabActivated: (payload: VideoTabItemType) => void
   setListMedia: (payload: MediaEntity[]) => void
   setMediaSelectedID: (payload: string | null) => void
   setMediaSelectedData: (payload: GetDetailMediaResponse | null) => void
@@ -47,7 +47,7 @@ const useAppStore = create<State>(set => ({
   config: null,
   openMedia: false,
   listMedia: [],
-  tabActivated: TabItemType.VIDEO,
+  tabActivated: VideoTabItemType.VIDEO,
   mediaSelectedID: null,
   mediaSelectedData: null,
   listCategories: [],
@@ -77,7 +77,7 @@ const useAppStore = create<State>(set => ({
 
   /**
    * Switch tab media [video/image]
-   * @param payload TabItemType
+   * @param payload VideoTabItemType
    */
   setTabActivated: payload => set(() => ({ tabActivated: payload })),
 

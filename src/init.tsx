@@ -5,9 +5,6 @@ class Init {
   constructor(placeID?: string) {
     if (placeID && placeID !== '') {
       this.appendMediaComponent(placeID)
-      // localStorage.setItem(LS_SELECTED_ORGANIZATION_KEY, ORG_ID)
-      // localStorage.setItem(LS_SELECTED_TOKEN_KEY, AUTH_TOKEN)
-      // localStorage.setItem(LS_SELECTED_TEMPLATE_KEY, TEMPLATE_ID)
     }
   }
 
