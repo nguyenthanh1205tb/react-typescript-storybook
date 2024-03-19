@@ -53,7 +53,11 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({ videoUrl, thumbnailUrl }) => 
 
   return (
     <div className="w-full aspect-video">
-      <video ref={videoRef} className="w-full video-js vjs-default-skin vjs-16-9" />
+      <video
+        ref={videoRef}
+        className="w-full video-js vjs-default-skin vjs-big-play-centered vjs-16-9 "
+        preload="auto"
+      />
     </div>
   )
 }
