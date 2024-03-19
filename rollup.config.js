@@ -15,6 +15,12 @@ const tailwindcss = require('tailwindcss')
 export default {
   context: 'this',
   input: 'src/index.ts',
+  onwarn(warning, warn) {
+    if (warning.code === 'MODULE_LEVEL_DIRECTIVE') {
+      return
+    }
+    warn(warning)
+  },
   output: {
     exports: 'named',
     file: 'build/index.min.js',
