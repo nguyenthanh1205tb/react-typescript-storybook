@@ -1,3 +1,4 @@
+import React, { PropsWithChildren, useEffect, useRef, useState } from 'react'
 import LoadingItem from '@/src/components/common/media-loading-item/loading-item'
 import Paginate from '@/src/components/common/paginate'
 import { SkeletonCard } from '@/src/components/common/skeleton-card'
@@ -13,7 +14,6 @@ import useAppStore from '@/src/stores/useAppStore'
 import { ConfigResponse, FileType } from '@/src/types'
 import { useQuery } from '@tanstack/react-query'
 import { CheckCheck, PackageOpen, X } from 'lucide-react'
-import React, { PropsWithChildren, useEffect, useMemo, useRef, useState } from 'react'
 import Item from './item'
 
 const BASE_ITEM_WIDTH = 230
@@ -58,13 +58,6 @@ function ListMedia({ type }: PropsWithChildren<Props>) {
       fileType: type,
     })
   }, [type])
-
-  const showPaginateMeta = useMemo(() => {
-    const currentPage = listMediaQueries.page ?? 1
-    const first = currentPage === 1 ? 1 : currentPage * PAGINATE_LIMIT - PAGINATE_LIMIT + 1
-    const end = currentPage === 1 ? PAGINATE_LIMIT : currentPage * PAGINATE_LIMIT
-    return `Hiển thị ${first} - ${end > totalCount ? totalCount : end} / ${totalCount}`
-  }, [listMediaQueries, totalCount])
 
   const listResize = () => {
     if (!listRef || !listRef.current) return
@@ -138,7 +131,6 @@ function ListMedia({ type }: PropsWithChildren<Props>) {
           />
         </div>
         <div className="tw-flex tw-items-center tw-gap-2">
-          <div className="tw-text-xs">{showPaginateMeta}</div>
           <Paginate
             totalCount={totalCount}
             limit={listMediaQueries.take ?? PAGINATE_LIMIT}

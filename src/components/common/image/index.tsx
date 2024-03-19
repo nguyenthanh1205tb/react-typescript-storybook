@@ -32,7 +32,7 @@ function Image({ src, className, height = '118px', style, iconLoadingSize = 40, 
                 </TooltipContent>
               </Tooltip>
             </div>
-            <Skeleton className="tw-w-full tw-rounded-lg" style={{ height }} />
+            <Skeleton className={cn('tw-w-full tw-rounded-lg', className)} style={{ height }} />
           </div>
         }
       />
@@ -52,7 +52,7 @@ function Image({ src, className, height = '118px', style, iconLoadingSize = 40, 
                 </TooltipContent>
               </Tooltip>
             </div>
-            <div className="tw-w-full tw-bg-gray-50 tw-rounded-lg" style={{ height }}></div>
+            <div className={cn('tw-w-full tw-bg-gray-50 tw-rounded-lg', className)} style={{ height }}></div>
           </div>
         }
       />

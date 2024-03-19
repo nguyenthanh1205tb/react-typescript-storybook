@@ -34,11 +34,16 @@ import React, { useEffect, useMemo } from 'react'
 import { useForm } from 'react-hook-form'
 import { useCategory, useDetailMedia } from '../../hooks/useMedia'
 import { avatarUrl, formatBytes } from '../../lib/utils/media'
-import useAppStore, { VideoTabItemType } from '../../stores/useAppStore'
-import { Category, ComboboxOption, MediaCodec, MediaPacks, Video } from '../../types'
+import useAppStore from '../../stores/useAppStore'
+import { Category, ComboboxOption, MediaCodec, MediaPackageType, MediaPacks, Video } from '../../types'
+import Image from '@/src/components/common/image'
+import Each from '@/src/hooks/each'
 
-const Detail = () => {
-  const { mediaSelectedID, mediaSelectedData, setMediaSelectedData, tabActivated } = useAppStore()
+interface Props {
+  type: MediaPackageType
+}
+const Detail = ({ type }: Props) => {
+  const { mediaSelectedID, mediaSelectedData, setMediaSelectedData } = useAppStore()
   const { response, getDetailMedia } = useDetailMedia()
   const { getListCategories } = useCategory()
   const { data: categoriesData } = getListCategories()
@@ -137,10 +142,13 @@ const Detail = () => {
 
   return (
     <div
-      className={cn('tw-bg-slate-800 tw-text-white tw-relative tw-h-full tw-w-full tw-flex-none tw-transition-all', {
-        'tw-max-w-[450px]': haveMediaSelectedID,
-        'tw-max-w-0': !haveMediaSelectedID,
-      })}>
+      className={cn(
+        'tw-bg-slate-800 tw-text-white tw-relative tw-h-full tw-w-full tw-flex-none tw-transition-all tw-max-h-[658px]',
+        {
+          'tw-max-w-[450px]': haveMediaSelectedID,
+          'tw-max-w-0': !haveMediaSelectedID,
+        },
+      )}>
       <div
         className={cn(
           'tw-absolute -tw-left-8 tw-top-1/2 tw-bg-slate-800 tw-w-8 tw-h-10 tw-flex tw-items-center tw-justify-center tw-rounded-tl-lg tw-rounded-bl-lg tw-cursor-pointer',
@@ -164,14 +172,27 @@ const Detail = () => {
         isShow={haveMediaSelectedID}
         element={() => (
           <div className="tw-flex tw-flex-col">
-            {tabActivated === VideoTabItemType.VIDEO ? (
-              <VideoPlayer
-                videoUrl={videoUrl(mediaSelectedData?.data.video) as string}
-                thumbnailUrl={avatarUrl(mediaSelectedData?.data.avatar_thumb)}
-              />
-            ) : (
-              <img className="tw-h-[253px] tw-object-contain" src={avatarUrl(mediaSelectedData?.data.avatar_thumb)} />
-            )}
+            <If
+              isShow={type === MediaPackageType.VIDEO}
+              element={
+                <VideoPlayer
+                  videoUrl={videoUrl(mediaSelectedData?.data.video) as string}
+                  thumbnailUrl={avatarUrl(mediaSelectedData?.data.avatar_thumb)}
+                />
+              }
+            />
+
+            <If
+              isShow={type === MediaPackageType.IMAGE}
+              element={
+                <Image
+                  src={avatarUrl(mediaSelectedData?.data.avatar_thumb)}
+                  height="253px"
+                  className="tw-rounded-none"
+                />
+              }
+            />
+
             <div className="tw-flex tw-gap-2 tw-justify-between tw-bg-slate-600 tw-p-3">
               <div className="tw-flex tw-gap-4">
                 <div className="tw-flex tw-gap-1 tw-items-center">
@@ -228,193 +249,201 @@ const Detail = () => {
             <div className="tw-h-[1px] tw-bg-slate-700 tw-w-full"></div>
             <div className="tw-px-3 tw-py-2">
               <Accordion type="multiple" className="w-full">
-                {mediaAccords.map((item, index: number) =>
-                  !item.hide ? (
-                    <AccordionItem value={`item-${index}`} key={index} className="tw-border-slate-700">
-                      <AccordionTrigger className="hover:tw-no-underline !tw-py-2">{item.headerName}</AccordionTrigger>
-                      <AccordionContent className="!tw-pt-5 tw-px-2 tw-text-sm ">
-                        <ScrollArea className="tw-h-[250px] tw-pr-5">
-                          <Form {...form}>
-                            <form onSubmit={form.handleSubmit(onSubmit)} className="tw-pt-3 tw-space-y-8 tw-px-3">
-                              <FormField
-                                control={form.control}
-                                name="name"
-                                render={({ field }) => (
-                                  <FormItem>
-                                    <FormLabel>Tiêu đề</FormLabel>
-                                    <FormControl>
-                                      <Textarea className="!tw-bg-black tw-border-none" {...field} />
-                                    </FormControl>
-                                    <FormMessage />
-                                  </FormItem>
-                                )}
-                              />
-                              <FormField
-                                control={form.control}
-                                name="description"
-                                render={({ field }) => (
-                                  <FormItem>
-                                    <FormLabel>Chú thích</FormLabel>
-                                    <FormControl>
-                                      <Textarea className="!tw-bg-black tw-border-none" {...field} />
-                                    </FormControl>
+                <Each
+                  of={mediaAccords}
+                  render={item => (
+                    <If
+                      isShow={!item.hide}
+                      element={
+                        <AccordionItem value={`item-${item.headerName}`} className="tw-border-slate-700">
+                          <AccordionTrigger className="hover:tw-no-underline !tw-py-2">
+                            {item.headerName}
+                          </AccordionTrigger>
+                          <AccordionContent className="tw-text-sm">
+                            <ScrollArea className="tw-h-[210px] tw-pr-4">
+                              <Form {...form}>
+                                <form onSubmit={form.handleSubmit(onSubmit)} className="tw-pt-3 tw-space-y-4 tw-px-1">
+                                  <FormField
+                                    control={form.control}
+                                    name="name"
+                                    render={({ field }) => (
+                                      <FormItem>
+                                        <FormLabel>Tiêu đề</FormLabel>
+                                        <FormControl>
+                                          <Textarea className="!tw-bg-slate-900 tw-border-none" {...field} />
+                                        </FormControl>
+                                        <FormMessage />
+                                      </FormItem>
+                                    )}
+                                  />
+                                  <FormField
+                                    control={form.control}
+                                    name="description"
+                                    render={({ field }) => (
+                                      <FormItem>
+                                        <FormLabel>Chú thích</FormLabel>
+                                        <FormControl>
+                                          <Textarea className="!tw-bg-slate-900 tw-border-none" {...field} />
+                                        </FormControl>
 
-                                    <FormMessage />
-                                  </FormItem>
-                                )}
-                              />
-                              <FormField
-                                control={form.control}
-                                name="right"
-                                render={({ field }) => (
-                                  <FormItem>
-                                    <FormLabel>Bản quyền</FormLabel>
-                                    <FormControl>
-                                      <Input className="!tw-bg-black tw-border-none" {...field} />
-                                    </FormControl>
-                                    <FormMessage />
-                                  </FormItem>
-                                )}
-                              />
-                              <FormField
-                                control={form.control}
-                                name="isDrm"
-                                render={({ field }) => (
-                                  <FormItem className="tw-flex tw-gap-3 tw-items-center">
-                                    <FormControl>
-                                      <Checkbox
-                                        className="!tw-bg-black"
-                                        checked={field.value}
-                                        onCheckedChange={field.onChange}
-                                      />
-                                    </FormControl>
-                                    <FormLabel className="!tw-m-0"> Video độc quyền?</FormLabel>
-                                    <FormMessage />
-                                  </FormItem>
-                                )}
-                              />
-                              <FormField
-                                control={form.control}
-                                name="author"
-                                render={({ field }) => (
-                                  <FormItem>
-                                    <FormLabel>Tác giả</FormLabel>
-                                    <FormControl>
-                                      <Input className="!tw-bg-black tw-border-none" {...field} />
-                                    </FormControl>
-                                    <FormMessage />
-                                  </FormItem>
-                                )}
-                              />
-                              <FormField
-                                control={form.control}
-                                name="tags"
-                                render={({ field }) => (
-                                  <FormItem {...field}>
-                                    <FormLabel>Từ khoá</FormLabel>
-                                    <FormControl>
-                                      <MultiSelectField
-                                        key={field.name}
-                                        inputClassName="!tw-bg-black tw-border-none"
-                                        name="tags"
-                                        value={field.value}
-                                        onChange={value => {
-                                          field.onChange(value)
-                                        }}
-                                        options={[
-                                          {
-                                            value: 'remix',
-                                            label: 'Remix',
-                                          },
-                                          {
-                                            value: 'astro',
-                                            label: 'Astro',
-                                          },
-                                          {
-                                            value: 'wordpress',
-                                            label: 'WordPress',
-                                          },
-                                          {
-                                            value: 'express.js',
-                                            label: 'Express.js',
-                                          },
-                                        ]}
-                                      />
-                                    </FormControl>
-                                    <FormMessage />
-                                  </FormItem>
-                                )}
-                              />
-                              <FormField
-                                control={form.control}
-                                name="categoryIds"
-                                render={({ field }) => (
-                                  <FormItem {...field}>
-                                    <FormLabel>Chuyên mục</FormLabel>
-                                    <FormControl>
-                                      <MultiSelectChild
-                                        value={field.value}
-                                        inputClassName="!tw-bg-black tw-border-none"
-                                        options={categoriesFiltered}
-                                        // placeholder="Chọn chuyên mục..."
-                                        // // value={listMediaQueries.categoryId}
-                                        // value={field.value}
-                                        onChange={field.onChange}
-                                      />
-                                    </FormControl>
-                                    <FormMessage />
-                                  </FormItem>
-                                )}
-                              />
-                              <FormField
-                                control={form.control}
-                                name="types"
-                                render={({ field }) => (
-                                  <FormItem {...field}>
-                                    <FormLabel>Thể loại</FormLabel>
-                                    <FormControl>
-                                      <MultiSelectField
-                                        key={field.name}
-                                        inputClassName="!tw-bg-black tw-border-none"
-                                        name="tags"
-                                        onChange={value => {
-                                          field.onChange(value)
-                                        }}
-                                        options={[
-                                          {
-                                            value: 'remix',
-                                            label: 'Remix',
-                                          },
-                                          {
-                                            value: 'astro',
-                                            label: 'Astro',
-                                          },
-                                          {
-                                            value: 'wordpress',
-                                            label: 'WordPress',
-                                          },
-                                          {
-                                            value: 'express.js',
-                                            label: 'Express.js',
-                                          },
-                                        ]}
-                                      />
-                                    </FormControl>
-                                    <FormMessage />
-                                  </FormItem>
-                                )}
-                              />
+                                        <FormMessage />
+                                      </FormItem>
+                                    )}
+                                  />
+                                  <FormField
+                                    control={form.control}
+                                    name="right"
+                                    render={({ field }) => (
+                                      <FormItem>
+                                        <FormLabel>Bản quyền</FormLabel>
+                                        <FormControl>
+                                          <Input className="!tw-bg-slate-900 tw-border-none" {...field} />
+                                        </FormControl>
+                                        <FormMessage />
+                                      </FormItem>
+                                    )}
+                                  />
+                                  <FormField
+                                    control={form.control}
+                                    name="isDrm"
+                                    render={({ field }) => (
+                                      <FormItem className="tw-flex tw-gap-3 tw-items-center">
+                                        <FormControl>
+                                          <Checkbox
+                                            className="!tw-bg-slate-900"
+                                            checked={field.value}
+                                            onCheckedChange={field.onChange}
+                                          />
+                                        </FormControl>
+                                        <FormLabel className="!tw-m-0"> Video độc quyền?</FormLabel>
+                                        <FormMessage />
+                                      </FormItem>
+                                    )}
+                                  />
+                                  <FormField
+                                    control={form.control}
+                                    name="author"
+                                    render={({ field }) => (
+                                      <FormItem>
+                                        <FormLabel>Tác giả</FormLabel>
+                                        <FormControl>
+                                          <Input className="!tw-bg-slate-900 tw-border-none" {...field} />
+                                        </FormControl>
+                                        <FormMessage />
+                                      </FormItem>
+                                    )}
+                                  />
+                                  <FormField
+                                    control={form.control}
+                                    name="tags"
+                                    render={({ field }) => (
+                                      <FormItem {...field}>
+                                        <FormLabel>Từ khoá</FormLabel>
+                                        <FormControl>
+                                          <MultiSelectField
+                                            key={field.name}
+                                            inputClassName="!tw-bg-slate-900 tw-border-none"
+                                            name="tags"
+                                            value={field.value}
+                                            onChange={value => {
+                                              field.onChange(value)
+                                            }}
+                                            options={[
+                                              {
+                                                value: 'remix',
+                                                label: 'Remix',
+                                              },
+                                              {
+                                                value: 'astro',
+                                                label: 'Astro',
+                                              },
+                                              {
+                                                value: 'wordpress',
+                                                label: 'WordPress',
+                                              },
+                                              {
+                                                value: 'express.js',
+                                                label: 'Express.js',
+                                              },
+                                            ]}
+                                          />
+                                        </FormControl>
+                                        <FormMessage />
+                                      </FormItem>
+                                    )}
+                                  />
+                                  <FormField
+                                    control={form.control}
+                                    name="categoryIds"
+                                    render={({ field }) => (
+                                      <FormItem {...field}>
+                                        <FormLabel>Chuyên mục</FormLabel>
+                                        <FormControl>
+                                          <MultiSelectChild
+                                            value={field.value}
+                                            inputClassName="!tw-bg-slate-900 tw-border-none"
+                                            options={categoriesFiltered}
+                                            // placeholder="Chọn chuyên mục..."
+                                            // // value={listMediaQueries.categoryId}
+                                            // value={field.value}
+                                            onChange={field.onChange}
+                                          />
+                                        </FormControl>
+                                        <FormMessage />
+                                      </FormItem>
+                                    )}
+                                  />
+                                  <FormField
+                                    control={form.control}
+                                    name="types"
+                                    render={({ field }) => (
+                                      <FormItem {...field}>
+                                        <FormLabel>Thể loại</FormLabel>
+                                        <FormControl>
+                                          <MultiSelectField
+                                            key={field.name}
+                                            inputClassName="!tw-bg-slate-900 tw-border-none"
+                                            name="tags"
+                                            onChange={value => {
+                                              field.onChange(value)
+                                            }}
+                                            options={[
+                                              {
+                                                value: 'remix',
+                                                label: 'Remix',
+                                              },
+                                              {
+                                                value: 'astro',
+                                                label: 'Astro',
+                                              },
+                                              {
+                                                value: 'wordpress',
+                                                label: 'WordPress',
+                                              },
+                                              {
+                                                value: 'express.js',
+                                                label: 'Express.js',
+                                              },
+                                            ]}
+                                          />
+                                        </FormControl>
+                                        <FormMessage />
+                                      </FormItem>
+                                    )}
+                                  />
 
-                              <Button className="tw-mt-5" type="submit">
-                                Submit
-                              </Button>
-                            </form>
-                          </Form>
-                        </ScrollArea>
-                      </AccordionContent>
-                    </AccordionItem>
-                  ) : null,
-                )}
+                                  <Button className="tw-mt-5" type="submit">
+                                    Submit
+                                  </Button>
+                                </form>
+                              </Form>
+                            </ScrollArea>
+                          </AccordionContent>
+                        </AccordionItem>
+                      }
+                    />
+                  )}
+                />
               </Accordion>
             </div>
             <div className="tw-absolute tw-bottom-0 tw-w-full tw-flex tw-items-center tw-justify-center">

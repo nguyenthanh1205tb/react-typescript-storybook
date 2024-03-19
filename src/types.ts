@@ -4,6 +4,12 @@ export interface HookState<T> {
   err: null | Error
 }
 
+export enum MediaPackageType {
+  VIDEO = 'video',
+  IMAGE = 'image',
+  DOCUMENT = 'document',
+}
+
 export interface ComboboxOption {
   label: string
   value: string

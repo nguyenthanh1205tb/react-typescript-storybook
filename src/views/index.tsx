@@ -1,8 +1,8 @@
-import React, { useState } from 'react'
+import React, { useMemo, useState } from 'react'
 import { Button } from '@/src/components/ui/button'
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/src/components/ui/dialog'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
-import { Search, Video, Trash } from 'lucide-react'
+import { Search, Video, Trash, Image as ImageIcon, FileText } from 'lucide-react'
 import { Input } from '../components/ui/input'
 import { ScrollArea } from '../components/ui/scroll-area'
 import { Separator } from '../components/ui/separator'
@@ -10,22 +10,25 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '../components/ui/tabs'
 import { TooltipProvider } from '../components/ui/tooltip'
 import If from '../hooks/if'
 import useAppStore, { VideoTabItemType } from '../stores/useAppStore'
-import { FileType, SideMenu, SideMenuActive } from '../types'
+import { FileType, MediaPackageType, SideMenu, SideMenuActive } from '../types'
 import Filter from './filter'
 import MediaDetail from './media-detail/detail'
-import ListMedia from './media-list/list'
 import MenuUpload from './upload/menu'
 import { Toaster } from '../components/ui/toaster'
 import { useListMedia } from '../hooks/useMedia'
 import moment from 'moment'
 import MediaMultiSelected from './media-multi-selected'
+import ListMedia from './media-list/list'
 
 type State = {
   sideMenu: SideMenu
 }
 const queryClient = new QueryClient()
 
-function Main() {
+interface Props {
+  type: MediaPackageType
+}
+function Main({ type }: Props) {
   moment.locale('vi-VN')
   const { onSearchByText } = useListMedia()
   const { setMediaDialog, openMedia, tabActivated, setTabActivated, selectMultiMode } = useAppStore()
@@ -42,13 +45,49 @@ function Main() {
     }))
   }
 
+  const exposeFileType = useMemo(() => {
+    switch (type) {
+      case MediaPackageType.IMAGE:
+        return FileType.IMAGE
+      case MediaPackageType.DOCUMENT:
+        return FileType.DOCUMENT
+      case MediaPackageType.VIDEO:
+      default:
+        return FileType.VIDEO
+    }
+  }, [type])
+
+  const exposeTitle = useMemo(() => {
+    switch (type) {
+      case MediaPackageType.IMAGE:
+        return {
+          icon: <ImageIcon size={18} className="tw-mr-2" />,
+          name: 'Hình ảnh',
+        }
+      case MediaPackageType.DOCUMENT:
+        return {
+          icon: <FileText size={18} className="tw-mr-2" />,
+          name: 'Tài liệu',
+        }
+      case MediaPackageType.VIDEO:
+      default:
+        return {
+          icon: <Video size={18} className="tw-mr-2" />,
+          name: 'Video',
+        }
+    }
+  }, [type])
+
   return (
     <QueryClientProvider client={queryClient}>
       <TooltipProvider delayDuration={100}>
         <div className="tw-grid-cols-1 tw-grid-cols-2 tw-grid-cols-3 tw-grid-cols-4 tw-grid-cols-5 tw-grid-cols-6 tw-grid-cols-7 tw-grid-cols-8 tw-grid-cols-9"></div>
         <Toaster />
 
-        <Button onClick={() => setMediaDialog(true)}>Open Media MefiPlatform</Button>
+        <Button onClick={() => setMediaDialog(true)}>
+          <If isShow={type === MediaPackageType.VIDEO} element="Quản lý video" />
+          <If isShow={type === MediaPackageType.IMAGE} element="Quản lý hình ảnh" />
+        </Button>
         <Dialog open={openMedia} onOpenChange={open => setMediaDialog(open)}>
           <DialogContent className="!tw-max-w-[95vw] !tw-flex tw-flex-col tw-min-h-[800px] tw-max-h-[800px] tw-overflow-hidden">
             <DialogHeader>
@@ -65,8 +104,8 @@ function Main() {
                       className="!tw-px-14"
                       onClick={() => setTabActivated(VideoTabItemType.VIDEO)}>
                       <div className="tw-flex tw-items-center">
-                        <Video size={18} className="tw-mr-2" />
-                        <p>Video</p>
+                        {exposeTitle.icon}
+                        <p>{exposeTitle.name}</p>
                       </div>
                     </TabsTrigger>
                     <TabsTrigger
@@ -98,7 +137,7 @@ function Main() {
                   <div className="tw-py-2 tw-w-[350px] tw-pr-2 tw-border-r tw-flex-none tw-flex">
                     <MenuUpload onChangeMenu={onChangeMenu} active={state.sideMenu.active} />
                     <div className="tw-flex-1 tw-pl-2">
-                      <If isShow={state.sideMenu.active === SideMenuActive.FILTER} element={<Filter />} />
+                      <If isShow={state.sideMenu.active === SideMenuActive.FILTER} element={<Filter type={type} />} />
                       {/* <If
                         isShow={
                           state.sideMenu.active === SideMenuActive.LOCAL_FILES
@@ -116,10 +155,10 @@ function Main() {
 
                   <TabsContent value={VideoTabItemType.VIDEO} className="!tw-mt-0 tw-flex-1 tw-pl-2 tw-pt-2 tw-flex">
                     <ScrollArea className="tw-pr-4 tw-max-h-[650px] tw-border-r tw-flex-1">
-                      <ListMedia type={FileType.VIDEO} />
+                      <ListMedia type={exposeFileType} />
                     </ScrollArea>
                     <If isShow={selectMultiMode} element={<MediaMultiSelected />} />
-                    <If isShow={!selectMultiMode} element={<MediaDetail />} />
+                    <If isShow={!selectMultiMode} element={<MediaDetail type={type} />} />
                   </TabsContent>
                   <TabsContent value={VideoTabItemType.TRASH} className="!tw-mt-0"></TabsContent>
                 </div>

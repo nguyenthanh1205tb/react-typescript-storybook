@@ -11,9 +11,11 @@ import If from '@/src/hooks/if'
 import { useCategory, useListMedia } from '@/src/hooks/useMedia'
 import { cn } from '@/src/lib/utils'
 import useAppStore from '@/src/stores/useAppStore'
-import { Category, ComboboxOption, GetListMediaTimeRange, OrderByType, OrderType } from '@/src/types'
+import { Category, ComboboxOption, GetListMediaTimeRange, MediaPackageType, OrderByType, OrderType } from '@/src/types'
 
-interface Props {}
+interface Props {
+  type: MediaPackageType
+}
 
 const sorts = [
   {
@@ -61,7 +63,7 @@ const timeRange = [
   },
 ]
 
-function Filter({}: PropsWithChildren<Props>) {
+function Filter({ type }: PropsWithChildren<Props>) {
   const { listMediaQueries, setListCategories } = useAppStore()
   const { getListCategories } = useCategory()
   const { data: categoriesData, isLoading: isGetListCategoriesLoading } = getListCategories()
@@ -74,6 +76,18 @@ function Filter({}: PropsWithChildren<Props>) {
     onChangeTimeRangeCustom,
     timeRangeCustom,
   } = useListMedia()
+
+  const exposeDataOfMineLabel = useMemo(() => {
+    switch (type) {
+      case MediaPackageType.IMAGE:
+        return 'Hình ảnh của tôi'
+      case MediaPackageType.DOCUMENT:
+        return 'Tài liệu của tôi'
+      case MediaPackageType.VIDEO:
+      default:
+        return 'Video của tôi'
+    }
+  }, [type])
 
   const extractCategories = (list: Category[]): Array<ComboboxOption> => {
     const result = list.map(item => {
@@ -114,11 +128,12 @@ function Filter({}: PropsWithChildren<Props>) {
         <Separator />
 
         <div className="tw-flex tw-justify-between tw-gap-2">
-          <Typo.H2>Video của tôi</Typo.H2>
+          <Typo.H2>{exposeDataOfMineLabel}</Typo.H2>
           <Switch
             id="airplane-mode"
             checked={listMediaQueries.isMyFile}
             onCheckedChange={val => onChangeVideoOfMine(val)}
+            className="data-[state=checked]:tw-bg-red-500"
           />
         </div>
 
