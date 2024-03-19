@@ -76,7 +76,7 @@ function MenuUpload({ onChangeMenu, active }: PropsWithChildren<Props>) {
                 <FilterIcon size={18} />
               </div>
             </TooltipTrigger>
-            <TooltipContent side="right" className="tw-bg-slate-800 tw-text-white">
+            <TooltipContent side="right" className="tw-bg-slate-800 tw-text-white tw-z-50">
               <p>Bộ lọc</p>
             </TooltipContent>
           </Tooltip>

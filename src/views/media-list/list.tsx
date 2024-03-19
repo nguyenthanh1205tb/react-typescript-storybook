@@ -13,10 +13,9 @@ import useAppStore from '@/src/stores/useAppStore'
 import { ConfigResponse, FileType } from '@/src/types'
 import { useQuery } from '@tanstack/react-query'
 import { CheckCheck, PackageOpen, X } from 'lucide-react'
-import React, { PropsWithChildren, useEffect, useRef, useState } from 'react'
+import React, { PropsWithChildren, useEffect, useMemo, useRef, useState } from 'react'
 import Item from './item'
 
-const BASE_ITEM_WIDTH = 230
 interface Props {
   type: FileType
 }
@@ -59,16 +58,6 @@ function ListMedia({ type }: PropsWithChildren<Props>) {
     })
   }, [type])
 
-  const listResize = () => {
-    if (!listRef || !listRef.current) return
-    const w = listRef.current.offsetWidth
-    const c = w / BASE_ITEM_WIDTH
-    const num = Math.ceil(c)
-    if (colNum !== num) {
-      setColNum(num <= 0 ? 1 : num)
-    }
-  }
-
   useEffect(() => {
     if (!isLoading && data) {
       setListMedia(data.data)
@@ -80,6 +69,22 @@ function ListMedia({ type }: PropsWithChildren<Props>) {
   }, [data, isLoading])
 
   useEffect(() => {
+    const getColums = (w: number) => {
+      if (w > 1200) return 6
+      if (w > 992) return 5
+      if (w > 768) return 4
+      if (w > 576) return 3
+      return 1
+    }
+    const listResize = () => {
+      if (!listRef || !listRef.current) return
+      const w = listRef.current.offsetWidth
+      const c = getColums(w)
+      const num = Math.ceil(c)
+      if (colNum !== num) {
+        setColNum(num <= 0 ? 1 : num)
+      }
+    }
     if (listRef && listRef.current) {
       new ResizeObserver(listResize).observe(listRef.current)
     }
@@ -100,9 +105,13 @@ function ListMedia({ type }: PropsWithChildren<Props>) {
     }
   }, [configResponse])
 
+  const listMediaItem = useMemo(() => {
+    return <Each of={listMedia || []} render={item => <Item data={item} />} />
+  }, [listMedia])
+
   return (
     <div className="tw-flex tw-flex-col tw-gap-2">
-      <div className="tw-flex tw-items-center tw-justify-between tw-w-full">
+      <div className="tw-flex tw-items-center tw-justify-between tw-w-full tw-pb-2 tw-z-40 tw-sticky tw-top-0 tw-bg-white">
         <div>
           <If
             isShow={!selectMultiMode}
@@ -130,7 +139,7 @@ function ListMedia({ type }: PropsWithChildren<Props>) {
             }
           />
         </div>
-        <div className="tw-flex tw-items-center tw-gap-2">
+        <div className="tw-flex tw-items-center tw-gap-2 ">
           <Paginate
             totalCount={totalCount}
             limit={listMediaQueries.take ?? PAGINATE_LIMIT}
@@ -158,10 +167,7 @@ function ListMedia({ type }: PropsWithChildren<Props>) {
             </div>
           }
         />
-        <If
-          isShow={!isLoading && data !== null}
-          element={<Each of={listMedia || []} render={item => <Item data={item} />} />}
-        />
+        <If isShow={!isLoading && data !== null} element={listMediaItem} />
       </div>
     </div>
   )

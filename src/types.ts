@@ -22,6 +22,7 @@ export enum SideMenuActive {
   LINK = 'link',
   WATCH_FOLDER = 'watch-folder',
   S3_STORAGE = 's3-storage',
+  NULL = 'null',
 }
 export type SideMenu = {
   active: SideMenuActive

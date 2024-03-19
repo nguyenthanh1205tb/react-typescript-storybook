@@ -1,24 +1,24 @@
-import React, { useMemo, useState } from 'react'
 import { Button } from '@/src/components/ui/button'
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/src/components/ui/dialog'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
-import { Search, Video, Trash, Image as ImageIcon, FileText } from 'lucide-react'
+import { FileText, Image as ImageIcon, MoveLeft, Search, Trash, Video } from 'lucide-react'
+import moment from 'moment'
+import React, { useMemo, useState } from 'react'
 import { Input } from '../components/ui/input'
 import { ScrollArea } from '../components/ui/scroll-area'
 import { Separator } from '../components/ui/separator'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '../components/ui/tabs'
+import { Toaster } from '../components/ui/toaster'
 import { TooltipProvider } from '../components/ui/tooltip'
 import If from '../hooks/if'
+import { useListMedia } from '../hooks/useMedia'
 import useAppStore, { VideoTabItemType } from '../stores/useAppStore'
 import { FileType, MediaEntity, MediaPackageType, SideMenu, SideMenuActive } from '../types'
 import Filter from './filter'
 import MediaDetail from './media-detail/detail'
-import MenuUpload from './upload/menu'
-import { Toaster } from '../components/ui/toaster'
-import { useListMedia } from '../hooks/useMedia'
-import moment from 'moment'
-import MediaMultiSelected from './media-multi-selected'
 import ListMedia from './media-list/list'
+import MediaMultiSelected from './media-multi-selected'
+import MenuUpload from './upload/menu'
 
 type State = {
   sideMenu: SideMenu
@@ -35,7 +35,7 @@ function Main({ type, onExportData }: Props) {
   const { setMediaDialog, openMedia, tabActivated, setTabActivated, selectMultiMode } = useAppStore()
   const [state, setState] = useState<State>({
     sideMenu: {
-      active: SideMenuActive.FILTER,
+      active: SideMenuActive.NULL,
     },
   })
 
@@ -134,11 +134,24 @@ function Main({ type, onExportData }: Props) {
                   </div>
                 </div>
                 <Separator className="tw-flex-none" />
-                <div className="tw-flex tw-flex-1">
-                  <div className="tw-py-2 tw-w-[350px] tw-pr-2 tw-border-r tw-flex-none tw-flex">
-                    <MenuUpload onChangeMenu={onChangeMenu} active={state.sideMenu.active} />
-                    <div className="tw-flex-1 tw-pl-2">
+                <div className="tw-flex tw-flex-1 ">
+                  <div
+                    className={`tw-py-2 tw-w-[350px] ${state.sideMenu.active === SideMenuActive.FILTER ? '' : 'tw-w-fit'} tw-pr-2 tw-border-r tw-flex-none tw-flex`}>
+                    <MenuUpload onChangeMenu={onChangeMenu} active={state?.sideMenu?.active} />
+                    <div
+                      className={`tw-flex-1 tw-pl-2 tw-relative ${state.sideMenu.active === SideMenuActive.FILTER ? '' : 'tw-hidden'}`}>
                       <If isShow={state.sideMenu.active === SideMenuActive.FILTER} element={<Filter type={type} />} />
+                      <MoveLeft
+                        className="tw-cursor-pointer tw-absolute tw-top-5 tw-right-3"
+                        onClick={() =>
+                          setState({
+                            sideMenu: {
+                              active: SideMenuActive.NULL,
+                            },
+                          })
+                        }
+                      />
+
                       {/* <If
                         isShow={
                           state.sideMenu.active === SideMenuActive.LOCAL_FILES

@@ -23,12 +23,12 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({ videoUrl, thumbnailUrl }) => 
       controls: true,
       autoplay: false,
       poster: thumbnailUrl,
-      sources: [
-        {
-          src: videoUrl,
-          type: 'application/x-mpegURL',
-        },
-      ],
+      // sources: [
+      //   {
+      //     src: videoUrl,
+      //     type: 'application/x-mpegURL',
+      //   },
+      // ],
     })
 
     setPlayer(pl)

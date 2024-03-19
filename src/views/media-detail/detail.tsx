@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { MultiSelectChild } from '@/src/components/common/dropdown/dropdown-with-child'
+import Image from '@/src/components/common/image'
 import { MultiSelectField } from '@/src/components/common/multi-select/muti-select-field'
 import VideoPlayer from '@/src/components/common/video-player'
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/src/components/ui/accordion'
@@ -10,6 +11,8 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '
 import { Input } from '@/src/components/ui/input'
 import { ScrollArea } from '@/src/components/ui/scroll-area'
 import { Textarea } from '@/src/components/ui/textarea'
+import { useToast } from '@/src/components/ui/use-toast'
+import Each from '@/src/hooks/each'
 import If from '@/src/hooks/if'
 import { request } from '@/src/lib/request'
 import { APIConfigs } from '@/src/lib/request/core/ApiConfig'
@@ -36,8 +39,6 @@ import { useCategory, useDetailMedia } from '../../hooks/useMedia'
 import { avatarUrl, formatBytes } from '../../lib/utils/media'
 import useAppStore from '../../stores/useAppStore'
 import { Category, ComboboxOption, MediaCodec, MediaEntity, MediaPackageType, MediaPacks, Video } from '../../types'
-import Image from '@/src/components/common/image'
-import Each from '@/src/hooks/each'
 
 interface Props {
   type: MediaPackageType
@@ -48,6 +49,7 @@ const Detail = ({ type, onExportData }: Props) => {
   const { response, getDetailMedia } = useDetailMedia()
   const { getListCategories } = useCategory()
   const { data: categoriesData } = getListCategories()
+  const { toast } = useToast()
 
   const extractCategories = (list: Category[]): Array<ComboboxOption> => {
     const result = list.map(item => {
@@ -119,6 +121,9 @@ const Detail = ({ type, onExportData }: Props) => {
         body: values,
       }),
     onSuccess: () => {
+      toast({
+        description: 'Cập nhật thành công',
+      })
       queryClient.invalidateQueries({
         queryKey: ['getListMedia'],
       })
@@ -263,7 +268,10 @@ const Detail = ({ type, onExportData }: Props) => {
                           <AccordionContent className="tw-text-sm">
                             <ScrollArea className="tw-h-[210px] tw-pr-4">
                               <Form {...form}>
-                                <form onSubmit={form.handleSubmit(onSubmit)} className="tw-pt-3 tw-space-y-4 tw-px-1">
+                                <form
+                                  id="detail-media-form"
+                                  onSubmit={form.handleSubmit(onSubmit)}
+                                  className="tw-pt-3 tw-space-y-4 tw-px-1">
                                   <FormField
                                     control={form.control}
                                     name="name"
@@ -432,10 +440,6 @@ const Detail = ({ type, onExportData }: Props) => {
                                       </FormItem>
                                     )}
                                   />
-
-                                  <Button className="tw-mt-5" type="submit">
-                                    Submit
-                                  </Button>
                                 </form>
                               </Form>
                             </ScrollArea>
@@ -447,7 +451,10 @@ const Detail = ({ type, onExportData }: Props) => {
                 />
               </Accordion>
             </div>
-            <div className="tw-absolute tw-bottom-0 tw-w-full tw-flex tw-items-center tw-justify-center">
+            <div className="tw-absolute tw-gap-3 tw-bottom-0 tw-w-full tw-flex tw-items-center tw-justify-center">
+              <Button form="detail-media-form" type="submit">
+                Submit
+              </Button>
               <Button
                 onClick={() => {
                   if (onExportData) {

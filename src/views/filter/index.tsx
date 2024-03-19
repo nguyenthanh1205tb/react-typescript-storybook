@@ -1,4 +1,3 @@
-import React, { PropsWithChildren, useEffect, useMemo } from 'react'
 import { Combobox } from '@/src/components/common/combobox'
 import { DatePicker } from '@/src/components/common/date-picker'
 import { MultiSelect } from '@/src/components/common/multi-select'
@@ -12,6 +11,7 @@ import { useCategory, useListMedia } from '@/src/hooks/useMedia'
 import { cn } from '@/src/lib/utils'
 import useAppStore from '@/src/stores/useAppStore'
 import { Category, ComboboxOption, GetListMediaTimeRange, MediaPackageType, OrderByType, OrderType } from '@/src/types'
+import React, { PropsWithChildren, useEffect, useMemo } from 'react'
 
 interface Props {
   type: MediaPackageType
@@ -116,7 +116,9 @@ function Filter({ type }: PropsWithChildren<Props>) {
     <ScrollArea className="tw-h-[650px] tw-pr-2">
       <div className="tw-flex tw-flex-col tw-gap-4 tw-w-full tw-py-2 tw-px-1">
         <div className="tw-flex tw-flex-col tw-gap-2">
-          <Typo.H2>Chuyên mục</Typo.H2>
+          <div className="tw-flex tw-justify-between tw-py-3">
+            <Typo.H2>Chuyên mục</Typo.H2>
+          </div>
           <Combobox
             options={categoriesFiltered}
             placeholder="Chọn chuyên mục..."

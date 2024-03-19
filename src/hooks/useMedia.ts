@@ -1,10 +1,10 @@
 import { useQuery } from '@tanstack/react-query'
-import { useCallback, useState, useEffect } from 'react'
+import _debounce from 'lodash/debounce'
+import { useCallback, useEffect, useState } from 'react'
 import { PAGINATE_LIMIT } from '../configs'
 import { request } from '../lib/request'
 import { APIConfigs } from '../lib/request/core/ApiConfig'
 import useAppStore from '../stores/useAppStore'
-import _debounce from 'lodash/debounce'
 import {
   GetDetailMediaResponse,
   GetListCategoriesResponse,
@@ -25,7 +25,7 @@ const useListMedia = () => {
   const [totalCount, setTotalCount] = useState(0)
 
   const getListMedia = (payload?: Partial<GetListMediaRequest>) => {
-    const queries = { ...listMediaQueries, ...payload }
+    const queries = { ...listMediaQueries, ...payload, take: 10 }
     return useQuery<GetListMediaResponse>({
       queryKey: ['getListMedia', queries],
       queryFn: () =>
