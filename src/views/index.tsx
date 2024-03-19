@@ -10,7 +10,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '../components/ui/tabs'
 import { TooltipProvider } from '../components/ui/tooltip'
 import If from '../hooks/if'
 import useAppStore, { VideoTabItemType } from '../stores/useAppStore'
-import { FileType, MediaPackageType, SideMenu, SideMenuActive } from '../types'
+import { FileType, MediaEntity, MediaPackageType, SideMenu, SideMenuActive } from '../types'
 import Filter from './filter'
 import MediaDetail from './media-detail/detail'
 import MenuUpload from './upload/menu'
@@ -27,8 +27,9 @@ const queryClient = new QueryClient()
 
 interface Props {
   type: MediaPackageType
+  onExportData?: (data: MediaEntity[]) => void
 }
-function Main({ type }: Props) {
+function Main({ type, onExportData }: Props) {
   moment.locale('vi-VN')
   const { onSearchByText } = useListMedia()
   const { setMediaDialog, openMedia, tabActivated, setTabActivated, selectMultiMode } = useAppStore()
@@ -157,8 +158,8 @@ function Main({ type }: Props) {
                     <ScrollArea className="tw-pr-4 tw-max-h-[650px] tw-border-r tw-flex-1">
                       <ListMedia type={exposeFileType} />
                     </ScrollArea>
-                    <If isShow={selectMultiMode} element={<MediaMultiSelected />} />
-                    <If isShow={!selectMultiMode} element={<MediaDetail type={type} />} />
+                    <If isShow={selectMultiMode} element={<MediaMultiSelected onExportData={onExportData} />} />
+                    <If isShow={!selectMultiMode} element={<MediaDetail type={type} onExportData={onExportData} />} />
                   </TabsContent>
                   <TabsContent value={VideoTabItemType.TRASH} className="!tw-mt-0"></TabsContent>
                 </div>

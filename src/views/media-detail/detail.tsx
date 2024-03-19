@@ -35,14 +35,15 @@ import { useForm } from 'react-hook-form'
 import { useCategory, useDetailMedia } from '../../hooks/useMedia'
 import { avatarUrl, formatBytes } from '../../lib/utils/media'
 import useAppStore from '../../stores/useAppStore'
-import { Category, ComboboxOption, MediaCodec, MediaPackageType, MediaPacks, Video } from '../../types'
+import { Category, ComboboxOption, MediaCodec, MediaEntity, MediaPackageType, MediaPacks, Video } from '../../types'
 import Image from '@/src/components/common/image'
 import Each from '@/src/hooks/each'
 
 interface Props {
   type: MediaPackageType
+  onExportData?: (data: MediaEntity[]) => void
 }
-const Detail = ({ type }: Props) => {
+const Detail = ({ type, onExportData }: Props) => {
   const { mediaSelectedID, mediaSelectedData, setMediaSelectedData } = useAppStore()
   const { response, getDetailMedia } = useDetailMedia()
   const { getListCategories } = useCategory()
@@ -447,7 +448,13 @@ const Detail = ({ type }: Props) => {
               </Accordion>
             </div>
             <div className="tw-absolute tw-bottom-0 tw-w-full tw-flex tw-items-center tw-justify-center">
-              <Button>
+              <Button
+                onClick={() => {
+                  if (onExportData) {
+                    if (!mediaSelectedData) return onExportData([])
+                    return onExportData([mediaSelectedData.data])
+                  }
+                }}>
                 <div className="tw-flex tw-items-center tw-justify-center tw-gap-2">
                   <CircleFadingPlus size={16} />
                   <span>Chèn</span>

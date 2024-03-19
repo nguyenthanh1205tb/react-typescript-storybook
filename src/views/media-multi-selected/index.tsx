@@ -7,8 +7,12 @@ import Image from '@/src/components/common/image'
 import { CircleFadingPlus, Trash, X } from 'lucide-react'
 import { ScrollArea } from '@/src/components/ui/scroll-area'
 import { Button } from '@/src/components/ui/button'
+import { MediaEntity } from '@/src/types'
 
-function MediaMultiSelected() {
+interface Props {
+  onExportData?: (data: MediaEntity[]) => void
+}
+function MediaMultiSelected({ onExportData }: Props) {
   const { listMediaSelected, setListMediaSelected } = useAppStore()
 
   return (
@@ -45,7 +49,10 @@ function MediaMultiSelected() {
           </div>
         </ScrollArea>
         <div className="tw-flex-1 tw-flex tw-items-center tw-justify-center">
-          <Button>
+          <Button
+            onClick={() => {
+              if (onExportData) return onExportData(listMediaSelected)
+            }}>
             <div className="tw-flex tw-items-center tw-justify-center tw-gap-2">
               <CircleFadingPlus size={16} />
               <span>Chèn</span>
