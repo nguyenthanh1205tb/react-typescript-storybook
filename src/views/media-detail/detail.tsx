@@ -44,8 +44,19 @@ interface Props {
   type: MediaPackageType
   onExportData?: (data: MediaEntity[]) => void
 }
+
+export const videoUrl = (d?: Video) => {
+  if (!d) return
+  const defaultUri = d?.uri
+  const hls = d.play_url.hls
+  if (!hls || !hls.length) return defaultUri
+  const item = hls.find(val => val.codec === MediaCodec.H264 && val.pack === MediaPacks.HLS)
+  if (!item) return defaultUri
+  return item.uri
+}
+
 const Detail = ({ type, onExportData }: Props) => {
-  const { mediaSelectedID, mediaSelectedData, setMediaSelectedData } = useAppStore()
+  const { mediaSelectedID, mediaSelectedData, setMediaSelectedData, setShowModalChangeThumbnail } = useAppStore()
   const { response, getDetailMedia } = useDetailMedia()
   const { getListCategories } = useCategory()
   const { data: categoriesData } = getListCategories()
@@ -92,16 +103,6 @@ const Detail = ({ type, onExportData }: Props) => {
       hide: true,
     },
   ]
-
-  const videoUrl = (d?: Video) => {
-    if (!d) return
-    const defaultUri = d?.uri
-    const hls = d.play_url.hls
-    if (!hls || !hls.length) return defaultUri
-    const item = hls.find(val => val.codec === MediaCodec.H264 && val.pack === MediaPacks.HLS)
-    if (!item) return defaultUri
-    return item.uri
-  }
 
   const haveMediaSelectedID = useMemo(() => mediaSelectedID !== null && mediaSelectedID !== '', [mediaSelectedID])
 
@@ -225,6 +226,7 @@ const Detail = ({ type, onExportData }: Props) => {
             <div className="tw-flex tw-justify-between tw-px-3 tw-py-2">
               <div className="tw-gap-2 tw-flex">
                 <Badge
+                  onClick={() => setShowModalChangeThumbnail(true)}
                   variant="secondary"
                   className="tw-h-[30px] tw-flex tw-items-center tw-justify-center tw-gap-1 tw-cursor-pointer tw-bg-slate-600 tw-text-white hover:tw-bg-slate-400">
                   <Images size={16} />

@@ -1,7 +1,10 @@
+import Image from '@/src/components/common/image'
 import LoadingItem from '@/src/components/common/media-loading-item/loading-item'
 import Paginate from '@/src/components/common/paginate'
 import { SkeletonCard } from '@/src/components/common/skeleton-card'
 import Typo from '@/src/components/common/typo'
+import VideoPlayer from '@/src/components/common/video-player'
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/src/components/ui/dialog'
 import { PAGINATE_LIMIT } from '@/src/configs'
 import Each from '@/src/hooks/each'
 import If from '@/src/hooks/if'
@@ -9,11 +12,13 @@ import { useListMedia } from '@/src/hooks/useMedia'
 import { request } from '@/src/lib/request'
 import { APIConfigs } from '@/src/lib/request/core/ApiConfig'
 import { cn } from '@/src/lib/utils'
+import { avatarUrl } from '@/src/lib/utils/media'
 import useAppStore from '@/src/stores/useAppStore'
 import { ConfigResponse, FileType } from '@/src/types'
 import { useQuery } from '@tanstack/react-query'
 import { CheckCheck, PackageOpen, X } from 'lucide-react'
 import React, { PropsWithChildren, useEffect, useMemo, useRef, useState } from 'react'
+import { videoUrl } from '../media-detail/detail'
 import Item from './item'
 
 interface Props {
@@ -28,6 +33,9 @@ function ListMedia({ type }: PropsWithChildren<Props>) {
     selectMultiMode,
     listMediaSelected,
     listFileAdded,
+    mediaSelectedData,
+    showModalChangeThumbnail,
+    setShowModalChangeThumbnail,
     setListMedia,
     setListMediaQueries,
     setConfig,
@@ -169,6 +177,106 @@ function ListMedia({ type }: PropsWithChildren<Props>) {
         />
         <If isShow={!isLoading && data !== null} element={listMediaItem} />
       </div>
+      {
+        // <AlertDialog open={showModalChangeThumbnail} onOpenChange={status => setShowModalChangeThumbnail(status)}>
+        //   <AlertDialogContent className="!tw-max-w-[65vw] tw-min-h-[300px] tw-h-[750px]">
+        //     <AlertDialogHeader>
+        //       <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+        //       <AlertDialogDescription>
+        //         <If
+        //           isShow={type === FileType.VIDEO}
+        //           element={
+        //             <VideoPlayer
+        //               videoUrl={videoUrl(mediaSelectedData?.data.video) as string}
+        //               thumbnailUrl={avatarUrl(mediaSelectedData?.data.avatar_thumb)}
+        //             />
+        //           }
+        //         />
+        //         <div className="tw-max-w-55vw tw-mt-5">
+        //           <div className="tw-flex tw-gap-3 ">
+        //             <div
+        //               key={'upload-new-avatar_thumb'}
+        //               className="tw-w-[180px] tw-relative tw-rounded-md tw-cursor-pointer">
+        //               <Image src={''} height="120px" className="tw-rounded-md tw-aspect-video" />
+        //               <div className="tw-absolute tw-inset-0 tw-bg-black tw-opacity-0 tw-rounded-md tw-flex tw-items-center tw-justify-center tw-transition tw-duration-300 tw-ease-in-out tw-hover:tw-opacity-50">
+        //                 <Typo.Paragraph className="tw-text-white">Chọn</Typo.Paragraph>
+        //               </div>
+        //             </div>
+        //             <div className="tw-flex tw-gap-3 tw-overflow-x-scroll !tw-max-w-[500px]">
+        //               {mediaSelectedData?.data?.avatar_thumb?.url_list?.map((item, index) => {
+        //                 return (
+        //                   <div key={index} className="!tw-w-[180px] tw-relative tw-rounded-md tw-cursor-pointer">
+        //                     <Image src={item} height="120px" className="tw-rounded-md tw-aspect-video" />
+        //                     <div className="tw-absolute tw-inset-0 tw-bg-black tw-opacity-0 tw-rounded-md tw-flex tw-items-center tw-justify-center tw-transition tw-duration-300 tw-ease-in-out tw-hover:tw-opacity-50">
+        //                       <Typo.Paragraph className="tw-text-white">Chọn</Typo.Paragraph>
+        //                     </div>
+        //                   </div>
+        //                 )
+        //               })}
+        //             </div>
+        //           </div>
+        //         </div>
+        //       </AlertDialogDescription>
+        //     </AlertDialogHeader>
+        //     <AlertDialogFooter>
+        //       <AlertDialogCancel>Cancel</AlertDialogCancel>
+        //       <AlertDialogAction>Continue</AlertDialogAction>
+        //     </AlertDialogFooter>
+        //   </AlertDialogContent>
+        // </AlertDialog>
+        <Dialog open={showModalChangeThumbnail} onOpenChange={status => setShowModalChangeThumbnail(status)}>
+          <DialogContent className="!tw-max-w-[65vw] tw-min-h-[300px] tw-h-[750px]">
+            <DialogHeader>
+              <DialogTitle>Thay Thumbnail</DialogTitle>
+            </DialogHeader>
+            <div className="">
+              <If
+                isShow={type === FileType.VIDEO}
+                element={
+                  <VideoPlayer
+                    videoUrl={videoUrl(mediaSelectedData?.data.video) as string}
+                    thumbnailUrl={avatarUrl(mediaSelectedData?.data.avatar_thumb)}
+                  />
+                }
+              />
+              <If
+                isShow={type === FileType.IMAGE}
+                element={
+                  <Image
+                    src={avatarUrl(mediaSelectedData?.data.avatar_thumb)}
+                    height="253px"
+                    className="tw-rounded-none"
+                  />
+                }
+              />
+            </div>
+            <div className="">
+              <div className="tw-flex tw-gap-3 tw-overflow-x-scroll">
+                <div
+                  key={'upload-new-avatar_thumb'}
+                  className="tw-w-[180px] tw-relative tw-rounded-md tw-cursor-pointer">
+                  <Image src={''} height="120px" className="tw-rounded-md tw-aspect-video" />
+                  <div className="tw-absolute tw-inset-0 tw-bg-black tw-opacity-0 tw-rounded-md tw-flex tw-items-center tw-justify-center tw-transition tw-duration-300 tw-ease-in-out tw-hover:tw-opacity-50">
+                    <Typo.Paragraph className="tw-text-white">Chọn</Typo.Paragraph>
+                  </div>
+                </div>
+                <div className="tw-flex tw-gap-3 tw-max-w-[400px] tw-overflow-scroll">
+                  {mediaSelectedData?.data?.avatar_thumb?.url_list?.map((item, index) => {
+                    return (
+                      <div key={index} className="tw-w-[180px] tw-relative tw-rounded-md tw-cursor-pointer">
+                        <Image src={item} height="120px" className="tw-rounded-md tw-aspect-video" />
+                        <div className="tw-absolute tw-inset-0 tw-bg-black tw-opacity-0 tw-rounded-md tw-flex tw-items-center tw-justify-center tw-transition tw-duration-300 tw-ease-in-out tw-hover:tw-opacity-50">
+                          <Typo.Paragraph className="tw-text-white">Chọn</Typo.Paragraph>
+                        </div>
+                      </div>
+                    )
+                  })}
+                </div>
+              </div>
+            </div>
+          </DialogContent>
+        </Dialog>
+      }
     </div>
   )
 }

@@ -20,6 +20,7 @@ export enum VideoTabItemType {
 
 type State = {
   // Vars
+  showModalChangeThumbnail: boolean
   config: ConfigEntity | null
   openMedia: boolean
   listMedia: MediaEntity[]
@@ -34,6 +35,7 @@ type State = {
   listMediaSelected: MediaEntity[]
 
   // Functions
+  setShowModalChangeThumbnail: (payload: boolean) => void
   setListFileProgress: (payload: FileProgressType[]) => void
   setListFileAdded: (payload: FileAdded[]) => void
   setConfig: (payload: ConfigEntity) => void
@@ -50,6 +52,7 @@ type State = {
 
 const useAppStore = create<State>(set => ({
   // Vars
+  showModalChangeThumbnail: false,
   listFileProgress: [],
   listFileAdded: [],
   config: null,
@@ -71,6 +74,12 @@ const useAppStore = create<State>(set => ({
   },
 
   // Functions
+  /**
+   * Set show modal change thumbnail
+   * @param payload boolean
+   */
+  setShowModalChangeThumbnail: payload => set(() => ({ showModalChangeThumbnail: payload })),
+
   /**
    * Set list file progress
    * @param payload FileProgressType[]

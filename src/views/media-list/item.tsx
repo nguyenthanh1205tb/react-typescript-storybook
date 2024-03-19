@@ -1,3 +1,4 @@
+import Image from '@/src/components/common/image'
 import { convertDuration } from '@/src/lib/utils/date'
 import { avatarUrl } from '@/src/lib/utils/media'
 import { cn } from '@/src/lib/utils/merge-class'
@@ -6,7 +7,6 @@ import { MediaEntity, MediaStatus } from '@/src/types'
 import { CalendarFold } from 'lucide-react'
 import moment from 'moment'
 import React, { PropsWithChildren } from 'react'
-import { LazyLoadImage } from 'react-lazy-load-image-component'
 
 interface Props {
   data: MediaEntity
@@ -55,10 +55,8 @@ function Item({ data }: PropsWithChildren<Props>) {
         })}>
         <div className="tw-mb-2 tw-gap-1 ">
           <div className="tw-relative">
-            <LazyLoadImage
-              delayTime={3000}
+            <Image
               className="tw-aspect-video tw-rounded-md"
-              effect="opacity"
               alt={data.id}
               src={avatarUrl(data.avatar_thumb)} // use normal <img> attributes as props
             />
