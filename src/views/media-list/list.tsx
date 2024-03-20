@@ -68,18 +68,19 @@ function ListMedia({ type }: PropsWithChildren<Props>) {
     }
   }, [data, isLoading])
 
+  const getColumns = (w: number) => {
+    if (w > 1536) return 8
+    if (w > 1440) return 7
+    if (w > 1200) return 6
+    if (w > 992) return 5
+    if (w > 768) return 4
+    if (w > 576) return 3
+    return 1
+  }
+
   useEffect(() => {
-    const getColumns = (w: number) => {
-      if (w > 1536) return 8
-      if (w > 1440) return 7
-      if (w > 1200) return 6
-      if (w > 992) return 5
-      if (w > 768) return 4
-      if (w > 576) return 3
-      return 1
-    }
+    let colTimeout: NodeJS.Timeout | null = null
     const listResize = () => {
-      let colTimeout: NodeJS.Timeout | null = null
       if (!listRef || !listRef.current) return
       const w = listRef.current.offsetWidth
       const c = getColumns(w)
@@ -91,6 +92,9 @@ function ListMedia({ type }: PropsWithChildren<Props>) {
     }
     if (listRef && listRef.current) {
       new ResizeObserver(listResize).observe(listRef.current)
+    }
+    return () => {
+      if (colTimeout) clearTimeout(colTimeout)
     }
   }, [listRef])
 
