@@ -9,6 +9,7 @@ import {
   GetListMediaRequest,
   GetListMediaTimeRange,
   MediaEntity,
+  MediaPackageType,
   OrderByType,
   OrderType,
 } from '../types'
@@ -20,6 +21,8 @@ export enum VideoTabItemType {
 
 type State = {
   // Vars
+  packageEnabled: MediaPackageType | null
+  showModalChangeThumbnail: boolean
   config: ConfigEntity | null
   openMedia: boolean
   listMedia: MediaEntity[]
@@ -46,10 +49,13 @@ type State = {
   setListCategories: (payload: Category[]) => void
   setSelectMultiMode: (payload: boolean) => void
   setListMediaSelected: (payload: MediaEntity | MediaEntity[]) => void
+  setPackageEnabled: (payload: MediaPackageType | null) => void
+  resetAppState: () => void
 }
 
-const useAppStore = create<State>(set => ({
-  // Vars
+const defaultState = {
+  packageEnabled: null,
+  showModalChangeThumbnail: false,
   listFileProgress: [],
   listFileAdded: [],
   config: null,
@@ -69,84 +75,46 @@ const useAppStore = create<State>(set => ({
     timeRange: GetListMediaTimeRange.ALL,
     isMyFile: false,
   },
+}
+
+const useAppStore = create<State>(set => ({
+  // Vars
+  ...defaultState,
 
   // Functions
-  /**
-   * Set list file progress
-   * @param payload FileProgressType[]
-   */
+  resetAppState: () => set(() => ({ ...defaultState })),
+
   setListFileProgress: payload => set(() => ({ listFileProgress: payload })),
 
-  /**
-   * Set list file added
-   * @param payload string[]
-   */
   setListFileAdded: payload => set(() => ({ listFileAdded: payload })),
-  /**
-   * Set media dialog on/off
-   * @param payload boolean
-   */
+
   setConfig: payload => set(() => ({ config: payload })),
 
-  /**
-   * Set media dialog on/off
-   * @param payload boolean
-   */
   setMediaDialog: payload => set(() => ({ openMedia: payload })),
 
-  /**
-   * Switch tab media [video/image]
-   * @param payload VideoTabItemType
-   */
   setTabActivated: payload => set(() => ({ tabActivated: payload })),
 
-  /**
-   * Set list media
-   * @param payload Array<MediaEntity>
-   */
   setListMedia: payload => set(() => ({ listMedia: payload })),
 
-  /**
-   * Set media selected
-   * @param payload string
-   */
   setMediaSelectedID: payload => set(() => ({ mediaSelectedID: payload })),
 
-  /**
-   * Set media selected data
-   * @param payload GetDetailMediaResponse
-   */
   setMediaSelectedData: payload =>
     set(state => ({
       mediaSelectedData: payload,
       mediaSelectedID: payload ? state.mediaSelectedID : payload,
     })),
 
-  /**
-   * Set request for API get list media
-   * @param payload Partial<GetListMediaRequest>
-   */
   setListMediaQueries: payload =>
     set(state => ({
       listMediaQueries: { ...state.listMediaQueries, ...payload },
     })),
 
-  /**
-   * Set list categories
-   * @param payload Array<Category>
-   */
   setListCategories: payload => set(() => ({ listCategories: payload })),
 
-  /**
-   * Set select multi mode
-   * @param payload Boolean
-   */
   setSelectMultiMode: payload => set(() => ({ selectMultiMode: payload, listMediaSelected: [] })),
 
-  /**
-   * Set list media selected in multi mode
-   * @param payload Array<MediaEntity>
-   */
+  setPackageEnabled: payload => set(() => ({ packageEnabled: payload })),
+
   setListMediaSelected: payload =>
     set(state => {
       // Add list

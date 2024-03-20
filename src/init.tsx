@@ -3,32 +3,25 @@ import App from '@/src/views/index'
 import ReactDom from 'react-dom/client'
 import { MediaEntity, MediaPackageType } from './types'
 class Init {
-  constructor() {}
+  private usedPackage: MediaPackageType[] = []
 
-  video(id: string, options?: { onSubmit: (data: MediaEntity[]) => void }) {
-    if (!id || id === '') return
-    this.appendVideoMediaPackage(id, options?.onSubmit)
+  constructor(options?: { type?: MediaPackageType[] }) {
+    if (options) {
+      this.usedPackage = options.type ?? []
+    }
   }
 
-  image(id: string, options?: { onSubmit: (data: MediaEntity[]) => void }) {
+  render(id: string, options?: { onSubmit: (data: MediaEntity[]) => void }) {
     if (!id || id === '') return
-    this.appendImageMediaPackage(id, options?.onSubmit)
+    this.appendMediaPackage(id, options?.onSubmit)
   }
 
-  private appendVideoMediaPackage(ID: string, onSubmit?: (data: MediaEntity[]) => void) {
+  private appendMediaPackage(ID: string, onSubmit?: (data: MediaEntity[]) => void) {
     if (!ID) return
     const place = document.querySelector(ID)
     if (!place) return
     const dom = ReactDom.createRoot(place)
-    dom.render(<App type={MediaPackageType.VIDEO} onExportData={onSubmit} />)
-  }
-
-  private appendImageMediaPackage(ID: string, onSubmit?: (data: MediaEntity[]) => void) {
-    if (!ID) return
-    const place = document.querySelector(ID)
-    if (!place) return
-    const dom = ReactDom.createRoot(place)
-    dom.render(<App type={MediaPackageType.IMAGE} onExportData={onSubmit} />)
+    return dom.render(<App type={this.usedPackage} onExportData={onSubmit} />)
   }
 }
 
