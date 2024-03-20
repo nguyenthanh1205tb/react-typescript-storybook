@@ -11,7 +11,14 @@ interface Props extends React.DetailedHTMLProps<React.ImgHTMLAttributes<HTMLImag
   height?: string
   iconLoadingSize?: number
 }
-function Image({ src, className, height = '118px', style, iconLoadingSize = 40, ...rest }: PropsWithChildren<Props>) {
+const Image = ({
+  src,
+  className,
+  height = '118px',
+  style,
+  iconLoadingSize = 40,
+  ...rest
+}: PropsWithChildren<Props>) => {
   const [imgLoaded, setImgLoaded] = useState(false)
   const [isError, setIsError] = useState(false)
 
@@ -74,4 +81,4 @@ function Image({ src, className, height = '118px', style, iconLoadingSize = 40, 
     </div>
   )
 }
-export default Image
+export default React.memo(Image)
