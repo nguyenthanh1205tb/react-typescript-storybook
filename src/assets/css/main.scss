@@ -37,6 +37,11 @@
     --radius: 0.5rem;
   }
 
+  .tw-hide-scroll-bar {
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+
   .progress-bar {
     width: 18px;
     /* Set width and height of the progress bar */

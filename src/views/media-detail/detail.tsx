@@ -4,6 +4,16 @@ import Image from '@/src/components/common/image'
 import { MultiSelectField } from '@/src/components/common/multi-select/muti-select-field'
 import VideoPlayer from '@/src/components/common/video-player'
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/src/components/ui/accordion'
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from '@/src/components/ui/alert-dialog'
 import { Badge } from '@/src/components/ui/badge'
 import { Button } from '@/src/components/ui/button'
 import { Checkbox } from '@/src/components/ui/checkbox'
@@ -12,6 +22,7 @@ import { Input } from '@/src/components/ui/input'
 import { ScrollArea } from '@/src/components/ui/scroll-area'
 import { Textarea } from '@/src/components/ui/textarea'
 import { useToast } from '@/src/components/ui/use-toast'
+import { UPLOAD_ENDPOINT } from '@/src/configs'
 import Each from '@/src/hooks/each'
 import If from '@/src/hooks/if'
 import { request } from '@/src/lib/request'
@@ -33,12 +44,13 @@ import {
   X,
 } from 'lucide-react'
 import moment from 'moment'
-import React, { useEffect, useMemo } from 'react'
+import React, { useCallback, useEffect, useMemo } from 'react'
 import { useForm } from 'react-hook-form'
 import { useCategory, useDetailMedia } from '../../hooks/useMedia'
-import { avatarUrl, formatBytes } from '../../lib/utils/media'
+import { formatBytes } from '../../lib/utils/media'
 import useAppStore from '../../stores/useAppStore'
 import { Category, ComboboxOption, MediaCodec, MediaEntity, MediaPackageType, MediaPacks, Video } from '../../types'
+import ListThumb from './list-thumb'
 
 interface Props {
   type: MediaPackageType
@@ -55,8 +67,16 @@ export const videoUrl = (d?: Video) => {
   return item.uri
 }
 
+export const getUrlThumb = (url: string) => {
+  const parts = url.split('/')
+  const desiredPath = parts.slice(-4).join('/')
+  return desiredPath
+}
+
 const Detail = ({ type, onExportData }: Props) => {
-  const { mediaSelectedID, mediaSelectedData, setMediaSelectedData, setShowModalChangeThumbnail } = useAppStore()
+  const [showModal, setShowModal] = React.useState(false)
+  const [avatarSelected, setAvatarSelected] = React.useState<string>('')
+  const { mediaSelectedID, mediaSelectedData, setMediaSelectedData } = useAppStore()
   const { response, getDetailMedia } = useDetailMedia()
   const { getListCategories } = useCategory()
   const { data: categoriesData } = getListCategories()
@@ -72,6 +92,23 @@ const Detail = ({ type, onExportData }: Props) => {
     })
 
     return result
+  }
+
+  const onUploadThumb = (file: File) => {
+    const formData = new FormData()
+    formData.append('file', file)
+    fetch(UPLOAD_ENDPOINT, {
+      method: 'POST',
+      body: formData,
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem('mf-token')}`,
+      },
+    })
+      .then(response => response.json())
+      .then(data => {
+        console.log('Success:', data)
+        setAvatarSelected(data.url)
+      })
   }
 
   const categoriesFiltered = useMemo(() => {
@@ -136,6 +173,18 @@ const Detail = ({ type, onExportData }: Props) => {
     onSubmitMedia(values)
   }
 
+  const onSubmitThumb = useCallback(() => {
+    if (avatarSelected) {
+      onSubmitMedia({ avatar: getUrlThumb(avatarSelected) }).then(() => {
+        setAvatarSelected('')
+      })
+    } else {
+      toast({
+        description: 'Chưa chọn ảnh',
+      })
+    }
+  }, [avatarSelected])
+
   useEffect(() => {
     if (mediaSelectedData?.data) {
       form.reset({
@@ -184,7 +233,7 @@ const Detail = ({ type, onExportData }: Props) => {
               element={
                 <VideoPlayer
                   videoUrl={videoUrl(mediaSelectedData?.data.video) as string}
-                  thumbnailUrl={avatarUrl(mediaSelectedData?.data.avatar_thumb)}
+                  thumbnailUrl={mediaSelectedData?.data.avatar_thumb?.uri || ''}
                 />
               }
             />
@@ -193,7 +242,7 @@ const Detail = ({ type, onExportData }: Props) => {
               isShow={type === MediaPackageType.IMAGE}
               element={
                 <Image
-                  src={avatarUrl(mediaSelectedData?.data.avatar_thumb)}
+                  src={mediaSelectedData?.data?.avatar_thumb?.uri || ''}
                   height="253px"
                   className="tw-rounded-none"
                 />
@@ -226,7 +275,7 @@ const Detail = ({ type, onExportData }: Props) => {
             <div className="tw-flex tw-justify-between tw-px-3 tw-py-2">
               <div className="tw-gap-2 tw-flex">
                 <Badge
-                  onClick={() => setShowModalChangeThumbnail(true)}
+                  onClick={() => setShowModal(true)}
                   variant="secondary"
                   className="tw-h-[30px] tw-flex tw-items-center tw-justify-center tw-gap-1 tw-cursor-pointer tw-bg-slate-600 tw-text-white hover:tw-bg-slate-400">
                   <Images size={16} />
@@ -473,6 +522,58 @@ const Detail = ({ type, onExportData }: Props) => {
           </div>
         )}
       />
+      {
+        <AlertDialog open={showModal} onOpenChange={status => setShowModal(status)}>
+          {/* <AlertDialogContent className="!tw-max-w-[65vw] tw-min-h-[300px] tw-h-[750px]"> */}
+          <AlertDialogContent className="tw-max-w-[70vw] tw-overflow-y-scroll tw-max-h-[800px] !tw-inline-table !tw-p-0 !tw-m-0 !tw-border-none">
+            <AlertDialogHeader className="!tw-block">
+              <AlertDialogTitle className="tw-px-3 tw-pt-2 tw-flex tw-justify-between tw-items-center">
+                <span>Thay Thumbnail</span>
+                <X size={20} className="tw-cursor-pointer" onClick={() => setShowModal(false)} />
+              </AlertDialogTitle>
+              <AlertDialogDescription>
+                <div className=" tw-bg-black">
+                  <div className="tw-max-w-[60%] tw-mx-auto !tw-pb-[1px]">
+                    <If
+                      isShow={type === MediaPackageType.VIDEO}
+                      element={
+                        <VideoPlayer
+                          videoUrl={videoUrl(mediaSelectedData?.data.video) as string}
+                          thumbnailUrl={
+                            avatarSelected ||
+                            mediaSelectedData?.data?.avatar_thumb?.uri ||
+                            mediaSelectedData?.data?.avatar_thumb?.url_list[0] ||
+                            ''
+                          }
+                        />
+                      }
+                    />
+                  </div>
+                </div>
+
+                <div className="tw-max-w-[70vw] tw-bg-[#434242] tw-pt-5">
+                  <div className="tw-flex">
+                    <div className="tw-flex tw-max-w-[70vw]">
+                      <ListThumb
+                        onUploadThumb={onUploadThumb}
+                        onSelectThumb={url => setAvatarSelected(url)}
+                        avatarSelected={avatarSelected}
+                        items={mediaSelectedData?.data?.avatar_thumb?.url_list || []}
+                      />
+                    </div>
+                  </div>
+                </div>
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter className="!tw-justify-center !tw-py-2 tw-items-center !tw-flex-row !tw-flex tw-gap-3">
+              <AlertDialogCancel>Huỷ bỏ</AlertDialogCancel>
+              <AlertDialogAction onClick={onSubmitThumb} className="!tw-bg-green-600 !hover:tw-bg-green-700">
+                Hoàn Thành
+              </AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
+      }
     </div>
   )
 }
