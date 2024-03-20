@@ -25,7 +25,7 @@ const useListMedia = () => {
   const [totalCount, setTotalCount] = useState(0)
 
   const getListMedia = (payload?: Partial<GetListMediaRequest>) => {
-    const queries = { ...listMediaQueries, ...payload, take: 10 }
+    const queries = { ...listMediaQueries, ...payload }
     return useQuery<GetListMediaResponse>({
       queryKey: ['getListMedia', queries],
       queryFn: () =>
