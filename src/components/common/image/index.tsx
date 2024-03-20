@@ -10,6 +10,7 @@ import Typo from '../typo'
 interface Props extends React.DetailedHTMLProps<React.ImgHTMLAttributes<HTMLImageElement>, HTMLImageElement> {
   height?: string
   iconLoadingSize?: number
+  containerClassName?: string
 }
 const Image = ({
   src,
@@ -17,13 +18,14 @@ const Image = ({
   height = '118px',
   style,
   iconLoadingSize = 40,
+  containerClassName,
   ...rest
 }: PropsWithChildren<Props>) => {
   const [imgLoaded, setImgLoaded] = useState(false)
   const [isError, setIsError] = useState(false)
 
   return (
-    <div className="tw-relative tw-flex tw-items-center tw-justify-center tw-bg-slate-100">
+    <div className={cn('tw-relative tw-bg-slate-100 tw-w-full tw-overflow-hidden tw-rounded-md', containerClassName)}>
       <If
         isShow={!imgLoaded && !isError}
         element={
@@ -39,7 +41,7 @@ const Image = ({
                 </TooltipContent>
               </Tooltip>
             </div>
-            <Skeleton className={cn('tw-w-full tw-rounded-lg', className)} style={{ height }} />
+            <Skeleton className={cn('tw-w-full', className)} style={{ height }} />
           </div>
         }
       />
@@ -47,7 +49,7 @@ const Image = ({
       <If
         isShow={isError}
         element={
-          <div className="tw-relative">
+          <div className="tw-relative tw-w-full">
             <div className="tw-absolute tw-w-full tw-h-full tw-left-0 tw-top-0 tw-flex tw-justify-center tw-items-center">
               <Tooltip>
                 <TooltipTrigger>
@@ -59,7 +61,7 @@ const Image = ({
                 </TooltipContent>
               </Tooltip>
             </div>
-            <div className={cn('tw-w-full tw-bg-gray-50 tw-rounded-lg', className)} style={{ height }}></div>
+            <div className={cn('tw-w-full tw-bg-gray-50', className)} style={{ height }}></div>
           </div>
         }
       />
@@ -72,7 +74,7 @@ const Image = ({
             onError={() => setIsError(true)}
             loading="lazy"
             src={src}
-            className={cn({ '!tw-h-0': !imgLoaded }, className)}
+            className={cn('tw-m-auto', { '!tw-h-0': !imgLoaded }, className)}
             style={{ height, ...style }}
             {...rest}
           />

@@ -202,7 +202,7 @@ function Main({ type, onExportData }: Props) {
                   </div>
 
                   <TabsContent value={VideoTabItemType.CONTENT} className="!tw-mt-0 tw-flex-1 tw-pl-2 tw-pt-2 tw-flex">
-                    <div className="tw-pr-4 tw-max-h-[650px] tw-border-r tw-flex-1 tw-overflow-x-hidden tw-overflow-y-auto">
+                    <div className="tw-pr-2 tw-max-h-[650px] tw-border-r tw-flex-1 tw-overflow-x-hidden tw-overflow-y-auto">
                       <ListMedia type={exportFileType} isFilterOpen={state.sideMenu.active === SideMenuActive.FILTER} />
                     </div>
                     <If isShow={selectMultiMode} element={<MediaMultiSelected onExportData={onExportData} />} />

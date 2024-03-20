@@ -297,8 +297,7 @@ const Detail = ({ type, onExportData }: Props) => {
                   <Image
                     src={mediaSelectedData?.data?.avatar_thumb?.uri || ''}
                     height="253px"
-                    className="tw-rounded-none tw-object-contain"
-                  />
+                    containerClassName="!tw-rounded-none"
                 }
               />
             </div>

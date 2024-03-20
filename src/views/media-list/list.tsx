@@ -124,7 +124,7 @@ function ListMedia({ type, isFilterOpen }: PropsWithChildren<Props>) {
             }
           />
         </div>
-        <div className="tw-flex tw-items-center tw-gap-2 ">
+        <div className="tw-flex tw-items-center tw-gap-2">
           <Paginate
             totalCount={totalCount}
             limit={listMediaQueries.take ?? PAGINATE_LIMIT}
