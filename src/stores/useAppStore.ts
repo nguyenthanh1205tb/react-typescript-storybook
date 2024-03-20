@@ -15,7 +15,7 @@ import {
 } from '../types'
 
 export enum VideoTabItemType {
-  VIDEO = 'video',
+  CONTENT = 'content',
   TRASH = 'trash',
 }
 
@@ -61,7 +61,7 @@ const defaultState = {
   config: null,
   openMedia: false,
   listMedia: [],
-  tabActivated: VideoTabItemType.VIDEO,
+  tabActivated: VideoTabItemType.CONTENT,
   mediaSelectedID: null,
   mediaSelectedData: null,
   listCategories: [],

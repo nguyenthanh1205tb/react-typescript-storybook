@@ -128,6 +128,8 @@ export interface MediaEntity {
   createdAt: string
   updatedAt: string
   categories: Category[]
+  width: number
+  height: number
 }
 
 export interface GetListMediaRequest {

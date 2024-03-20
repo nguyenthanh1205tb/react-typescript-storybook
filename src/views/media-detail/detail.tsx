@@ -4,16 +4,6 @@ import Image from '@/src/components/common/image'
 import { MultiSelectField } from '@/src/components/common/multi-select/muti-select-field'
 import VideoPlayer from '@/src/components/common/video-player'
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/src/components/ui/accordion'
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-} from '@/src/components/ui/alert-dialog'
 import { Badge } from '@/src/components/ui/badge'
 import { Button } from '@/src/components/ui/button'
 import { Checkbox } from '@/src/components/ui/checkbox'
@@ -51,6 +41,7 @@ import { formatBytes } from '../../lib/utils/media'
 import useAppStore from '../../stores/useAppStore'
 import { Category, ComboboxOption, MediaCodec, MediaEntity, MediaPackageType, MediaPacks, Video } from '../../types'
 import ListThumb from './list-thumb'
+import Modal from 'antd/es/modal/Modal'
 
 interface Props {
   type: MediaPackageType
@@ -252,7 +243,7 @@ const Detail = ({ type, onExportData }: Props) => {
               <div className="tw-flex tw-gap-4">
                 <div className="tw-flex tw-gap-1 tw-items-center">
                   <Frame size={16} />
-                  <span className="tw-text-xs">{`${mediaSelectedData?.data?.video?.width}x${mediaSelectedData?.data?.video?.height}`}</span>
+                  <span className="tw-text-xs">{`${mediaSelectedData?.data.width}x${mediaSelectedData?.data?.height}`}</span>
                 </div>
                 <div className="tw-flex tw-gap-1 tw-items-center">
                   <Ruler size={16} />
@@ -521,53 +512,55 @@ const Detail = ({ type, onExportData }: Props) => {
           </div>
         )}
       />
-      {
-        <AlertDialog open={showModal} onOpenChange={status => setShowModal(status)}>
-          {/* <AlertDialogContent className="!tw-max-w-[65vw] tw-min-h-[300px] tw-h-[750px]"> */}
-          <AlertDialogContent className="tw-max-w-[70vw] tw-overflow-y-scroll tw-max-h-[800px] !tw-inline-table !tw-p-0 !tw-m-0 !tw-border-none">
-            <AlertDialogHeader className="!tw-block">
-              <AlertDialogTitle className="tw-px-3 tw-pt-2 tw-flex tw-justify-between tw-items-center">
-                <span>Thay Thumbnail</span>
-                <X size={20} className="tw-cursor-pointer" onClick={() => setShowModal(false)} />
-              </AlertDialogTitle>
-              <AlertDialogDescription>
-                <div className=" tw-bg-black">
-                  <div className="tw-max-w-[60%] tw-mx-auto !tw-pb-[1px]">
-                    <If
-                      isShow={type === MediaPackageType.VIDEO}
-                      element={
-                        <VideoPlayer
-                          videoUrl={videoUrl(mediaSelectedData?.data.video) as string}
-                          thumbnailUrl={avatarSelected || mediaSelectedData?.data?.avatar_thumb?.uri || ''}
-                        />
-                      }
+      <Modal
+        centered
+        footer={
+          <div className="!tw-justify-center !tw-py-2 tw-items-center !tw-flex-row !tw-flex tw-gap-3">
+            <Button onClick={() => setShowModal(false)}>Huỷ bỏ</Button>
+            <Button onClick={onSubmitThumb} className="!tw-bg-green-600 !hover:tw-bg-green-700">
+              Hoàn Thành
+            </Button>
+          </div>
+        }
+        classNames={{ content: '!tw-p-0', header: '!tw-p-2' }}
+        open={showModal}
+        onCancel={() => setShowModal(false)}
+        title="Thay Thumbnail"
+        className="tw-max-w-[90vw] tw-min-w-[90vw] tw-max-h-[800px]">
+        <div className="!tw-block">
+          {/* <div className="tw-px-3 tw-pt-2 tw-flex tw-justify-between tw-items-center">
+              <X size={20} className="tw-cursor-pointer" onClick={() => setShowModal(false)} />
+            </div> */}
+          <div>
+            <div className=" tw-bg-black">
+              <div className="tw-max-w-[60%] tw-mx-auto !tw-pb-[1px]">
+                <If
+                  isShow={type === MediaPackageType.VIDEO}
+                  element={
+                    <VideoPlayer
+                      videoUrl={videoUrl(mediaSelectedData?.data.video) as string}
+                      thumbnailUrl={avatarSelected || mediaSelectedData?.data?.avatar_thumb?.uri || ''}
                     />
-                  </div>
-                </div>
+                  }
+                />
+              </div>
+            </div>
 
-                <div className="tw-max-w-[70vw] tw-bg-[#434242] tw-pt-5">
-                  <div className="tw-flex">
-                    <div className="tw-flex tw-max-w-[70vw]">
-                      <ListThumb
-                        onUploadThumb={onUploadThumb}
-                        onSelectThumb={url => setAvatarSelected(url)}
-                        avatarSelected={avatarSelected}
-                        items={mediaSelectedData?.data?.avatar_thumb?.url_list || []}
-                      />
-                    </div>
-                  </div>
+            <div className="tw-max-w-[70vw] tw-bg-[#434242] tw-pt-5">
+              <div className="tw-flex">
+                <div className="tw-flex tw-max-w-[70vw]">
+                  <ListThumb
+                    onUploadThumb={onUploadThumb}
+                    onSelectThumb={url => setAvatarSelected(url)}
+                    avatarSelected={avatarSelected}
+                    items={mediaSelectedData?.data?.avatar_thumb?.url_list || []}
+                  />
                 </div>
-              </AlertDialogDescription>
-            </AlertDialogHeader>
-            <AlertDialogFooter className="!tw-justify-center !tw-py-2 tw-items-center !tw-flex-row !tw-flex tw-gap-3">
-              <AlertDialogCancel>Huỷ bỏ</AlertDialogCancel>
-              <AlertDialogAction onClick={onSubmitThumb} className="!tw-bg-green-600 !hover:tw-bg-green-700">
-                Hoàn Thành
-              </AlertDialogAction>
-            </AlertDialogFooter>
-          </AlertDialogContent>
-        </AlertDialog>
-      }
+              </div>
+            </div>
+          </div>
+        </div>
+      </Modal>
     </div>
   )
 }

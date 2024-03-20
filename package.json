@@ -46,6 +46,7 @@
     "@uppy/dashboard": "^3.7.5",
     "@uppy/thumbnail-generator": "^3.0.8",
     "@uppy/tus": "^3.5.3",
+    "antd": "^5.15.3",
     "autoprefixer": "9.8.8",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.0",
