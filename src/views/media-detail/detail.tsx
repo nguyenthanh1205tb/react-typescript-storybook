@@ -20,6 +20,7 @@ import { APIConfigs } from '@/src/lib/request/core/ApiConfig'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import cn from 'classnames'
 import {
+  Ban,
   CalendarFold,
   CircleFadingPlus,
   Code,
@@ -39,9 +40,19 @@ import { useForm } from 'react-hook-form'
 import { useCategory, useDetailMedia } from '../../hooks/useMedia'
 import { formatBytes } from '../../lib/utils/media'
 import useAppStore from '../../stores/useAppStore'
-import { Category, ComboboxOption, MediaCodec, MediaEntity, MediaPackageType, MediaPacks, Video } from '../../types'
+import {
+  Category,
+  ComboboxOption,
+  MediaCodec,
+  MediaEntity,
+  MediaPackageType,
+  MediaPacks,
+  MediaStatus,
+  Video,
+} from '../../types'
 import ListThumb from './list-thumb'
 import Modal from 'antd/es/modal/Modal'
+import Typo from '@/src/components/common/typo'
 
 interface Props {
   type: MediaPackageType
@@ -175,6 +186,25 @@ const Detail = ({ type, onExportData }: Props) => {
     }
   }, [avatarSelected])
 
+  const overlayActivated = useMemo(() => {
+    if (!mediaSelectedData) return true
+    switch (type) {
+      case MediaPackageType.VIDEO:
+        return mediaSelectedData.data.status !== MediaStatus.Done
+      case MediaPackageType.IMAGE:
+        return mediaSelectedData.data.status !== MediaStatus.Uploaded
+    }
+  }, [mediaSelectedData])
+
+  const overlayStatusTypeName = useMemo(() => {
+    switch (type) {
+      case MediaPackageType.VIDEO:
+        return 'Video'
+      case MediaPackageType.IMAGE:
+        return 'Hình ảnh'
+    }
+  }, [type])
+
   useEffect(() => {
     if (mediaSelectedData?.data) {
       form.reset({
@@ -218,26 +248,60 @@ const Detail = ({ type, onExportData }: Props) => {
         isShow={haveMediaSelectedID}
         element={() => (
           <div className="tw-flex tw-flex-col">
-            <If
-              isShow={type === MediaPackageType.VIDEO}
-              element={
-                <VideoPlayer
-                  videoUrl={videoUrl(mediaSelectedData?.data.video) as string}
-                  thumbnailUrl={mediaSelectedData?.data.avatar_thumb?.uri || ''}
-                />
-              }
-            />
+            <div className="tw-relative">
+              <If
+                isShow={overlayActivated ?? true}
+                element={
+                  <div className="tw-absolute tw-w-full tw-h-full tw-bg-black/20 tw-backdrop-blur-md tw-top-0 tw-left-0 tw-z-10 tw-flex tw-items-center tw-justify-center">
+                    <div className="tw-flex tw-flex-col tw-items-center tw-justify-center tw-px-10 tw-text-center tw-gap-1">
+                      <If
+                        isShow={mediaSelectedData?.data.status === MediaStatus.Transcoding}
+                        element={
+                          <>
+                            <Loader size={30} className="tw-animate-spin" />
+                            <Typo.H2>{overlayStatusTypeName} đang được xử lý</Typo.H2>
+                            <Typo.Paragraph>
+                              Bản xem trước sẽ được hiển thị sau khi quá trình xử lý hoàn tất
+                            </Typo.Paragraph>
+                          </>
+                        }
+                      />
 
-            <If
-              isShow={type === MediaPackageType.IMAGE}
-              element={
-                <Image
-                  src={mediaSelectedData?.data?.avatar_thumb?.uri || ''}
-                  height="253px"
-                  className="tw-rounded-none"
-                />
-              }
-            />
+                      <If
+                        isShow={mediaSelectedData?.data.status === MediaStatus.Error}
+                        element={
+                          <>
+                            <Ban size={30} />
+                            <Typo.H2>{overlayStatusTypeName} bị lỗi</Typo.H2>
+                            <Typo.Paragraph>Bản xem trước không khả dụng</Typo.Paragraph>
+                          </>
+                        }
+                      />
+                    </div>
+                  </div>
+                }
+              />
+              <If
+                isShow={type === MediaPackageType.VIDEO}
+                element={
+                  <VideoPlayer
+                    videoUrl={videoUrl(mediaSelectedData?.data.video) as string}
+                    thumbnailUrl={mediaSelectedData?.data.avatar_thumb?.uri || ''}
+                  />
+                }
+              />
+
+              <If
+                isShow={type === MediaPackageType.IMAGE}
+                element={
+                  <Image
+                    src={mediaSelectedData?.data?.avatar_thumb?.uri || ''}
+                    height="253px"
+                    className="tw-rounded-none tw-object-contain"
+                  />
+                }
+              />
+            </div>
 
             <div className="tw-flex tw-gap-2 tw-justify-between tw-bg-slate-600 tw-p-3">
               <div className="tw-flex tw-gap-4">

@@ -23,7 +23,7 @@ const Image = ({
   const [isError, setIsError] = useState(false)
 
   return (
-    <div className="tw-relative">
+    <div className="tw-relative tw-flex tw-items-center tw-justify-center tw-bg-slate-100">
       <If
         isShow={!imgLoaded && !isError}
         element={
@@ -72,7 +72,7 @@ const Image = ({
             onError={() => setIsError(true)}
             loading="lazy"
             src={src}
-            className={cn('tw-object-cover tw-w-full tw-rounded-lg', { '!tw-h-0': !imgLoaded }, className)}
+            className={cn({ '!tw-h-0': !imgLoaded }, className)}
             style={{ height, ...style }}
             {...rest}
           />

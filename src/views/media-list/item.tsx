@@ -1,16 +1,18 @@
 import Image from '@/src/components/common/image'
+import If from '@/src/hooks/if'
 import { convertDuration } from '@/src/lib/utils/date'
 import { cn } from '@/src/lib/utils/merge-class'
 import useAppStore from '@/src/stores/useAppStore'
-import { MediaEntity, MediaStatus } from '@/src/types'
-import { CalendarFold } from 'lucide-react'
+import { FileType, MediaEntity, MediaStatus } from '@/src/types'
+import { CalendarFold, ImageIcon } from 'lucide-react'
 import moment from 'moment'
-import React, { PropsWithChildren } from 'react'
+import React, { PropsWithChildren, useMemo } from 'react'
 
 interface Props {
+  type: FileType
   data: MediaEntity
 }
-function Item({ data }: PropsWithChildren<Props>) {
+function Item({ data, type }: PropsWithChildren<Props>) {
   const { setMediaSelectedID, mediaSelectedID, setListMediaSelected, selectMultiMode, listMediaSelected } =
     useAppStore()
 
@@ -35,6 +37,15 @@ function Item({ data }: PropsWithChildren<Props>) {
     }
   }
 
+  const status = useMemo(() => {
+    switch (type) {
+      case FileType.VIDEO:
+        return MediaStatus.Done
+      case FileType.IMAGE:
+        return MediaStatus.Uploaded
+    }
+  }, [type])
+
   return (
     <>
       <div
@@ -45,19 +56,20 @@ function Item({ data }: PropsWithChildren<Props>) {
         <div className="tw-absolute tw-left-3 tw-top-3 tw-z-10">
           <div
             className={cn('tw-w-4 tw-h-4 tw-rounded-full tw-border tw-border-white', {
-              'tw-bg-emerald-500': data.status === MediaStatus.Done,
-              'tw-bg-red-500': data.status !== MediaStatus.Done,
+              'tw-bg-emerald-500': data.status === status,
+              'tw-bg-red-500': data.status !== status,
             })}></div>
         </div>
         <div
           className={cn(' tw-gap-1 tw-cursor-pointer tw-justify-between tw-h-full', {
-            'tw-opacity-50 !tw-cursor-default': data.status !== MediaStatus.Done,
+            'tw-opacity-50': data.status !== status,
           })}>
-          <div className="tw-mb-2 tw-gap-1 ">
+          <div className="tw-mb-2 tw-gap-1">
             <div className="tw-relative">
-              <Image className="tw-aspect-video tw-rounded-md" alt={data.id} src={data.avatar_thumb?.uri} />
+              <Image alt={data.id} src={data.avatar_thumb?.uri} />
               <div className="tw-absolute tw-left-1 tw-bg-black/20 tw-text-xs tw-text-white tw-bottom-3 tw-py-1 tw-px-2 tw-rounded-md tw-backdrop-blur-sm">
-                {convertDuration(data.durations)}
+                <If isShow={type === FileType.VIDEO} element={convertDuration(data.durations)} />
+                <If isShow={type === FileType.IMAGE} element={<ImageIcon size={18} />} />
               </div>
             </div>
 

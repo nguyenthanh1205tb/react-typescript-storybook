@@ -13,7 +13,7 @@ import useAppStore from '@/src/stores/useAppStore'
 import { ConfigResponse, FileType } from '@/src/types'
 import { useQuery } from '@tanstack/react-query'
 import { CheckCheck, PackageOpen, X } from 'lucide-react'
-import React, { PropsWithChildren, useEffect, useMemo, useRef } from 'react'
+import React, { PropsWithChildren, useEffect, useMemo } from 'react'
 import Item from './item'
 
 interface Props {
@@ -21,7 +21,6 @@ interface Props {
   isFilterOpen?: boolean
 }
 function ListMedia({ type, isFilterOpen }: PropsWithChildren<Props>) {
-  const listRef = useRef<HTMLDivElement>(null)
   const {
     listMedia,
     listMediaQueries,
@@ -29,7 +28,6 @@ function ListMedia({ type, isFilterOpen }: PropsWithChildren<Props>) {
     listMediaSelected,
     listFileAdded,
     mediaSelectedID,
-
     setListMedia,
     setListMediaQueries,
     setConfig,
@@ -93,8 +91,8 @@ function ListMedia({ type, isFilterOpen }: PropsWithChildren<Props>) {
   }, [configResponse])
 
   const listMediaItem = useMemo(() => {
-    return <Each of={listMedia || []} render={item => <Item key={item?.id} data={item} />} />
-  }, [listMedia])
+    return <Each of={listMedia || []} render={item => <Item type={type} key={item?.id} data={item} />} />
+  }, [listMedia, type])
 
   return (
     <div className="tw-flex tw-flex-col tw-gap-2">
@@ -137,7 +135,7 @@ function ListMedia({ type, isFilterOpen }: PropsWithChildren<Props>) {
           />
         </div>
       </div>
-      <div className={cn('tw-grid tw-gap-4 tw-w-full tw-transition-all', `tw-grid-cols-${colNum}`)} ref={listRef}>
+      <div className={cn('tw-grid tw-gap-4 tw-w-full tw-transition-all', `tw-grid-cols-${colNum}`)}>
         <If isShow={isLoading} element={<Each of={new Array(20)?.fill(0)} render={() => <SkeletonCard />} />} />
         <If
           isShow={!!listFileAdded}
