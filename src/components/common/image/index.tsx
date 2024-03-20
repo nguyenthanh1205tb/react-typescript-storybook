@@ -1,9 +1,9 @@
+import errorImg from '@/src/assets/images/error-img.png'
+import If from '@/src/hooks/if'
 import { cn } from '@/src/lib/utils/merge-class'
+import { Ban, Image as ImageIcon, Loader } from 'lucide-react'
 import React, { PropsWithChildren, useState } from 'react'
 import { Skeleton } from '../../ui/skeleton'
-import If from '@/src/hooks/if'
-import { Ban, Image as ImageIcon, Loader } from 'lucide-react'
-import errorImg from '@/src/assets/images/error-img.png'
 import { Tooltip, TooltipContent, TooltipTrigger } from '../../ui/tooltip'
 import Typo from '../typo'
 
