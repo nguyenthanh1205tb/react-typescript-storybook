@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Test</title>
+    <title>Media Package</title>
     <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
     <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
     <link rel="stylesheet" href="./build/index.min.css" />
@@ -11,16 +11,18 @@
   <body>
     <div style="padding: 2rem">
       <div style="display: flex; justify-content: center; align-items: center">
-        <div id="mefi-media-video" style="margin-right: 10px"></div>
-        <div id="mefi-media-image"></div>
+        <div id="mefi-media-package"></div>
       </div>
     </div>
 
     <script src="./build/index.min.js"></script>
     <script>
-      const MFPackage = new $MMedia.Init()
-      MFPackage.video('#mefi-media-video')
-      MFPackage.image('#mefi-media-image')
+      const MFPackage = new $MMedia.Init({ type: ['video', 'image'] })
+      MFPackage.render('#mefi-media-package', {
+        onSubmit: function (data) {
+          console.log('data', data)
+        },
+      })
     </script>
   </body>
 </html>

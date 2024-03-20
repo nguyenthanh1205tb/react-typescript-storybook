@@ -69,7 +69,9 @@ function ListMedia({ type }: PropsWithChildren<Props>) {
   }, [data, isLoading])
 
   useEffect(() => {
-    const getColums = (w: number) => {
+    const getColumns = (w: number) => {
+      if (w > 1536) return 8
+      if (w > 1440) return 7
       if (w > 1200) return 6
       if (w > 992) return 5
       if (w > 768) return 4
@@ -77,12 +79,14 @@ function ListMedia({ type }: PropsWithChildren<Props>) {
       return 1
     }
     const listResize = () => {
+      let colTimeout: NodeJS.Timeout | null = null
       if (!listRef || !listRef.current) return
       const w = listRef.current.offsetWidth
-      const c = getColums(w)
+      const c = getColumns(w)
       const num = Math.ceil(c)
-      if (colNum !== num) {
-        setColNum(num <= 0 ? 1 : num)
+      if ([1, 3, 4, 5, 6, 7, 8].includes(num)) {
+        if (colTimeout) clearTimeout(colNum)
+        colTimeout = setTimeout(() => setColNum(num <= 0 ? 1 : num), 100)
       }
     }
     if (listRef && listRef.current) {
@@ -169,42 +173,6 @@ function ListMedia({ type }: PropsWithChildren<Props>) {
         />
         <If isShow={!isLoading && data !== null} element={listMediaItem} />
       </div>
-      {
-        // <AlertDialog open={showModalChangeThumbnail} onOpenChange={status => setShowModalChangeThumbnail(status)}>
-        //   {/* <AlertDialogContent className="!tw-max-w-[65vw] tw-min-h-[300px] tw-h-[750px]"> */}
-        //   <AlertDialogContent className="tw-max-w-[70vw] tw-overflow-y-scroll tw-max-h-[800px] !tw-inline-table !tw-p-0 !tw-m-0 !tw-border-none">
-        //     <AlertDialogHeader className="!tw-block">
-        //       <AlertDialogTitle className="tw-pl-3 tw-pt-2">Thay Thumbnail</AlertDialogTitle>
-        //       <AlertDialogDescription>
-        //         <div className=" tw-bg-black">
-        //           <div className="tw-max-w-[60%] tw-mx-auto !tw-pb-[1px]">
-        //             <If
-        //               isShow={type === FileType.VIDEO}
-        //               element={
-        //                 <VideoPlayer
-        //                   videoUrl={videoUrl(mediaSelectedData?.data.video) as string}
-        //                   thumbnailUrl={mediaSelectedData?.data?.avatar_thumb?.uri || ''}
-        //                 />
-        //               }
-        //             />
-        //           </div>
-        //         </div>
-        //         <div className="tw-max-w-[70vw] tw-bg-[#434242] tw-pt-5">
-        //           <div className="tw-flex">
-        //             <div className="tw-flex tw-max-w-[70vw]">
-        //               <ScrollHorizontalArea items={mediaSelectedData?.data?.avatar_thumb?.url_list || []} />
-        //             </div>
-        //           </div>
-        //         </div>
-        //       </AlertDialogDescription>
-        //     </AlertDialogHeader>
-        //     <AlertDialogFooter>
-        //       <AlertDialogCancel>Cancel</AlertDialogCancel>
-        //       <AlertDialogAction>Continue</AlertDialogAction>
-        //     </AlertDialogFooter>
-        //   </AlertDialogContent>
-        // </AlertDialog>
-      }
     </div>
   )
 }

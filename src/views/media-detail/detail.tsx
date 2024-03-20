@@ -106,7 +106,6 @@ const Detail = ({ type, onExportData }: Props) => {
     })
       .then(response => response.json())
       .then(data => {
-        console.log('Success:', data)
         setAvatarSelected(data.url)
       })
   }
@@ -539,12 +538,7 @@ const Detail = ({ type, onExportData }: Props) => {
                       element={
                         <VideoPlayer
                           videoUrl={videoUrl(mediaSelectedData?.data.video) as string}
-                          thumbnailUrl={
-                            avatarSelected ||
-                            mediaSelectedData?.data?.avatar_thumb?.uri ||
-                            mediaSelectedData?.data?.avatar_thumb?.url_list[0] ||
-                            ''
-                          }
+                          thumbnailUrl={avatarSelected || mediaSelectedData?.data?.avatar_thumb?.uri || ''}
                         />
                       }
                     />

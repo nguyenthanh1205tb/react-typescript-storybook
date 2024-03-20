@@ -1,3 +1,4 @@
+import Image from '@/src/components/common/image'
 import { convertDuration } from '@/src/lib/utils/date'
 import { cn } from '@/src/lib/utils/merge-class'
 import useAppStore from '@/src/stores/useAppStore'
@@ -54,11 +55,7 @@ function Item({ data }: PropsWithChildren<Props>) {
           })}>
           <div className="tw-mb-2 tw-gap-1 ">
             <div className="tw-relative">
-              <img
-                className="tw-aspect-video tw-rounded-md"
-                alt={data.id}
-                src={data.avatar_thumb?.uri} // use normal <img> attributes as props
-              />
+              <Image className="tw-aspect-video tw-rounded-md" alt={data.id} src={data.avatar_thumb?.uri} />
               <div className="tw-absolute tw-left-1 tw-bg-black/20 tw-text-xs tw-text-white tw-bottom-3 tw-py-1 tw-px-2 tw-rounded-md tw-backdrop-blur-sm">
                 {convertDuration(data.durations)}
               </div>
