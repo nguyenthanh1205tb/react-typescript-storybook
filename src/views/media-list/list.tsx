@@ -13,21 +13,23 @@ import useAppStore from '@/src/stores/useAppStore'
 import { ConfigResponse, FileType } from '@/src/types'
 import { useQuery } from '@tanstack/react-query'
 import { CheckCheck, PackageOpen, X } from 'lucide-react'
-import React, { PropsWithChildren, useEffect, useMemo, useRef, useState } from 'react'
+import React, { PropsWithChildren, useEffect, useMemo, useRef } from 'react'
 import Item from './item'
 
 interface Props {
   type: FileType
+  isFilterOpen?: boolean
 }
-function ListMedia({ type }: PropsWithChildren<Props>) {
+function ListMedia({ type, isFilterOpen }: PropsWithChildren<Props>) {
   const listRef = useRef<HTMLDivElement>(null)
-  const [colNum, setColNum] = useState(5)
   const {
     listMedia,
     listMediaQueries,
     selectMultiMode,
     listMediaSelected,
     listFileAdded,
+    mediaSelectedID,
+
     setListMedia,
     setListMediaQueries,
     setConfig,
@@ -68,35 +70,12 @@ function ListMedia({ type }: PropsWithChildren<Props>) {
     }
   }, [data, isLoading])
 
-  const getColumns = (w: number) => {
-    if (w > 1536) return 8
-    if (w > 1440) return 7
-    if (w > 1200) return 6
-    if (w > 992) return 5
-    if (w > 768) return 4
-    if (w > 576) return 3
-    return 1
-  }
-
-  useEffect(() => {
-    let colTimeout: NodeJS.Timeout | null = null
-    const listResize = () => {
-      if (!listRef || !listRef.current) return
-      const w = listRef.current.offsetWidth
-      const c = getColumns(w)
-      const num = Math.ceil(c)
-      if ([1, 3, 4, 5, 6, 7, 8].includes(num)) {
-        if (colTimeout) clearTimeout(colNum)
-        colTimeout = setTimeout(() => setColNum(num <= 0 ? 1 : num), 100)
-      }
-    }
-    if (listRef && listRef.current) {
-      new ResizeObserver(listResize).observe(listRef.current)
-    }
-    return () => {
-      if (colTimeout) clearTimeout(colTimeout)
-    }
-  }, [listRef])
+  const colNum = useMemo(() => {
+    if (mediaSelectedID && isFilterOpen) return 4
+    if (mediaSelectedID) return 5
+    if (isFilterOpen) return 6
+    return 8
+  }, [mediaSelectedID, isFilterOpen])
 
   const { data: configResponse } = useQuery<ConfigResponse>({
     queryKey: ['getConfigs'],
@@ -158,7 +137,7 @@ function ListMedia({ type }: PropsWithChildren<Props>) {
           />
         </div>
       </div>
-      <div className={cn('tw-grid tw-gap-4 tw-w-full', `tw-grid-cols-${colNum}`)} ref={listRef}>
+      <div className={cn('tw-grid tw-gap-4 tw-w-full tw-transition-all', `tw-grid-cols-${colNum}`)} ref={listRef}>
         <If isShow={isLoading} element={<Each of={new Array(20)?.fill(0)} render={() => <SkeletonCard />} />} />
         <If
           isShow={!!listFileAdded}

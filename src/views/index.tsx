@@ -203,7 +203,10 @@ function Main({ type, onExportData }: Props) {
                         value={VideoTabItemType.VIDEO}
                         className="!tw-mt-0 tw-flex-1 tw-pl-2 tw-pt-2 tw-flex">
                         <ScrollArea className="tw-pr-4 tw-max-h-[650px] tw-border-r tw-flex-1">
-                          <ListMedia type={exportFileType} />
+                          <ListMedia
+                            type={exportFileType}
+                            isFilterOpen={state.sideMenu.active === SideMenuActive.FILTER}
+                          />
                         </ScrollArea>
                         <If isShow={selectMultiMode} element={<MediaMultiSelected onExportData={onExportData} />} />
                         <If

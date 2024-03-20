@@ -13,7 +13,7 @@ import {
 } from '@/src/components/ui/command'
 import { Popover, PopoverContent, PopoverTrigger } from '@/src/components/ui/popover'
 import { ComboboxOption } from '@/src/types'
-import { flatMapDeep } from 'lodash'
+import _flatMapDeep from 'lodash/flatMapDeep'
 import { Check, ChevronsUpDown, X } from 'lucide-react'
 
 export type OptionType = {
@@ -44,9 +44,9 @@ function MultiSelectChild({ options, value, onChange, className, inputClassName,
 
   React.useEffect(() => {
     if (value) {
-      const flatOptions = flatMapDeep(options, item => {
+      const flatOptions = _flatMapDeep(options, item => {
         if (item.children) {
-          return [item, ...flatMapDeep(item.children)]
+          return [item, ..._flatMapDeep(item.children)]
         }
         return item
       })

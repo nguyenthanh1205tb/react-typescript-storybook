@@ -9,6 +9,7 @@ import tsTrans from 'rollup-plugin-typescript2'
 import imageResolve from '@rollup/plugin-image'
 import alias from '@rollup/plugin-alias'
 import path from 'path'
+import { visualizer } from 'rollup-plugin-visualizer'
 
 const tailwindcss = require('tailwindcss')
 
@@ -28,19 +29,8 @@ export default {
     sourcemap: false,
     name: '$MMedia',
     preserveModules: false,
-    globals: {
-      react: 'React',
-      'react-dom/client': 'ReactDOM',
-      path: 'path',
-      fs: 'fs',
-      http: 'http',
-      https: 'https',
-      crypto: 'crypto',
-      stream: 'stream',
-      constants: 'constants',
-    },
   },
-  external: ['react', 'path', 'fs', 'http', 'https', 'crypto', 'stream', 'constants', '@/src/assets'],
+  external: [],
   plugins: [
     peerDepsExternal(),
     alias({
@@ -73,5 +63,6 @@ export default {
       minimize: true,
       extensions: ['.scss', '.sass', '.css'],
     }),
+    visualizer({ emitFile: true, filename: 'stats.html' }),
   ],
 }

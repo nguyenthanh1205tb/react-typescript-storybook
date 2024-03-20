@@ -1,5 +1,4 @@
 /* eslint-disable consistent-return */
-import '@videojs/http-streaming'
 import React, { useCallback, useEffect, useRef, useState } from 'react'
 import videojs from 'video.js'
 import Player from 'video.js/dist/types/player'
