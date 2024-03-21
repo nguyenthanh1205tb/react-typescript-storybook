@@ -1,65 +1,56 @@
-import ImageEditorBase from '@toast-ui/react-image-editor'
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useEffect } from 'react'
-import ImageEditor from 'tui-image-editor'
+import tui from 'tui-image-editor'
 import 'tui-image-editor/dist/tui-image-editor.css'
 
 interface ImageEditorProps {
   src: string
 }
 
+const myTheme: any = {
+  'header.display': 'none',
+}
+
+const imgEditorProps: tuiImageEditor.IOptions = {
+  includeUI: {
+    menuBarPosition: 'left',
+    usageStatistics: false,
+    // menu: ['shape', 'filter', 'text', 'mask', 'icon', 'draw', 'crop', 'flip', 'rotate', 'reset'],
+    theme: myTheme,
+    initMenu: 'rotate',
+    // initMenu: 'shape',
+    uiSize: {
+      height: '700px',
+      width: '1200px',
+    },
+  },
+  selectionStyle: {
+    rotatingPointOffset: 70,
+  },
+  cssMaxWidth: 700,
+  cssMaxHeight: 500,
+}
 const BaseImageEditor = ({ src }: ImageEditorProps) => {
-  const [editImgInstant, setEditImgInstant] = React.useState<ImageEditor | null>(null)
+  const [instant, setInstant] = React.useState<any>()
 
   useEffect(() => {
-    const targetElement = document.querySelector('#tui-image-editor')
-    console.log('targetElement', targetElement)
+    // const editorInstance: ImageEditorClass = ref?.current?.getInstance()
 
-    if (targetElement instanceof HTMLElement) {
-      const instance = new ImageEditor(targetElement, {
-        includeUI: {
-          loadImage: {
-            path: src,
-            name: 'SampleImage',
-          },
-          menu: ['shape', 'filter'],
-          initMenu: 'filter',
-          uiSize: {
-            width: '1000px',
-            height: '700px',
-          },
-          menuBarPosition: 'bottom',
+    const imageEditor = new tui('#tui-image-editor-container', {
+      ...imgEditorProps,
+      includeUI: {
+        ...imgEditorProps.includeUI,
+        loadImage: {
+          path: src,
+          name: 'mefi-package',
         },
-        cssMaxWidth: 700,
-        cssMaxHeight: 500,
-        selectionStyle: {
-          cornerSize: 20,
-          rotatingPointOffset: 70,
-        },
-      })
-      console.log('instance', instance)
-      setEditImgInstant(instance)
-    } else {
-      console.error("Target element '#tui-image-editor' not found.")
-    }
+      },
+    })
+    setInstant(imageEditor)
   }, [])
 
-  useEffect(() => {
-    editImgInstant?.loadImageFromURL(src, 'SampleImage')
-  }, [editImgInstant, src])
-
-  const imgEditorProps = {
-    includeUI: {
-      initMenu: 'shape',
-      uiSize: {
-        height: '700px',
-        width: '1000px',
-      },
-    },
-    cssMaxWidth: 700,
-    cssMaxHeight: 500,
-  }
-
-  return <ImageEditorBase {...imgEditorProps} />
+  // return <ImageEditor ref={ref} {...imgEditorProps} />
+  return <div id="tui-image-editor-container"></div>
 }
 
 export default BaseImageEditor

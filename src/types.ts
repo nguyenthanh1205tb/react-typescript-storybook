@@ -123,6 +123,7 @@ export interface MediaEntity {
   durations: number
   status: string
   avatar_thumb: AvatarThumb
+  download_addr: AvatarThumb
   video: Video
   tags?: string[]
   createdAt: string

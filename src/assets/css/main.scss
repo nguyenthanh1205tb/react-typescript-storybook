@@ -119,6 +119,16 @@
     -ms-overflow-style: none;
   }
 
+  #tui-image-editor-container {
+    .tui-image-editor-help-menu {
+      display: flex !important;
+      flex-direction: column;
+      justify-content: space-evenly;
+    }
+  }
+
+
+
   .progress-bar {
     width: 18px;
     /* Set width and height of the progress bar */
