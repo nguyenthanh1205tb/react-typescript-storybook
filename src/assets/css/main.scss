@@ -127,13 +127,19 @@
     }
   }
 
-  .ant-modal {
-    max-width: unset;
-    margin: unset;
-  }
+  .modal-image-editor {
 
-  .ant-modal-centered::before {
-    content: unset;
+    .ant-modal {
+      height: unset;
+      width: unset !important;
+    }
+
+    .ant-modal-content {
+      background-color: #1a1a1a;
+      padding: 0 !important;
+    }
+
+
   }
 
 

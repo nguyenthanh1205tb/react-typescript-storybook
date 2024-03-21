@@ -22,7 +22,7 @@ const imgEditorProps: tuiImageEditor.IOptions = {
     // initMenu: 'shape',
     uiSize: {
       height: '700px',
-      width: '1200px',
+      // width: '1200px',
     },
   },
   selectionStyle: {
