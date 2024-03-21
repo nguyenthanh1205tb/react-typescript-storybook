@@ -35,7 +35,8 @@ function MediaMultiSelected({ onExportData }: Props) {
                       iconLoadingSize={16}
                       src={avatarUrl(item.avatar_thumb)}
                       height="60px"
-                      containerClassName="tw-w-[70px] tw-h-[60px]"
+                      className="tw-object-contain"
+                      containerClassName="!tw-w-[70px] tw-h-[60px]"
                     />
                     <Typo.Paragraph className="tw-max-w-[280px] tw-break-words tw-line-clamp-3">
                       {item.name}

@@ -69,11 +69,11 @@ function ListMedia({ type, isFilterOpen }: PropsWithChildren<Props>) {
   }, [data, isLoading])
 
   const colNum = useMemo(() => {
-    if ((mediaSelectedID || listMediaSelected.length) && isFilterOpen) return 4
-    if (mediaSelectedID || listMediaSelected.length) return 5
+    if ((mediaSelectedID || selectMultiMode) && isFilterOpen) return 4
+    if (mediaSelectedID || selectMultiMode) return 5
     if (isFilterOpen) return 6
     return 8
-  }, [mediaSelectedID, listMediaSelected, isFilterOpen])
+  }, [mediaSelectedID, selectMultiMode, isFilterOpen])
 
   const { data: configResponse } = useQuery<ConfigResponse>({
     queryKey: ['getConfigs'],
