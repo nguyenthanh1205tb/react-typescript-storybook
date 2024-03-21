@@ -127,6 +127,14 @@
     }
   }
 
+  .ant-modal {
+    max-width: unset;
+    margin: unset;
+  }
+
+  .ant-modal-centered::before {
+    content: unset;
+  }
 
 
   .progress-bar {

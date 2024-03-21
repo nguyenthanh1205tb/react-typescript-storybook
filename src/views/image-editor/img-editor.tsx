@@ -1,12 +1,13 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useEffect } from 'react'
-import tui from 'tui-image-editor'
+import { default as ImageEditor, default as tui } from 'tui-image-editor'
 import 'tui-image-editor/dist/tui-image-editor.css'
 
 interface ImageEditorProps {
   src: string
+  getInstance?: (i: any) => void
 }
-
+ImageEditor
 const myTheme: any = {
   'header.display': 'none',
 }
@@ -30,8 +31,8 @@ const imgEditorProps: tuiImageEditor.IOptions = {
   cssMaxWidth: 700,
   cssMaxHeight: 500,
 }
-const BaseImageEditor = ({ src }: ImageEditorProps) => {
-  const [instant, setInstant] = React.useState<any>()
+const BaseImageEditor = ({ src, getInstance }: ImageEditorProps) => {
+  const [instant, setInstant] = React.useState<ImageEditor>()
 
   useEffect(() => {
     // const editorInstance: ImageEditorClass = ref?.current?.getInstance()
@@ -46,7 +47,11 @@ const BaseImageEditor = ({ src }: ImageEditorProps) => {
         },
       },
     })
+
     setInstant(imageEditor)
+    getInstance && getInstance(imageEditor)
+
+    imageEditor.changeCursor('default')
   }, [])
 
   // return <ImageEditor ref={ref} {...imgEditorProps} />
