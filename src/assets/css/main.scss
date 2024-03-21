@@ -106,7 +106,11 @@
 
     .ant-select-selection-item {
       color: #fff !important;
-      background-color: rgb(189, 192, 199) !important;
+      background-color: rgb(75, 75, 75) !important;
+    }
+
+    .ant-select-selection-item-remove {
+      color: #fff !important;
     }
   }
 
