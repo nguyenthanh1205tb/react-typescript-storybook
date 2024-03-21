@@ -6,15 +6,10 @@ import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/
 import { Badge } from '@/src/components/ui/badge'
 import { Button } from '@/src/components/ui/button'
 import { ScrollArea } from '@/src/components/ui/scroll-area'
-import { UPLOAD_ENDPOINT } from '@/src/configs'
 import Each from '@/src/hooks/each'
 import If from '@/src/hooks/if'
-import { request } from '@/src/lib/request'
-import { APIConfigs } from '@/src/lib/request/core/ApiConfig'
-import { useMutation, useQueryClient } from '@tanstack/react-query'
 import useForm from 'antd/es/form/hooks/useForm'
 import Modal from 'antd/es/modal/Modal'
-import notification from 'antd/es/notification'
 import cn from 'classnames'
 import {
   Ban,
@@ -32,83 +27,57 @@ import {
   X,
 } from 'lucide-react'
 import moment from 'moment'
-import React, { useCallback, useEffect, useMemo } from 'react'
+import React, { useEffect, useMemo } from 'react'
 import { useDetailMedia } from '../../hooks/useMedia'
 import { formatBytes } from '../../lib/utils/media'
 import useAppStore from '../../stores/useAppStore'
-import { MediaCodec, MediaEntity, MediaPackageType, MediaPacks, MediaStatus, Video } from '../../types'
+import { MediaEntity, MediaPackageType, MediaStatus } from '../../types'
+import ImageEditorModal from '../image-editor/img-editor-modal'
 import DetailMediaForm from './detail-form'
 import ListThumb from './list-thumb'
+import useUpdateMedia, { videoUrl } from './useUpdateMedia'
 
 interface Props {
   type: MediaPackageType
   onExportData?: (data: MediaEntity[]) => void
 }
 
-export const videoUrl = (d?: Video) => {
-  if (!d) return
-  const defaultUri = d?.uri
-  const hls = d.play_url.hls
-  if (!hls || !hls.length) return defaultUri
-  const item = hls.find(val => val.codec === MediaCodec.H264 && val.pack === MediaPacks.HLS)
-  if (!item) return defaultUri
-  return item.uri
-}
-
-export const getUrlThumb = (url: string, config: any) => {
-  const orgId = config?.organizationId
-  const pattern = new RegExp(`${orgId}.*`)
-  const match = url.match(pattern)
-  return match ? match[0] : url
-}
+const mediaAccords = [
+  {
+    headerName: 'Chi tiết',
+  },
+  {
+    headerName: 'Lịch sử',
+    hide: true,
+  },
+  {
+    headerName: 'Sử dụng',
+    hide: true,
+  },
+  {
+    headerName: 'Liên quan',
+    hide: true,
+  },
+  {
+    headerName: 'Thông tin quảng cáo',
+    hide: true,
+  },
+]
 
 const Detail = ({ type, onExportData }: Props) => {
   const [form] = useForm()
-
-  const [showModal, setShowModal] = React.useState(false)
-  const [avatarSelected, setAvatarSelected] = React.useState<string>('')
-  const { mediaSelectedID, mediaSelectedData, setMediaSelectedData, config } = useAppStore()
+  const { mediaSelectedID, mediaSelectedData, setMediaSelectedData } = useAppStore()
+  const {
+    avatarSelected,
+    showImageEditor,
+    showModal,
+    toggleImageEditor,
+    handleUpdateMedia,
+    setShowModal,
+    onSubmitThumb,
+    setAvatarSelected,
+  } = useUpdateMedia()
   const { response, getDetailMedia } = useDetailMedia()
-
-  const onUploadThumb = (file: File) => {
-    const formData = new FormData()
-    formData.append('file', file)
-    fetch(UPLOAD_ENDPOINT, {
-      method: 'POST',
-      body: formData,
-      headers: {
-        Authorization: `Bearer ${localStorage.getItem('mf-token')}`,
-      },
-    })
-      .then(response => response.json())
-      .then(data => {
-        setAvatarSelected(data.url)
-      })
-  }
-
-  // 1. Define your form.
-
-  const mediaAccords = [
-    {
-      headerName: 'Chi tiết',
-    },
-    {
-      headerName: 'Lịch sử',
-      hide: true,
-    },
-    {
-      headerName: 'Sử dụng',
-      hide: true,
-    },
-    {
-      headerName: 'Liên quan',
-      hide: true,
-    },
-    {
-      headerName: 'Thông tin quảng cáo',
-      hide: true,
-    },
-  ]
 
   const haveMediaSelectedID = useMemo(() => mediaSelectedID !== null && mediaSelectedID !== '', [mediaSelectedID])
 
@@ -117,49 +86,6 @@ const Detail = ({ type, onExportData }: Props) => {
       getDetailMedia(mediaSelectedID)
     }
   }, [mediaSelectedID])
-
-  const queryClient = useQueryClient()
-
-  const { mutateAsync: onSubmitMedia } = useMutation({
-    mutationFn: (values: any) =>
-      request<any>(APIConfigs(), {
-        url: `/media/${mediaSelectedID}`,
-        method: 'PUT',
-        body: values,
-      }),
-    onSuccess: () => {
-      notification.success({
-        message: 'Cập nhật thành công',
-      })
-      queryClient.invalidateQueries({
-        queryKey: ['getListMedia'],
-      })
-    },
-  })
-
-  const handleUpdateMedia = useCallback((values: any) => {
-    onSubmitMedia({
-      name: values?.name,
-      description: values?.description,
-      categoryIds: values?.categoryIds,
-      tags: values?.tags,
-    })
-  }, [])
-
-  const onSubmitThumb = useCallback(() => {
-    if (avatarSelected) {
-      onSubmitMedia({
-        avatar: getUrlThumb(avatarSelected, config),
-      }).then(() => {
-        setAvatarSelected('')
-        setShowModal(false)
-      })
-    } else {
-      notification.info({
-        message: 'Chưa chọn ảnh',
-      })
-    }
-  }, [avatarSelected, config, mediaSelectedData])
 
   const overlayActivated = useMemo(() => {
     if (!mediaSelectedData) return true
@@ -317,6 +243,7 @@ const Detail = ({ type, onExportData }: Props) => {
                   <span>Mã nhúng</span>
                 </Badge>
                 <Badge
+                  onClick={toggleImageEditor}
                   variant="secondary"
                   className="tw-h-[30px] tw-flex tw-items-center tw-justify-center tw-gap-1 tw-cursor-pointer tw-bg-slate-600 tw-text-white hover:tw-bg-slate-400">
                   <Scissors size={16} />
@@ -413,7 +340,9 @@ const Detail = ({ type, onExportData }: Props) => {
               <div className="tw-flex">
                 <div className="tw-flex xl:tw-max-w-[80vw] 2xl:tw-max-w-[60vw]">
                   <ListThumb
-                    onUploadThumb={onUploadThumb}
+                    // onUploadThumb={_ => {
+                    //   console.log('upload', _)
+                    // }}
                     onSelectThumb={url => setAvatarSelected(url)}
                     avatarSelected={avatarSelected}
                     items={mediaSelectedData?.data?.avatar_thumb?.url_list || []}
@@ -424,6 +353,7 @@ const Detail = ({ type, onExportData }: Props) => {
           </div>
         </div>
       </Modal>
+      {<ImageEditorModal open={showImageEditor} onClose={toggleImageEditor} />}
     </div>
   )
 }

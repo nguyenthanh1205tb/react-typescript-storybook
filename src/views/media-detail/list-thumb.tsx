@@ -5,14 +5,14 @@ interface Props {
   items: string[]
   avatarSelected: string
   onSelectThumb: (url: string) => void
-  onUploadThumb: (file: File) => void
+  onUploadThumb?: (file: File) => void
 }
 
 const ListThumb = ({ items, avatarSelected, onSelectThumb, onUploadThumb }: Props) => {
   const onChangeInputFile = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files) {
       const file = e.target.files[0]
-      onUploadThumb(file)
+      onUploadThumb && onUploadThumb(file)
       const reader = new FileReader()
       reader.onload = () => {
         onSelectThumb(reader.result as string)
