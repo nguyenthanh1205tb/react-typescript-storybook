@@ -1,23 +1,20 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { MultiSelectChild } from '@/src/components/common/dropdown/dropdown-with-child'
 import Image from '@/src/components/common/image'
-import { MultiSelectField } from '@/src/components/common/multi-select/muti-select-field'
+import Typo from '@/src/components/common/typo'
 import VideoPlayer from '@/src/components/common/video-player'
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/src/components/ui/accordion'
 import { Badge } from '@/src/components/ui/badge'
 import { Button } from '@/src/components/ui/button'
-import { Checkbox } from '@/src/components/ui/checkbox'
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/src/components/ui/form'
-import { Input } from '@/src/components/ui/input'
 import { ScrollArea } from '@/src/components/ui/scroll-area'
-import { Textarea } from '@/src/components/ui/textarea'
-import { useToast } from '@/src/components/ui/use-toast'
 import { UPLOAD_ENDPOINT } from '@/src/configs'
 import Each from '@/src/hooks/each'
 import If from '@/src/hooks/if'
 import { request } from '@/src/lib/request'
 import { APIConfigs } from '@/src/lib/request/core/ApiConfig'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
+import useForm from 'antd/es/form/hooks/useForm'
+import Modal from 'antd/es/modal/Modal'
+import notification from 'antd/es/notification'
 import cn from 'classnames'
 import {
   Ban,
@@ -36,23 +33,12 @@ import {
 } from 'lucide-react'
 import moment from 'moment'
 import React, { useCallback, useEffect, useMemo } from 'react'
-import { useForm } from 'react-hook-form'
-import { useCategory, useDetailMedia } from '../../hooks/useMedia'
+import { useDetailMedia } from '../../hooks/useMedia'
 import { formatBytes } from '../../lib/utils/media'
 import useAppStore from '../../stores/useAppStore'
-import {
-  Category,
-  ComboboxOption,
-  MediaCodec,
-  MediaEntity,
-  MediaPackageType,
-  MediaPacks,
-  MediaStatus,
-  Video,
-} from '../../types'
+import { MediaCodec, MediaEntity, MediaPackageType, MediaPacks, MediaStatus, Video } from '../../types'
+import DetailMediaForm from './detail-form'
 import ListThumb from './list-thumb'
-import Modal from 'antd/es/modal/Modal'
-import Typo from '@/src/components/common/typo'
 
 interface Props {
   type: MediaPackageType
@@ -69,32 +55,20 @@ export const videoUrl = (d?: Video) => {
   return item.uri
 }
 
-export const getUrlThumb = (url: string) => {
-  const parts = url.split('/')
-  const desiredPath = parts.slice(-4).join('/')
-  return desiredPath
+export const getUrlThumb = (url: string, config: any) => {
+  const orgId = config?.organizationId
+  const pattern = new RegExp(`${orgId}.*`)
+  const match = url.match(pattern)
+  return match ? match[0] : url
 }
 
 const Detail = ({ type, onExportData }: Props) => {
+  const [form] = useForm()
+
   const [showModal, setShowModal] = React.useState(false)
   const [avatarSelected, setAvatarSelected] = React.useState<string>('')
-  const { mediaSelectedID, mediaSelectedData, setMediaSelectedData } = useAppStore()
+  const { mediaSelectedID, mediaSelectedData, setMediaSelectedData, config } = useAppStore()
   const { response, getDetailMedia } = useDetailMedia()
-  const { getListCategories } = useCategory()
-  const { data: categoriesData } = getListCategories()
-  const { toast } = useToast()
-
-  const extractCategories = (list: Category[]): Array<ComboboxOption> => {
-    const result = list.map(item => {
-      return {
-        label: item.name,
-        value: item.id,
-        children: item.children ? extractCategories(item.children) : null,
-      }
-    })
-
-    return result
-  }
 
   const onUploadThumb = (file: File) => {
     const formData = new FormData()
@@ -112,13 +86,7 @@ const Detail = ({ type, onExportData }: Props) => {
       })
   }
 
-  const categoriesFiltered = useMemo(() => {
-    if (!categoriesData) return []
-    return extractCategories(categoriesData.data ?? [])
-  }, [categoriesData])
-
   // 1. Define your form.
-  const form = useForm()
 
   const mediaAccords = [
     {
@@ -160,8 +128,8 @@ const Detail = ({ type, onExportData }: Props) => {
         body: values,
       }),
     onSuccess: () => {
-      toast({
-        description: 'Cập nhật thành công',
+      notification.success({
+        message: 'Cập nhật thành công',
       })
       queryClient.invalidateQueries({
         queryKey: ['getListMedia'],
@@ -169,22 +137,29 @@ const Detail = ({ type, onExportData }: Props) => {
     },
   })
 
-  // 2. Define a submit handler.
-  function onSubmit(values: any) {
-    onSubmitMedia(values)
-  }
+  const handleUpdateMedia = useCallback((values: any) => {
+    onSubmitMedia({
+      name: values?.name,
+      description: values?.description,
+      categoryIds: values?.categoryIds,
+      tags: values?.tags,
+    })
+  }, [])
 
   const onSubmitThumb = useCallback(() => {
     if (avatarSelected) {
-      onSubmitMedia({ avatar: getUrlThumb(avatarSelected) }).then(() => {
+      onSubmitMedia({
+        avatar: getUrlThumb(avatarSelected, config),
+      }).then(() => {
         setAvatarSelected('')
+        setShowModal(false)
       })
     } else {
-      toast({
-        description: 'Chưa chọn ảnh',
+      notification.info({
+        message: 'Chưa chọn ảnh',
       })
     }
-  }, [avatarSelected])
+  }, [avatarSelected, config, mediaSelectedData])
 
   const overlayActivated = useMemo(() => {
     if (!mediaSelectedData) return true
@@ -207,7 +182,7 @@ const Detail = ({ type, onExportData }: Props) => {
 
   useEffect(() => {
     if (mediaSelectedData?.data) {
-      form.reset({
+      form.setFieldsValue({
         name: mediaSelectedData.data.name,
         description: mediaSelectedData.data.description,
         categoryIds: mediaSelectedData.data.categories?.map(item => item.id) ?? [],
@@ -372,181 +347,7 @@ const Detail = ({ type, onExportData }: Props) => {
                           </AccordionTrigger>
                           <AccordionContent className="tw-text-sm">
                             <ScrollArea className="tw-h-[210px] tw-pr-4">
-                              <Form {...form}>
-                                <form
-                                  id="detail-media-form"
-                                  onSubmit={form.handleSubmit(onSubmit)}
-                                  className="tw-pt-3 tw-space-y-4 tw-px-1">
-                                  <FormField
-                                    control={form.control}
-                                    name="name"
-                                    render={({ field }) => (
-                                      <FormItem>
-                                        <FormLabel>Tiêu đề</FormLabel>
-                                        <FormControl>
-                                          <Textarea className="!tw-bg-slate-900 tw-border-none" {...field} />
-                                        </FormControl>
-                                        <FormMessage />
-                                      </FormItem>
-                                    )}
-                                  />
-                                  <FormField
-                                    control={form.control}
-                                    name="description"
-                                    render={({ field }) => (
-                                      <FormItem>
-                                        <FormLabel>Chú thích</FormLabel>
-                                        <FormControl>
-                                          <Textarea className="!tw-bg-slate-900 tw-border-none" {...field} />
-                                        </FormControl>
-
-                                        <FormMessage />
-                                      </FormItem>
-                                    )}
-                                  />
-                                  <FormField
-                                    control={form.control}
-                                    name="right"
-                                    render={({ field }) => (
-                                      <FormItem>
-                                        <FormLabel>Bản quyền</FormLabel>
-                                        <FormControl>
-                                          <Input className="!tw-bg-slate-900 tw-border-none" {...field} />
-                                        </FormControl>
-                                        <FormMessage />
-                                      </FormItem>
-                                    )}
-                                  />
-                                  <FormField
-                                    control={form.control}
-                                    name="isDrm"
-                                    render={({ field }) => (
-                                      <FormItem className="tw-flex tw-gap-3 tw-items-center">
-                                        <FormControl>
-                                          <Checkbox
-                                            className="!tw-bg-slate-900"
-                                            checked={field.value}
-                                            onCheckedChange={field.onChange}
-                                          />
-                                        </FormControl>
-                                        <FormLabel className="!tw-m-0"> Video độc quyền?</FormLabel>
-                                        <FormMessage />
-                                      </FormItem>
-                                    )}
-                                  />
-                                  <FormField
-                                    control={form.control}
-                                    name="author"
-                                    render={({ field }) => (
-                                      <FormItem>
-                                        <FormLabel>Tác giả</FormLabel>
-                                        <FormControl>
-                                          <Input className="!tw-bg-slate-900 tw-border-none" {...field} />
-                                        </FormControl>
-                                        <FormMessage />
-                                      </FormItem>
-                                    )}
-                                  />
-                                  <FormField
-                                    control={form.control}
-                                    name="tags"
-                                    render={({ field }) => (
-                                      <FormItem {...field}>
-                                        <FormLabel>Từ khoá</FormLabel>
-                                        <FormControl>
-                                          <MultiSelectField
-                                            key={field.name}
-                                            inputClassName="!tw-bg-slate-900 tw-border-none"
-                                            name="tags"
-                                            value={field.value}
-                                            onChange={value => {
-                                              field.onChange(value)
-                                            }}
-                                            options={[
-                                              {
-                                                value: 'remix',
-                                                label: 'Remix',
-                                              },
-                                              {
-                                                value: 'astro',
-                                                label: 'Astro',
-                                              },
-                                              {
-                                                value: 'wordpress',
-                                                label: 'WordPress',
-                                              },
-                                              {
-                                                value: 'express.js',
-                                                label: 'Express.js',
-                                              },
-                                            ]}
-                                          />
-                                        </FormControl>
-                                        <FormMessage />
-                                      </FormItem>
-                                    )}
-                                  />
-                                  <FormField
-                                    control={form.control}
-                                    name="categoryIds"
-                                    render={({ field }) => (
-                                      <FormItem {...field}>
-                                        <FormLabel>Chuyên mục</FormLabel>
-                                        <FormControl>
-                                          <MultiSelectChild
-                                            value={field.value}
-                                            inputClassName="!tw-bg-slate-900 tw-border-none"
-                                            options={categoriesFiltered}
-                                            // placeholder="Chọn chuyên mục..."
-                                            // // value={listMediaQueries.categoryId}
-                                            // value={field.value}
-                                            onChange={field.onChange}
-                                          />
-                                        </FormControl>
-                                        <FormMessage />
-                                      </FormItem>
-                                    )}
-                                  />
-                                  <FormField
-                                    control={form.control}
-                                    name="types"
-                                    render={({ field }) => (
-                                      <FormItem {...field}>
-                                        <FormLabel>Thể loại</FormLabel>
-                                        <FormControl>
-                                          <MultiSelectField
-                                            key={field.name}
-                                            inputClassName="!tw-bg-slate-900 tw-border-none"
-                                            name="tags"
-                                            onChange={value => {
-                                              field.onChange(value)
-                                            }}
-                                            options={[
-                                              {
-                                                value: 'remix',
-                                                label: 'Remix',
-                                              },
-                                              {
-                                                value: 'astro',
-                                                label: 'Astro',
-                                              },
-                                              {
-                                                value: 'wordpress',
-                                                label: 'WordPress',
-                                              },
-                                              {
-                                                value: 'express.js',
-                                                label: 'Express.js',
-                                              },
-                                            ]}
-                                          />
-                                        </FormControl>
-                                        <FormMessage />
-                                      </FormItem>
-                                    )}
-                                  />
-                                </form>
-                              </Form>
+                              <DetailMediaForm form={form} handleUpdateMedia={handleUpdateMedia} />
                             </ScrollArea>
                           </AccordionContent>
                         </AccordionItem>
@@ -557,9 +358,7 @@ const Detail = ({ type, onExportData }: Props) => {
               </Accordion>
             </div>
             <div className="tw-absolute tw-gap-3 tw-bottom-0 tw-w-full tw-flex tw-items-center tw-justify-center">
-              <Button form="detail-media-form" type="submit">
-                Submit
-              </Button>
+              <Button onClick={() => form.submit()}>Submit</Button>
               <Button
                 onClick={() => {
                   if (onExportData) {
@@ -586,11 +385,11 @@ const Detail = ({ type, onExportData }: Props) => {
             </Button>
           </div>
         }
-        classNames={{ content: '!tw-p-0', header: '!tw-p-2' }}
+        classNames={{ content: '!tw-p-0 xl:tw-max-h-[750px] 2xl:tw-max-h-[800px]', header: '!tw-p-2' }}
         open={showModal}
         onCancel={() => setShowModal(false)}
         title="Thay Thumbnail"
-        className="tw-max-w-[90vw] tw-min-w-[90vw] tw-max-h-[800px]">
+        className="xl:tw-max-w-[80vw] 2xl:tw-max-w-[60vw] 2xl:tw-min-w-[60vw] tw-min-w-[80vw]">
         <div className="!tw-block">
           {/* <div className="tw-px-3 tw-pt-2 tw-flex tw-justify-between tw-items-center">
               <X size={20} className="tw-cursor-pointer" onClick={() => setShowModal(false)} />
@@ -610,9 +409,9 @@ const Detail = ({ type, onExportData }: Props) => {
               </div>
             </div>
 
-            <div className="tw-max-w-[70vw] tw-bg-[#434242] tw-pt-5">
+            <div className="tw-max-w-[80vw] tw-bg-[#434242] tw-pt-5">
               <div className="tw-flex">
-                <div className="tw-flex tw-max-w-[70vw]">
+                <div className="tw-flex xl:tw-max-w-[80vw] 2xl:tw-max-w-[60vw]">
                   <ListThumb
                     onUploadThumb={onUploadThumb}
                     onSelectThumb={url => setAvatarSelected(url)}

@@ -189,3 +189,11 @@ export interface FileProgressType {
   id: string
   percent: number
 }
+
+export interface UpdateMediaInput {
+  name: string
+  description: string
+  avatar: string
+  categoryIds: string[]
+  tags: string[]
+}

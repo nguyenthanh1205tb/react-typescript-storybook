@@ -62,7 +62,7 @@ function ListMedia({ type, isFilterOpen }: PropsWithChildren<Props>) {
     if (!isLoading && data) {
       setListMedia(data.data)
       setTotalCount(data.meta.itemCount)
-      if (data.data.length) {
+      if (data.data.length && mediaSelectedID === null) {
         setMediaSelectedID(data.data[0].id)
       }
     }

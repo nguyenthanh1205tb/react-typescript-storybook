@@ -37,6 +37,79 @@
     --radius: 0.5rem;
   }
 
+  .detail-form {
+    .ant-input-outlined {
+      border: none !important;
+      box-shadow: none !important;
+    }
+
+    textarea {
+      background-color: rgb(15, 23, 42) !important;
+      color: #fff !important;
+      padding: 0.5rem 1rem !important;
+      font-size: 1rem !important;
+      box-shadow: none !important;
+
+      &:focus {
+        border: none !important;
+        box-shadow: none !important;
+      }
+
+      &::placeholder {
+        color: #fff !important;
+      }
+
+      &:hover {
+        border: none !important;
+        box-shadow: none !important;
+      }
+    }
+
+    label {
+      color: #fff !important;
+      font-weight: 500;
+      margin-bottom: 0.5rem;
+    }
+
+    input {
+      background-color: rgb(15, 23, 42) !important;
+      border: none !important;
+      color: #fff !important;
+      border-radius: 0.5rem !important;
+      padding: 0.5rem 1rem !important;
+      font-size: 1rem !important;
+      box-shadow: none !important;
+
+      &:focus {
+        border: none !important;
+        box-shadow: none !important;
+      }
+    }
+
+    .ant-select-focused .ant-select-selector,
+    .ant-select-selector:focus,
+    .ant-select-selector:active,
+    .ant-select-open .ant-select-selector {
+      border-color: #d9d9d9 !important;
+      box-shadow: none !important;
+    }
+
+    .ant-select-selector {
+      background-color: rgb(15, 23, 42) !important;
+      border: none !important;
+
+      &:focus {
+        border: none !important;
+        box-shadow: none !important;
+      }
+    }
+
+    .ant-select-selection-item {
+      color: #fff !important;
+      background-color: rgb(189, 192, 199) !important;
+    }
+  }
+
   .tw-hide-scroll-bar {
     scrollbar-width: none;
     -ms-overflow-style: none;
