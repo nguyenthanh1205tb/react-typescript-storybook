@@ -129,6 +129,10 @@
 
   .modal-image-editor {
 
+    .ant-modal-close-x {
+      color: #fff;
+    }
+
     .ant-modal {
       height: unset;
       width: unset !important;
