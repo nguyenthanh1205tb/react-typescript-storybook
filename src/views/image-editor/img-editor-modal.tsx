@@ -17,12 +17,12 @@ const ImageEditorModal = ({ open, onClose }: ImageEditorModalProps) => {
   const getInstance = (i: any) => setInstant(i)
 
   const footer = (
-    <div className="gap-2 gap-3 tw-flex tw-justify-center tw-items-center">
-      <Button key={'cancel-edit-img'}>
-        <div onClick={() => console.log(instant?.toDataURL())}>H</div>
+    <div className="tw-gap-3 tw-flex tw-justify-center tw-items-center tw-pb-3">
+      <Button className="tw-bg-slate-400 hover:tw-bg-slate-500" key={'cancel-edit-img'}>
+        <div onClick={() => console.log(instant?.toDataURL())}>Huỷ</div>
       </Button>
-      <Button key={'ok-edit-img'}>
-        <div onClick={() => console.log(instant?.toDataURL())}>DOWNLOAD</div>
+      <Button className="tw-bg-lime-500 hover:tw-bg-lime-600" key={'ok-edit-img'}>
+        <div onClick={() => console.log(instant?.toDataURL())}>Hoàn thành</div>
       </Button>
     </div>
   )

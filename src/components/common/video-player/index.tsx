@@ -1,4 +1,5 @@
 /* eslint-disable consistent-return */
+import useAppStore from '@/src/stores/useAppStore'
 import React, { useCallback, useEffect, useRef, useState } from 'react'
 import videojs from 'video.js'
 import Player from 'video.js/dist/types/player'
@@ -12,6 +13,7 @@ interface VideoPlayerProps {
 const VideoPlayer: React.FC<VideoPlayerProps> = ({ videoUrl, thumbnailUrl }) => {
   const videoRef = useRef<HTMLVideoElement>(null)
   const [player, setPlayer] = useState<Player>()
+  const { mediaSelectedID } = useAppStore()
 
   const initVideoPlayer = useCallback(() => {
     if (!videoRef.current) {
@@ -42,6 +44,16 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({ videoUrl, thumbnailUrl }) => 
       }
     }
   }, [])
+
+  useEffect(() => {
+    if (mediaSelectedID) {
+      if (player) {
+        player.pause()
+        player.poster(thumbnailUrl)
+        player.src(videoUrl)
+      }
+    }
+  }, [mediaSelectedID, player, videoUrl, thumbnailUrl])
 
   useEffect(() => {
     if (player) {
