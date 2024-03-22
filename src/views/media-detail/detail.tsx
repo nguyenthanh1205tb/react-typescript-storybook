@@ -44,21 +44,26 @@ interface Props {
 
 const mediaAccords = [
   {
+    key: 'detail',
     headerName: 'Chi tiết',
   },
   {
+    key: 'history',
     headerName: 'Lịch sử',
     hide: true,
   },
   {
+    key: 'use',
     headerName: 'Sử dụng',
     hide: true,
   },
   {
+    key: 'related',
     headerName: 'Liên quan',
     hide: true,
   },
   {
+    key: 'advertising',
     headerName: 'Thông tin quảng cáo',
     hide: true,
   },
@@ -261,14 +266,14 @@ const Detail = ({ type, onExportData }: Props) => {
             </div>
             <div className="tw-h-[1px] tw-bg-slate-700 tw-w-full"></div>
             <div className="tw-px-3 tw-py-2">
-              <Accordion type="multiple" className="w-full">
+              <Accordion type="multiple" className="w-full" defaultValue={[`item-detail`]}>
                 <Each
                   of={mediaAccords}
                   render={item => (
                     <If
                       isShow={!item.hide}
                       element={
-                        <AccordionItem value={`item-${item.headerName}`} className="tw-border-slate-700">
+                        <AccordionItem value={`item-${item.key}`} className="tw-border-slate-700">
                           <AccordionTrigger className="hover:tw-no-underline !tw-py-2">
                             {item.headerName}
                           </AccordionTrigger>
