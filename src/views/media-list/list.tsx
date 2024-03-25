@@ -13,7 +13,7 @@ import useAppStore from '@/src/stores/useAppStore'
 import { ConfigResponse, FileType, MenuImgEditorType } from '@/src/types'
 import { useQuery } from '@tanstack/react-query'
 import { CheckCheck, PackageOpen, X } from 'lucide-react'
-import React, { PropsWithChildren, useEffect, useMemo } from 'react'
+import React, { PropsWithChildren, useEffect, useMemo, useRef, useState } from 'react'
 import ImageEditorModal from '../image-editor/img-editor-modal'
 import Item from './item'
 
@@ -21,7 +21,7 @@ interface Props {
   type: FileType
   isFilterOpen?: boolean
 }
-function ListMedia({ type, isFilterOpen }: PropsWithChildren<Props>) {
+function ListMedia({ type }: PropsWithChildren<Props>) {
   const {
     listMedia,
     listMediaQueries,
@@ -42,6 +42,9 @@ function ListMedia({ type, isFilterOpen }: PropsWithChildren<Props>) {
     useListMedia()
 
   const { data, isLoading } = getListMedia({ fileType: type })
+
+  const gridRef = useRef<HTMLDivElement>(null)
+  const [column, setColumn] = useState(4)
 
   const onOpenImageEditor = (initMenu?: MenuImgEditorType) => {
     setImgEditorState({
@@ -85,13 +88,6 @@ function ListMedia({ type, isFilterOpen }: PropsWithChildren<Props>) {
     }
   }, [data, isLoading])
 
-  const colNum = useMemo(() => {
-    if ((mediaSelectedID || selectMultiMode) && isFilterOpen) return 4
-    if (mediaSelectedID || selectMultiMode) return 5
-    if (isFilterOpen) return 6
-    return 8
-  }, [mediaSelectedID, selectMultiMode, isFilterOpen])
-
   const { data: configResponse } = useQuery<ConfigResponse>({
     queryKey: ['getConfigs'],
     queryFn: () =>
@@ -115,6 +111,24 @@ function ListMedia({ type, isFilterOpen }: PropsWithChildren<Props>) {
       />
     )
   }, [listMedia, type])
+
+  let resizeTimeout: ReturnType<typeof setTimeout>
+  const handleResize = () => {
+    clearTimeout(resizeTimeout)
+    resizeTimeout = setTimeout(() => {
+      if (gridRef.current) {
+        const { width } = gridRef.current.getBoundingClientRect()
+        const columns = Math.floor(width / 160)
+        setColumn(columns)
+      }
+    }, 0)
+  }
+
+  useEffect(() => {
+    const resizeObserver = new ResizeObserver(handleResize)
+    if (gridRef.current) resizeObserver.observe(gridRef.current)
+    return () => resizeObserver.disconnect()
+  }, [])
 
   return (
     <div className="tw-flex tw-flex-col tw-gap-2">
@@ -157,7 +171,7 @@ function ListMedia({ type, isFilterOpen }: PropsWithChildren<Props>) {
           />
         </div>
       </div>
-      <div className={cn('tw-grid tw-gap-4 tw-w-full tw-transition-all', `tw-grid-cols-${colNum}`)}>
+      <div ref={gridRef} className={cn('tw-grid tw-gap-4 tw-w-full tw-transition-all', `tw-grid-cols-${column}`)}>
         <If isShow={isLoading} element={<Each of={new Array(20)?.fill(0)} render={() => <SkeletonCard />} />} />
         <If
           isShow={!!listFileAdded}
