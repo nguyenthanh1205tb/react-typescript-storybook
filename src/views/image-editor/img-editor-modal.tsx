@@ -1,17 +1,21 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { Button } from '@/src/components/ui/button'
 import useAppStore from '@/src/stores/useAppStore'
+import { MenuImgEditorType } from '@/src/types'
 import Modal from 'antd/es/modal/Modal'
 import React from 'react'
 import ImageEditor from 'tui-image-editor'
 import BaseImageEditor from './img-editor'
 
 interface ImageEditorModalProps {
-  open: boolean
+  imageEditorState: {
+    show: boolean
+    initMenu: MenuImgEditorType
+  }
   onClose: () => void
 }
 
-const ImageEditorModal = ({ open, onClose }: ImageEditorModalProps) => {
+const ImageEditorModal = ({ imageEditorState, onClose }: ImageEditorModalProps) => {
   const { mediaSelectedData } = useAppStore()
   const [instant, setInstant] = React.useState<ImageEditor>()
   const getInstance = (i: any) => setInstant(i)
@@ -29,7 +33,7 @@ const ImageEditorModal = ({ open, onClose }: ImageEditorModalProps) => {
   return (
     <Modal
       focusTriggerAfterClose={false}
-      open={open}
+      open={imageEditorState.show}
       onCancel={onClose}
       onOk={onClose}
       rootClassName="modal-image-editor"
@@ -37,7 +41,11 @@ const ImageEditorModal = ({ open, onClose }: ImageEditorModalProps) => {
       // classNames={{ content: '!tw-p-0 xl:tw-max-h-[750px] 2xl:tw-max-h-[800px]', header: '!tw-p-2' }}
       footer={footer}>
       <div className="">
-        <BaseImageEditor getInstance={getInstance} src={mediaSelectedData?.data?.download_addr.uri || ''} />
+        <BaseImageEditor
+          initMenu={imageEditorState.initMenu}
+          getInstance={getInstance}
+          src={mediaSelectedData?.data?.download_addr.uri || ''}
+        />
       </div>
     </Modal>
   )

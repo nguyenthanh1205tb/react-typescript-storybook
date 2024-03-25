@@ -74,7 +74,7 @@ const Detail = ({ type, onExportData }: Props) => {
   const { mediaSelectedID, mediaSelectedData, setMediaSelectedData } = useAppStore()
   const {
     avatarSelected,
-    showImageEditor,
+    imageEditorState,
     showModal,
     toggleImageEditor,
     handleUpdateMedia,
@@ -248,7 +248,9 @@ const Detail = ({ type, onExportData }: Props) => {
                   <span>Mã nhúng</span>
                 </Badge>
                 <Badge
-                  onClick={toggleImageEditor}
+                  onClick={() => {
+                    type === MediaPackageType.IMAGE && toggleImageEditor('crop')
+                  }}
                   variant="secondary"
                   className="tw-h-[30px] tw-flex tw-items-center tw-justify-center tw-gap-1 tw-cursor-pointer tw-bg-slate-600 tw-text-white hover:tw-bg-slate-400">
                   <Scissors size={16} />
@@ -358,7 +360,7 @@ const Detail = ({ type, onExportData }: Props) => {
           </div>
         </div>
       </Modal>
-      {<ImageEditorModal open={showImageEditor} onClose={toggleImageEditor} />}
+      {<ImageEditorModal imageEditorState={imageEditorState} onClose={toggleImageEditor} />}
     </div>
   )
 }

@@ -1,10 +1,11 @@
 import Image from '@/src/components/common/image'
+import Popover from '@/src/components/common/popover'
 import If from '@/src/hooks/if'
 import { convertDuration } from '@/src/lib/utils/date'
 import { cn } from '@/src/lib/utils/merge-class'
 import useAppStore from '@/src/stores/useAppStore'
 import { FileType, MediaEntity, MediaStatus } from '@/src/types'
-import { CalendarFold, ImageIcon } from 'lucide-react'
+import { CalendarFold, EllipsisVertical, ImageIcon } from 'lucide-react'
 import moment from 'moment'
 import React, { PropsWithChildren, useMemo } from 'react'
 
@@ -49,10 +50,18 @@ function Item({ data, type }: PropsWithChildren<Props>) {
   return (
     <>
       <div
-        className={cn('tw-border-2 tw-p-2 tw-rounded-lg tw-relative', {
+        className={cn('tw-border-2 group tw-p-2 tw-rounded-lg tw-relative', {
           'tw-border-red-400': activated(data),
         })}
         onClick={() => selectHandler(data)}>
+        <Popover
+          trigger={['click']}
+          className=" tw-z-40 tw-cursor-pointer tw-absolute !tw-right-[-5px] tw-top-2"
+          placement="bottomLeft"
+          title={'text'}
+          content={<div>123</div>}>
+          <EllipsisVertical color="#8f8f8f" size={16} />
+        </Popover>
         <div className="tw-absolute tw-left-3 tw-top-3 tw-z-10">
           <div
             className={cn('tw-w-4 tw-h-4 tw-rounded-full tw-border tw-border-white', {

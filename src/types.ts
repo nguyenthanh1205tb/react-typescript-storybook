@@ -198,3 +198,15 @@ export interface UpdateMediaInput {
   categoryIds: string[]
   tags: string[]
 }
+
+export type MenuImgEditorType =
+  | 'rotate'
+  | 'flip'
+  | 'crop'
+  | 'draw'
+  | 'shape'
+  | 'icon'
+  | 'text'
+  | 'mask'
+  | 'filter'
+  | 'reset'
