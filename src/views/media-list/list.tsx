@@ -10,10 +10,11 @@ import { request } from '@/src/lib/request'
 import { APIConfigs } from '@/src/lib/request/core/ApiConfig'
 import { cn } from '@/src/lib/utils'
 import useAppStore from '@/src/stores/useAppStore'
-import { ConfigResponse, FileType } from '@/src/types'
+import { ConfigResponse, FileType, MenuImgEditorType } from '@/src/types'
 import { useQuery } from '@tanstack/react-query'
 import { CheckCheck, PackageOpen, X } from 'lucide-react'
 import React, { PropsWithChildren, useEffect, useMemo } from 'react'
+import ImageEditorModal from '../image-editor/img-editor-modal'
 import Item from './item'
 
 interface Props {
@@ -34,11 +35,27 @@ function ListMedia({ type, isFilterOpen }: PropsWithChildren<Props>) {
     setMediaSelectedID,
     setSelectMultiMode,
     setListMediaSelected,
+    setImgEditorState,
+    imgEditorState,
   } = useAppStore()
-  const { getListMedia, totalCount, setTotalCount, onChangePagination, onNextPagination, onPrevPagination } =
+  const { totalCount, getListMedia, setTotalCount, onChangePagination, onNextPagination, onPrevPagination } =
     useListMedia()
 
   const { data, isLoading } = getListMedia({ fileType: type })
+
+  const onOpenImageEditor = (initMenu?: MenuImgEditorType) => {
+    setImgEditorState({
+      show: true,
+      initMenu: initMenu ?? 'rotate',
+    })
+  }
+
+  const onCloseImageEditor = () => {
+    setImgEditorState({
+      show: false,
+      initMenu: 'rotate',
+    })
+  }
 
   const selectAllMediaInPage = () => {
     const _list = [...listMediaSelected]
@@ -91,7 +108,12 @@ function ListMedia({ type, isFilterOpen }: PropsWithChildren<Props>) {
   }, [configResponse])
 
   const listMediaItem = useMemo(() => {
-    return <Each of={listMedia || []} render={item => <Item type={type} key={item?.id} data={item} />} />
+    return (
+      <Each
+        of={listMedia || []}
+        render={item => <Item onOpenImageEditor={onOpenImageEditor} type={type} key={item?.id} data={item} />}
+      />
+    )
   }, [listMedia, type])
 
   return (
@@ -154,6 +176,7 @@ function ListMedia({ type, isFilterOpen }: PropsWithChildren<Props>) {
         />
         <If isShow={!isLoading && data !== null} element={listMediaItem} />
       </div>
+      {<ImageEditorModal imageEditorState={imgEditorState} onClose={onCloseImageEditor} />}
     </div>
   )
 }

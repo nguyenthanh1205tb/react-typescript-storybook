@@ -10,6 +10,7 @@ import {
   GetListMediaTimeRange,
   MediaEntity,
   MediaPackageType,
+  MenuImgEditorType,
   OrderByType,
   OrderType,
 } from '../types'
@@ -35,6 +36,10 @@ type State = {
   listFileAdded: FileAdded[]
   listFileProgress: FileProgressType[]
   listMediaSelected: MediaEntity[]
+  imgEditorState: {
+    show: boolean
+    initMenu: MenuImgEditorType
+  }
 
   // Functions
   setListFileProgress: (payload: FileProgressType[]) => void
@@ -50,10 +55,15 @@ type State = {
   setSelectMultiMode: (payload: boolean) => void
   setListMediaSelected: (payload: MediaEntity | MediaEntity[]) => void
   setPackageEnabled: (payload: MediaPackageType | null) => void
+  setImgEditorState: (payload: { show: boolean; initMenu: MenuImgEditorType }) => void
   resetAppState: () => void
 }
 
 const defaultState = {
+  imgEditorState: {
+    show: false,
+    initMenu: 'rotate' as MenuImgEditorType,
+  },
   packageEnabled: null,
   showModalChangeThumbnail: false,
   listFileProgress: [],
@@ -82,7 +92,10 @@ const useAppStore = create<State>(set => ({
   ...defaultState,
 
   // Functions
+
   resetAppState: () => set(() => ({ ...defaultState })),
+
+  setImgEditorState: payload => set(() => ({ imgEditorState: payload })),
 
   setListFileProgress: payload => set(() => ({ listFileProgress: payload })),
 

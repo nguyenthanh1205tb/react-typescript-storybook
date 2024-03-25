@@ -210,3 +210,4 @@ export type MenuImgEditorType =
   | 'mask'
   | 'filter'
   | 'reset'
+  | 'resize'

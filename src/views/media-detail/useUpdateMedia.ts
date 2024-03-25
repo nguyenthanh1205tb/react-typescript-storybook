@@ -2,7 +2,7 @@
 import { request } from '@/src/lib/request'
 import { APIConfigs } from '@/src/lib/request/core/ApiConfig'
 import useAppStore from '@/src/stores/useAppStore'
-import { MediaCodec, MediaPacks, MenuImgEditorType, Video } from '@/src/types'
+import { MediaCodec, MediaPacks, Video } from '@/src/types'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import notification from 'antd/es/notification'
 import React, { useCallback } from 'react'
@@ -27,13 +27,6 @@ export const getUrlThumb = (url: string, config: any) => {
 const useUpdateMedia = () => {
   const [showModal, setShowModal] = React.useState(false)
   const [avatarSelected, setAvatarSelected] = React.useState<string>('')
-  const [imageEditorState, setImageEditState] = React.useState<{
-    show: boolean
-    initMenu: MenuImgEditorType
-  }>({
-    show: false,
-    initMenu: 'rotate',
-  })
   const { mediaSelectedID, mediaSelectedData, setMediaSelectedData, config } = useAppStore()
 
   // const onUploadThumb = (file: File) => {
@@ -47,13 +40,6 @@ const useUpdateMedia = () => {
   //     },
   //   }).then(response => response.json())
   // }
-
-  const toggleImageEditor = (initMenu?: MenuImgEditorType) => {
-    setImageEditState({
-      show: !imageEditorState.show,
-      initMenu: initMenu || 'rotate',
-    })
-  }
 
   const queryClient = useQueryClient()
 
@@ -101,16 +87,13 @@ const useUpdateMedia = () => {
   return {
     showModal,
     avatarSelected,
-    imageEditorState,
     mediaSelectedID,
     mediaSelectedData,
     setAvatarSelected,
-    setImageEditState,
     setShowModal,
     setMediaSelectedData,
     handleUpdateMedia,
     onSubmitThumb,
-    toggleImageEditor,
   }
 }
 

@@ -4,16 +4,17 @@ import If from '@/src/hooks/if'
 import { convertDuration } from '@/src/lib/utils/date'
 import { cn } from '@/src/lib/utils/merge-class'
 import useAppStore from '@/src/stores/useAppStore'
-import { FileType, MediaEntity, MediaStatus } from '@/src/types'
-import { CalendarFold, EllipsisVertical, ImageIcon } from 'lucide-react'
+import { FileType, MediaEntity, MediaStatus, MenuImgEditorType } from '@/src/types'
+import { CalendarFold, Crop, EllipsisVertical, ImageIcon, Pencil } from 'lucide-react'
 import moment from 'moment'
 import React, { PropsWithChildren, useMemo } from 'react'
 
 interface Props {
   type: FileType
   data: MediaEntity
+  onOpenImageEditor: (initMenu?: MenuImgEditorType) => void
 }
-function Item({ data, type }: PropsWithChildren<Props>) {
+function Item({ data, type, onOpenImageEditor }: PropsWithChildren<Props>) {
   const { setMediaSelectedID, mediaSelectedID, setListMediaSelected, selectMultiMode, listMediaSelected } =
     useAppStore()
 
@@ -47,6 +48,26 @@ function Item({ data, type }: PropsWithChildren<Props>) {
     }
   }, [type])
 
+  const content = useMemo(() => {
+    return (
+      <div className="tw-flex tw-flex-col tw-gap-1 ">
+        <div
+          key={'btn-resize'}
+          onClick={() => onOpenImageEditor('resize')}
+          className="tw-flex tw-gap-2  !tw-items-center tw-cursor-pointer hover:tw-bg-slate-200 tw-transition-all tw-px-3 tw-py-2 tw-rounded-md">
+          <Pencil size={16} color="#404040" /> <span>Chỉnh sửa</span>
+        </div>
+        <div
+          key={'btn-crop'}
+          onClick={() => onOpenImageEditor('crop')}
+          className="tw-flex tw-gap-2 !tw-items-center tw-cursor-pointer hover:tw-bg-slate-200 tw-transition-all tw-px-3 tw-py-2 tw-rounded-md">
+          <Crop size={16} color="#404040" />
+          <span>Cắt ảnh</span>
+        </div>
+      </div>
+    )
+  }, [])
+
   return (
     <>
       <div
@@ -58,8 +79,7 @@ function Item({ data, type }: PropsWithChildren<Props>) {
           trigger={['click']}
           className=" tw-z-40 tw-cursor-pointer tw-absolute !tw-right-[-5px] tw-top-2"
           placement="bottomLeft"
-          title={'text'}
-          content={<div>123</div>}>
+          content={content}>
           <EllipsisVertical color="#8f8f8f" size={16} />
         </Popover>
         <div className="tw-absolute tw-left-3 tw-top-3 tw-z-10">

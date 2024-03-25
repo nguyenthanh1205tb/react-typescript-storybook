@@ -23,7 +23,7 @@ const ImageEditorModal = ({ imageEditorState, onClose }: ImageEditorModalProps) 
   const footer = (
     <div className="tw-gap-3 tw-flex tw-justify-center tw-items-center tw-pb-3">
       <Button className="!tw-bg-slate-400 hover:!tw-bg-slate-500" key={'cancel-edit-img'}>
-        <div onClick={() => console.log(instant?.getCropzoneRect())}>Huỷ</div>
+        <div onClick={onClose}>Huỷ</div>
       </Button>
       <Button className="!tw-bg-lime-500 hover:!tw-bg-lime-600" key={'ok-edit-img'}>
         <div onClick={() => console.log(instant?.toDataURL())}>Hoàn thành</div>

@@ -32,7 +32,6 @@ import { useDetailMedia } from '../../hooks/useMedia'
 import { formatBytes } from '../../lib/utils/media'
 import useAppStore from '../../stores/useAppStore'
 import { MediaEntity, MediaPackageType, MediaStatus } from '../../types'
-import ImageEditorModal from '../image-editor/img-editor-modal'
 import DetailMediaForm from './detail-form'
 import ListThumb from './list-thumb'
 import useUpdateMedia, { videoUrl } from './useUpdateMedia'
@@ -71,17 +70,9 @@ const mediaAccords = [
 
 const Detail = ({ type, onExportData }: Props) => {
   const [form] = useForm()
-  const { mediaSelectedID, mediaSelectedData, setMediaSelectedData } = useAppStore()
-  const {
-    avatarSelected,
-    imageEditorState,
-    showModal,
-    toggleImageEditor,
-    handleUpdateMedia,
-    setShowModal,
-    onSubmitThumb,
-    setAvatarSelected,
-  } = useUpdateMedia()
+  const { mediaSelectedID, mediaSelectedData, setMediaSelectedData, setImgEditorState } = useAppStore()
+  const { avatarSelected, showModal, handleUpdateMedia, setShowModal, onSubmitThumb, setAvatarSelected } =
+    useUpdateMedia()
   const { response, getDetailMedia } = useDetailMedia()
 
   const haveMediaSelectedID = useMemo(() => mediaSelectedID !== null && mediaSelectedID !== '', [mediaSelectedID])
@@ -249,7 +240,11 @@ const Detail = ({ type, onExportData }: Props) => {
                 </Badge>
                 <Badge
                   onClick={() => {
-                    type === MediaPackageType.IMAGE && toggleImageEditor('crop')
+                    type === MediaPackageType.IMAGE &&
+                      setImgEditorState({
+                        show: true,
+                        initMenu: 'crop',
+                      })
                   }}
                   variant="secondary"
                   className="tw-h-[30px] tw-flex tw-items-center tw-justify-center tw-gap-1 tw-cursor-pointer tw-bg-slate-600 tw-text-white hover:tw-bg-slate-400">
@@ -360,7 +355,6 @@ const Detail = ({ type, onExportData }: Props) => {
           </div>
         </div>
       </Modal>
-      {<ImageEditorModal imageEditorState={imageEditorState} onClose={toggleImageEditor} />}
     </div>
   )
 }
