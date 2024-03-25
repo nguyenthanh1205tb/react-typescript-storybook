@@ -1,5 +1,7 @@
 import { Button } from '@/src/components/ui/button'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
+import ConfigProvider from 'antd/es/config-provider'
+import Modal from 'antd/es/modal/Modal'
 import { FileText, Image as ImageIcon, MoveLeft, Search, Trash, Video } from 'lucide-react'
 import moment from 'moment'
 import React, { useEffect, useMemo, useState } from 'react'
@@ -8,6 +10,7 @@ import { Separator } from '../components/ui/separator'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '../components/ui/tabs'
 import { Toaster } from '../components/ui/toaster'
 import { TooltipProvider } from '../components/ui/tooltip'
+import Each from '../hooks/each'
 import If from '../hooks/if'
 import { useListMedia } from '../hooks/useMedia'
 import useAppStore, { VideoTabItemType } from '../stores/useAppStore'
@@ -17,9 +20,6 @@ import MediaDetail from './media-detail/detail'
 import ListMedia from './media-list/list'
 import MediaMultiSelected from './media-multi-selected'
 import MenuUpload from './upload/menu'
-import Each from '../hooks/each'
-import ConfigProvider from 'antd/es/config-provider'
-import Modal from 'antd/es/modal/Modal'
 
 type State = {
   sideMenu: SideMenu
@@ -202,11 +202,7 @@ function Main({ type, onExportData }: Props) {
                   </div>
 
                   <TabsContent value={VideoTabItemType.CONTENT} className="!tw-mt-0 tw-flex-1 tw-pl-2 tw-pt-2 tw-flex">
-<<<<<<< HEAD
                     <div className="tw-pr-2 tw-max-h-[650px] tw-min-h-[650px] tw-border-r tw-flex-1 tw-overflow-x-hidden tw-overflow-y-auto">
-=======
-                    <div className="tw-pr-2 tw-max-h-[650px] tw-border-r tw-flex-1 tw-overflow-x-hidden tw-overflow-y-auto">
->>>>>>> f424570 (fix image component)
                       <ListMedia type={exportFileType} isFilterOpen={state.sideMenu.active === SideMenuActive.FILTER} />
                     </div>
                     <If isShow={selectMultiMode} element={<MediaMultiSelected onExportData={onExportData} />} />
