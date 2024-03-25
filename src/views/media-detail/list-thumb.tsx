@@ -52,7 +52,7 @@ const ListThumb = ({ items, avatarSelected, onSelectThumb, onUploadThumb }: Prop
   return (
     <div
       id="slider"
-      className="tw-flex tw-overflow-x-scroll tw-py-5 tw-hide-scroll-bar"
+      className="tw-flex tw-justify-items-center tw-overflow-x-scroll tw-py-5 tw-hide-scroll-bar"
       onMouseDown={startDragging}
       onMouseUp={stopDragging}
       onMouseMove={move}

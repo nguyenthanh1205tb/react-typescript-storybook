@@ -318,7 +318,7 @@ const Detail = ({ type, onExportData }: Props) => {
         open={showModal}
         onCancel={() => setShowModal(false)}
         title="Thay Thumbnail"
-        className="xl:tw-max-w-[80vw] 2xl:tw-max-w-[60vw] 2xl:tw-min-w-[60vw] tw-min-w-[80vw]">
+        className="tw-max-w-[70vw] tw-min-w-[70vw] tw-max-h-[800px]">
         <div className="!tw-block">
           {/* <div className="tw-px-3 tw-pt-2 tw-flex tw-justify-between tw-items-center">
               <X size={20} className="tw-cursor-pointer" onClick={() => setShowModal(false)} />
@@ -338,9 +338,9 @@ const Detail = ({ type, onExportData }: Props) => {
               </div>
             </div>
 
-            <div className="tw-max-w-[80vw] tw-bg-[#434242] tw-pt-5">
+            <div className=" tw-bg-[#434242] tw-pt-5">
               <div className="tw-flex">
-                <div className="tw-flex xl:tw-max-w-[80vw] 2xl:tw-max-w-[60vw]">
+                <div className="tw-flex tw-max-w-[70vw] tw-min-w-[70vw]">
                   <ListThumb
                     // onUploadThumb={_ => {
                     //   console.log('upload', _)
