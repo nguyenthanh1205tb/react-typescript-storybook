@@ -48,7 +48,7 @@ function Item({ data, type, onOpenImageEditor }: PropsWithChildren<Props>) {
     }
   }, [type])
 
-  const content = useMemo(() => {
+  const menuImgContent = useMemo(() => {
     return (
       <div className="tw-flex tw-flex-col tw-gap-1 ">
         <div
@@ -68,6 +68,24 @@ function Item({ data, type, onOpenImageEditor }: PropsWithChildren<Props>) {
     )
   }, [])
 
+  const menuVideoContent = useMemo(() => {
+    return (
+      <div className="tw-flex tw-flex-col tw-gap-1 ">
+        <div
+          key={'btn-edit-video'}
+          className="tw-flex tw-gap-2  !tw-items-center tw-cursor-pointer hover:tw-bg-slate-200 tw-transition-all tw-px-3 tw-py-2 tw-rounded-md">
+          <Pencil size={16} color="#404040" /> <span>Chỉnh sửa</span>
+        </div>
+        <div
+          key={'btn-cut-video'}
+          className="tw-flex tw-gap-2 !tw-items-center tw-cursor-pointer hover:tw-bg-slate-200 tw-transition-all tw-px-3 tw-py-2 tw-rounded-md">
+          <Crop size={16} color="#404040" />
+          <span>Cắt video</span>
+        </div>
+      </div>
+    )
+  }, [])
+
   return (
     <>
       <div
@@ -79,7 +97,7 @@ function Item({ data, type, onOpenImageEditor }: PropsWithChildren<Props>) {
           trigger={['click']}
           className=" tw-z-40 tw-cursor-pointer tw-absolute !tw-right-[-5px] tw-top-2"
           placement="bottomLeft"
-          content={content}>
+          content={type === FileType.IMAGE ? menuImgContent : menuVideoContent}>
           <EllipsisVertical color="#8f8f8f" size={16} />
         </Popover>
         <div className="tw-absolute tw-left-3 tw-top-3 tw-z-10">
