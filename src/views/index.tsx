@@ -15,6 +15,7 @@ import If from '../hooks/if'
 import { useListMedia } from '../hooks/useMedia'
 import useAppStore, { VideoTabItemType } from '../stores/useAppStore'
 import { FileType, MediaEntity, MediaPackageType, SideMenu, SideMenuActive } from '../types'
+import { fetchToken } from '../utils/fetchToken'
 import Filter from './filter'
 import MediaDetail from './media-detail/detail'
 import ListMedia from './media-list/list'
@@ -48,6 +49,10 @@ function Main({ type, onExportData }: Props) {
       active: SideMenuActive.NULL,
     },
   })
+
+  useEffect(() => {
+    fetchToken()
+  }, [])
 
   const onChangeMenu = (k: SideMenuActive) => {
     setState(prev => ({
