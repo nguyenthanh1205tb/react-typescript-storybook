@@ -216,7 +216,9 @@ function Main({ type, onExportData }: Props) {
                       element={<MediaDetail type={packageEnabled as MediaPackageType} onExportData={onExportData} />}
                     />
                   </TabsContent>
-                  <TabsContent value={VideoTabItemType.TRASH} className="!tw-mt-0"></TabsContent>
+                  <TabsContent
+                    value={VideoTabItemType.TRASH}
+                    className="!tw-mt-0 tw-max-h-[650px] tw-min-h-[650px]"></TabsContent>
                 </div>
               </Tabs>
             </div>

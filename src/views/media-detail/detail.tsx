@@ -27,14 +27,16 @@ import {
   X,
 } from 'lucide-react'
 import moment from 'moment'
-import React, { useEffect, useMemo } from 'react'
+import React, { useCallback, useEffect, useMemo, useState } from 'react'
 import { useDetailMedia } from '../../hooks/useMedia'
 import { formatBytes } from '../../lib/utils/media'
 import useAppStore from '../../stores/useAppStore'
 import { MediaEntity, MediaPackageType, MediaStatus } from '../../types'
 import DetailMediaForm from './detail-form'
 import ListThumb from './list-thumb'
+import CutVideo from './cut-video'
 import useUpdateMedia, { videoUrl } from './useUpdateMedia'
+
 
 interface Props {
   type: MediaPackageType
@@ -74,6 +76,7 @@ const Detail = ({ type, onExportData }: Props) => {
   const { avatarSelected, showModal, handleUpdateMedia, setShowModal, onSubmitThumb, setAvatarSelected } =
     useUpdateMedia()
   const { response, getDetailMedia } = useDetailMedia()
+  const [cutVideoModal, setCutVideoModal] = useState(true)
 
   const haveMediaSelectedID = useMemo(() => mediaSelectedID !== null && mediaSelectedID !== '', [mediaSelectedID])
 
@@ -355,6 +358,13 @@ const Detail = ({ type, onExportData }: Props) => {
           </div>
         </div>
       </Modal>
+
+      <CutVideo
+        open={cutVideoModal}
+        onClose={() => setCutVideoModal(false)}
+        src={videoUrl(mediaSelectedData?.data.video) as string}
+        thumb={mediaSelectedData?.data.avatar_thumb?.uri || ''}
+      />
     </div>
   )
 }

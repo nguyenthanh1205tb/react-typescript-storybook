@@ -8,9 +8,10 @@ import 'video.js/dist/video-js.css'
 interface VideoPlayerProps {
   videoUrl: string
   thumbnailUrl: string
+  setPlayerInstance?: (d: Player) => void
 }
 
-const VideoPlayer: React.FC<VideoPlayerProps> = ({ videoUrl, thumbnailUrl }) => {
+const VideoPlayer: React.FC<VideoPlayerProps> = ({ videoUrl, thumbnailUrl, setPlayerInstance }) => {
   const videoRef = useRef<HTMLVideoElement>(null)
   const [player, setPlayer] = useState<Player>()
   const { mediaSelectedID } = useAppStore()
@@ -33,6 +34,7 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({ videoUrl, thumbnailUrl }) => 
     })
 
     setPlayer(pl)
+    if (setPlayerInstance) setPlayerInstance(pl)
   }, [videoRef])
 
   useEffect(() => {

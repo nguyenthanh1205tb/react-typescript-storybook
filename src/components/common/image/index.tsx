@@ -73,7 +73,10 @@ const Image = ({
         element={
           <img
             onLoad={() => setImgLoaded(true)}
-            onError={() => setIsError(true)}
+            onError={() => {
+              console.log('load image error')
+              setIsError(true)
+            }}
             loading="lazy"
             src={src}
             className={cn('tw-m-auto', className, { '!tw-h-0': !imgLoaded })}
