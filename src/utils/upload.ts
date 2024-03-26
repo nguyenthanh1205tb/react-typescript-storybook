@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { notification } from 'antd'
+import { AuthTokenType, getAuthToken } from '../lib/utils/auth'
 
 export function DataURIToBlob(dataURI: string) {
   const splitDataURI = dataURI.split(',')
@@ -12,13 +13,14 @@ export function DataURIToBlob(dataURI: string) {
   return new Blob([ia], { type: mimeString })
 }
 
-export function uploadThumb(file: File, authToken: string, organizationId: string) {
+export async function onUploadFile(file: File | Blob, organizationId: string) {
   // const fileData = DataURIToBlob(file)
 
   const formData = new FormData()
 
-  formData.append('file', file, `${file.name}.png`)
+  formData.append('file', file, `package-media.png`)
   formData.append('organizationId', organizationId)
+  //[EDIT] tên file cũ
 
   const uploadEndpoint = `https://uat.upload.plcplatform.net/upload?organizationId=${organizationId}`
 
@@ -26,7 +28,7 @@ export function uploadThumb(file: File, authToken: string, organizationId: strin
     method: 'POST',
     body: formData,
     headers: {
-      Authorization: `Bearer ${authToken}`,
+      Authorization: `Bearer ${getAuthToken(AuthTokenType.ACCESS) as any}`,
     },
   })
     .then(response => {

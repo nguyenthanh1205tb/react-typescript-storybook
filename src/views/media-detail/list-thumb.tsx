@@ -1,7 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { AuthTokenType, getAuthToken } from '@/src/lib/utils/auth'
 import useAppStore from '@/src/stores/useAppStore'
-import { uploadThumb } from '@/src/utils/upload'
+import { onUploadFile } from '@/src/utils/upload'
 import { Plus } from 'lucide-react'
 import React, { useEffect } from 'react'
 import { defaultImgUrl } from './useUpdateMedia'
@@ -19,7 +18,7 @@ const ListThumb = ({ items, avatarSelected, onSelectThumb }: Props) => {
     if (e.target.files) {
       const file = e.target.files[0]
       // onUploadThumb && onUploadThumb(file)
-      uploadThumb(file, getAuthToken(AuthTokenType.ACCESS) as any, config?.organizationId as any).then(res => {
+      onUploadFile(file, config?.organizationId as any).then(res => {
         const thumbPath = defaultImgUrl + res?.path
         onSelectThumb(thumbPath)
       })

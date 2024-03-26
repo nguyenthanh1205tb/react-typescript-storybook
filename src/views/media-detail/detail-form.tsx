@@ -45,8 +45,6 @@ const DetailMediaForm = ({ form, handleUpdateMedia }: DetailMediaFormProps) => {
           return item
         })
 
-      console.log(categories)
-
       return categories
 
       // const flatOptions = flatMapDeep(categories, item => {
