@@ -66,6 +66,7 @@ const DetailMediaForm = ({ form, handleUpdateMedia }: DetailMediaFormProps) => {
     treeData: categoryOptions,
     // onChange,
     // treeCheckable: true,
+    treeDefaultExpandAll: true,
     multiple: true,
     showCheckedStrategy: SHOW_PARENT,
     placeholder: 'Please select',
