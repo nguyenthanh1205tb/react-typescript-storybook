@@ -113,7 +113,7 @@ function Item({ data, type, onOpenImageEditor }: PropsWithChildren<Props>) {
           })}>
           <div className="tw-mb-2 tw-gap-1">
             <div className="tw-relative">
-              <Image alt={data.id} src={data.avatar_thumb?.uri} />
+              <Image alt={data.id} src={data.avatar_thumb?.uri || data.avatar_thumb?.url_list[0]} />
               <div className="tw-absolute tw-left-1 tw-bg-black/20 tw-text-xs tw-text-white tw-bottom-3 tw-py-1 tw-px-2 tw-rounded-md tw-backdrop-blur-sm">
                 <If isShow={type === FileType.VIDEO} element={convertDuration(data.durations)} />
                 <If isShow={type === FileType.IMAGE} element={<ImageIcon size={18} />} />
