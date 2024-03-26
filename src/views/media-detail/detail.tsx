@@ -27,16 +27,15 @@ import {
   X,
 } from 'lucide-react'
 import moment from 'moment'
-import React, { useCallback, useEffect, useMemo, useState } from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 import { useDetailMedia } from '../../hooks/useMedia'
 import { formatBytes } from '../../lib/utils/media'
 import useAppStore from '../../stores/useAppStore'
 import { MediaEntity, MediaPackageType, MediaStatus } from '../../types'
+import CutVideo from './cut-video'
 import DetailMediaForm from './detail-form'
 import ListThumb from './list-thumb'
-import CutVideo from './cut-video'
 import useUpdateMedia, { videoUrl } from './useUpdateMedia'
-
 
 interface Props {
   type: MediaPackageType
