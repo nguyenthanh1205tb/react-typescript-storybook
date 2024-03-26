@@ -4,6 +4,7 @@ import ConfigProvider from 'antd/es/config-provider'
 import Modal from 'antd/es/modal/Modal'
 import { FileText, Image as ImageIcon, MoveLeft, Search, Trash, Video } from 'lucide-react'
 import moment from 'moment'
+import 'moment/locale/vi'
 import React, { useEffect, useMemo, useState } from 'react'
 import { Input } from '../components/ui/input'
 import { Separator } from '../components/ui/separator'
@@ -32,7 +33,7 @@ interface Props {
   onExportData?: (data: MediaEntity[]) => void
 }
 function Main({ type, onExportData }: Props) {
-  moment.locale('vi-VN')
+  moment.locale('vi')
   const { onSearchByText } = useListMedia()
   const {
     setMediaDialog,
