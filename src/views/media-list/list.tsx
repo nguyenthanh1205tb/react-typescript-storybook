@@ -113,14 +113,16 @@ function ListMedia({ type }: PropsWithChildren<Props>) {
   }, [listMedia, type])
 
   let resizeTimeout: ReturnType<typeof setTimeout>
-  const handleResize = () => {
+  const handleResize = (entries: any) => {
     clearTimeout(resizeTimeout)
     resizeTimeout = setTimeout(() => {
       if (gridRef.current) {
-        const { width } = gridRef.current.getBoundingClientRect()
-        let columns = Math.floor(width / 160)
-        if (columns > 9) columns = 9
-        setColumn(columns)
+        for (const entry of entries) {
+          const width = entry.contentRect.width
+          let column = Math.floor(width / 160)
+          if (column > 9) column = 9
+          setColumn(column)
+        }
       }
     }, 0)
   }
