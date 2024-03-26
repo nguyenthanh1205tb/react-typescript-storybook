@@ -197,7 +197,10 @@ const Detail = ({ type, onExportData }: Props) => {
                 isShow={type === MediaPackageType.IMAGE && mediaSelectedData !== null}
                 element={
                   <Image
-                    src={mediaSelectedData?.data.avatar_thumb.uri || ''}
+                    alt={mediaSelectedData?.data?.id}
+                    src={
+                      mediaSelectedData?.data?.avatar_thumb?.uri || mediaSelectedData?.data?.avatar_thumb?.url_list[0]
+                    }
                     height="253px"
                     containerClassName="!tw-rounded-none"
                   />
