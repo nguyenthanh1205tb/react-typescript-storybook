@@ -118,7 +118,8 @@ function ListMedia({ type }: PropsWithChildren<Props>) {
     resizeTimeout = setTimeout(() => {
       if (gridRef.current) {
         const { width } = gridRef.current.getBoundingClientRect()
-        const columns = Math.floor(width / 160)
+        let columns = Math.floor(width / 160)
+        if (columns > 9) columns = 9
         setColumn(columns)
       }
     }, 0)
