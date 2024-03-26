@@ -68,7 +68,7 @@ const ListThumb = ({ items, avatarSelected, onSelectThumb }: Props) => {
       onMouseLeave={stopDragging}>
       <div className="tw-flex tw-gap-5 tw-flex-nowrap tw-ml-5">
         <div className="tw-bg-[#303232] tw-relative tw-w-[184px] tw-rounded-lg tw-h-[118px] tw-aspect-video tw-border-2 tw-border-[#a3a3a3]">
-          <input onChange={onChangeInputFile} type="file" className="tw-absolute tw-h-full tw-w-full tw-opacity-0" />
+          <input onChange={onChangeInputFile} type="file" className="tw-absolute !tw-h-full !tw-w-full tw-opacity-0" />
           <Plus className="tw-absolute !tw-left-[50%] !tw-top-[50%] tw-translate-x-[-50%] tw-translate-y-[-50%]" />
         </div>
 
