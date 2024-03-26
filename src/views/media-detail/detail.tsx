@@ -73,7 +73,7 @@ const mediaAccords = [
 const Detail = ({ type, onExportData }: Props) => {
   const [form] = useForm()
   const { mediaSelectedID, mediaSelectedData, setMediaSelectedData, setImgEditorState } = useAppStore()
-  const { avatarSelected, showModal, handleUpdateMedia, setShowModal, onSubmitThumb, setAvatarSelected } =
+  const { avatarSelected, showModal, handleUpdateMedia, setShowModal, onSubmitThumb, handleSelectThumb } =
     useUpdateMedia()
   const { response, getDetailMedia } = useDetailMedia()
   const [cutVideoModal, setCutVideoModal] = useState(true)
@@ -348,7 +348,7 @@ const Detail = ({ type, onExportData }: Props) => {
                     // onUploadThumb={_ => {
                     //   console.log('upload', _)
                     // }}
-                    onSelectThumb={url => setAvatarSelected(url)}
+                    onSelectThumb={handleSelectThumb}
                     avatarSelected={avatarSelected}
                     items={mediaSelectedData?.data?.avatar_thumb?.url_list || []}
                   />

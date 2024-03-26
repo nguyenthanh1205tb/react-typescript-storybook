@@ -7,6 +7,8 @@ import { useMutation, useQueryClient } from '@tanstack/react-query'
 import notification from 'antd/es/notification'
 import React, { useCallback } from 'react'
 
+export const defaultImgUrl = 'https://imageproxy.plcplatform.net/images/w480/h0/'
+
 export const videoUrl = (d?: Video) => {
   if (!d) return
   const defaultUri = d?.uri
@@ -84,6 +86,10 @@ const useUpdateMedia = () => {
     }
   }, [avatarSelected, config, mediaSelectedData])
 
+  const handleSelectThumb = useCallback((url: string) => {
+    setAvatarSelected(url)
+  }, [])
+
   return {
     showModal,
     avatarSelected,
@@ -94,6 +100,7 @@ const useUpdateMedia = () => {
     setMediaSelectedData,
     handleUpdateMedia,
     onSubmitThumb,
+    handleSelectThumb,
   }
 }
 

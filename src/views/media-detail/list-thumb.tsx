@@ -1,29 +1,39 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+import { AuthTokenType, getAuthToken } from '@/src/lib/utils/auth'
+import useAppStore from '@/src/stores/useAppStore'
+import { uploadThumb } from '@/src/utils/upload'
 import { Plus } from 'lucide-react'
 import React, { useEffect } from 'react'
+import { defaultImgUrl } from './useUpdateMedia'
 
 interface Props {
   items: string[]
   avatarSelected: string
   onSelectThumb: (url: string) => void
-  onUploadThumb?: (file: File) => void
 }
 
-const ListThumb = ({ items, avatarSelected, onSelectThumb, onUploadThumb }: Props) => {
-  const [slider, setSli] = React.useState<HTMLDivElement | any>()
+const ListThumb = ({ items, avatarSelected, onSelectThumb }: Props) => {
+  const [slider, setSlider] = React.useState<HTMLDivElement | any>()
+  const { config } = useAppStore()
   const onChangeInputFile = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files) {
       const file = e.target.files[0]
-      onUploadThumb && onUploadThumb(file)
-      const reader = new FileReader()
-      reader.onload = () => {
-        onSelectThumb(reader.result as string)
-      }
-      reader.readAsDataURL(file)
+      // onUploadThumb && onUploadThumb(file)
+      uploadThumb(file, getAuthToken(AuthTokenType.ACCESS) as any, config?.organizationId as any).then(res => {
+        const thumbPath = defaultImgUrl + res?.path
+        onSelectThumb(thumbPath)
+      })
+
+      // onSelectThumb(res.)
+      // const reader = new FileReader()
+      // reader.onload = () => {
+      //   onSelectThumb(reader.result as string)
+      // }
+      // reader.readAsDataURL(file)
     }
   }
   useEffect(() => {
-    setSli(document.getElementById('slider') as HTMLDivElement)
+    setSlider(document.getElementById('slider') as HTMLDivElement)
   }, [])
 
   let mouseDown = false
