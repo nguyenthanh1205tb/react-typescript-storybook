@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-non-null-asserted-optional-chain */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import Image from '@/src/components/common/image'
 import Typo from '@/src/components/common/typo'
@@ -185,7 +186,9 @@ const Detail = ({ type, onExportData }: Props) => {
                 element={
                   <VideoPlayer
                     videoUrl={videoUrl(mediaSelectedData?.data.video) as string}
-                    thumbnailUrl={mediaSelectedData?.data.avatar_thumb?.uri || ''}
+                    thumbnailUrl={
+                      mediaSelectedData?.data.avatar_thumb?.uri || mediaSelectedData?.data.avatar_thumb?.url_list[0]!
+                    }
                   />
                 }
               />
@@ -227,13 +230,18 @@ const Detail = ({ type, onExportData }: Props) => {
 
             <div className="tw-flex tw-justify-between tw-px-3 tw-py-2">
               <div className="tw-gap-2 tw-flex">
-                <Badge
-                  onClick={() => setShowModal(true)}
-                  variant="secondary"
-                  className="tw-h-[30px] tw-flex tw-items-center tw-justify-center tw-gap-1 tw-cursor-pointer tw-bg-slate-600 tw-text-white hover:tw-bg-slate-400">
-                  <Images size={16} />
-                  <span>Thay thumbnail</span>
-                </Badge>
+                <If
+                  isShow={type === MediaPackageType.VIDEO}
+                  element={
+                    <Badge
+                      onClick={() => setShowModal(true)}
+                      variant="secondary"
+                      className="tw-h-[30px] tw-flex tw-items-center tw-justify-center tw-gap-1 tw-cursor-pointer tw-bg-slate-600 tw-text-white hover:tw-bg-slate-400">
+                      <Images size={16} />
+                      <span>Thay thumbnail</span>
+                    </Badge>
+                  }
+                />
                 <Badge
                   variant="secondary"
                   className="tw-h-[30px] tw-flex tw-items-center tw-justify-center tw-gap-1 tw-cursor-pointer tw-bg-slate-600 tw-text-white hover:tw-bg-slate-400">
