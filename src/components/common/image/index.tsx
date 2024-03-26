@@ -24,8 +24,6 @@ const Image = ({
   const [imgLoaded, setImgLoaded] = useState(false)
   const [isError, setIsError] = useState(false)
 
-  console.log(src)
-
   return (
     <div className={cn('tw-relative tw-bg-slate-100 tw-w-full tw-overflow-hidden tw-rounded-md', containerClassName)}>
       <If
@@ -79,7 +77,9 @@ const Image = ({
             }}
             loading="lazy"
             src={src}
-            className={cn('tw-m-auto', className, { '!tw-h-0': !imgLoaded })}
+            className={cn('tw-m-auto tw-object-cover', className, {
+              '!tw-h-0': !imgLoaded,
+            })}
             style={{ height, ...style }}
             {...rest}
           />
