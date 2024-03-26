@@ -1,62 +1,122 @@
-import React, { useState, useRef } from 'react'
+/* eslint-disable react/no-unknown-property */
+import React, { useEffect, useRef, useState } from 'react'
 import TimelineSlice from './timeline-slice'
 import { nanoid } from 'nanoid'
 
 //Hooks
-import { useTimelineSliceHelpers } from './timeline-utils'
 import TimelineSliceWrap from './timeline-slice-wrap'
-import { Button } from '@/src/components/ui/button'
-import { TimelineData } from '@/src/lib/video/useVideo'
+import { useTimelineVideo } from '@/src/lib/video/store/useVideo'
+import Each from '@/src/hooks/each'
+import { Plus } from 'lucide-react'
+import If from '@/src/hooks/if'
+import { wait } from '@/src/hooks/wait'
+import { TimelineData } from './video'
 
+const NewSliceBtnWidth = 100
+const NewSliceBtnHeight = 20
 const TimeLine = () => {
   const parentRef = useRef<HTMLDivElement>(null)
-  const [slices, setSlices] = useState<TimelineData[]>([])
+  const { addNewSlice, listSlice, setSliceSelected, setMaxTimelineWidth } = useTimelineVideo()
+  const [btnNewX, setBtnNewX] = useState(0)
+  const [showBtnNew, setShowBtnNew] = useState(false)
 
-  const addNewSlice = () => {
-    setSlices([
-      ...slices,
-      {
-        id: nanoid(10),
-        x: 0,
-        y: 0,
-        width: 100,
-        height: 50,
-      },
-    ])
+  const toggleNewBtn = (status: 'show' | 'hide') => {
+    switch (status) {
+      case 'show':
+        return setShowBtnNew(true)
+      case 'hide':
+        return setShowBtnNew(false)
+    }
   }
 
-  const updateSlice = (data: TimelineData) => {
-    const _current = [...slices]
-    //get index of slice
-    let idx: number | null = null
-    for (const i in _current) {
-      if (_current[i].id == data.id) {
-        idx = parseInt(i)
+  const getMousePos = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const target = e.target as any
+    const targetClassName = target.className as string
+    const listDisable = ['drag--handle--right', 'drag--handle--left', 'drag--child']
+    if (typeof targetClassName === 'string') {
+      const firstClassName = targetClassName?.split(' ')[0] as string | undefined
+      if (firstClassName && listDisable.includes(firstClassName)) {
+        toggleNewBtn('hide')
+      } else {
+        toggleNewBtn('show')
+        const rect = e.currentTarget.getBoundingClientRect()
+        const targetW = e.currentTarget.clientWidth
+        const x = e.clientX - rect.left
+        const middleBar = NewSliceBtnWidth / 2
+        const pos = x - middleBar
+        const start = 0
+        const end = targetW - NewSliceBtnWidth
+        setBtnNewX(prev => (pos < start || pos > end || prev === pos ? prev : pos))
       }
     }
-    if (idx) {
-      _current[idx] = data
-      setSlices(_current)
-    }
   }
 
-  const sliceHelpers = useTimelineSliceHelpers(slices, setSlices)
+  const initSlice = async (e: HTMLDivElement) => {
+    await wait(100)
+    const targetW = e.clientWidth
+    setMaxTimelineWidth(targetW)
+    const d = {
+      id: nanoid(10),
+      x: 0,
+      width: targetW,
+      height: NewSliceBtnHeight,
+    }
+    addNewSlice(d)
+    setSliceSelected(d)
+  }
+
+  const onSelectSlice = (data: TimelineData) => {
+    setSliceSelected(data)
+  }
+
+  useEffect(() => {
+    if (parentRef.current) {
+      initSlice(parentRef.current)
+    }
+  }, [parentRef])
 
   return (
-    <>
-      <div className="tw-flex tw-items-center tw-gap-2">
-        <Button onClick={addNewSlice}>Add new Clip</Button>
-        <Button onClick={sliceHelpers.removeSlice}>Remove last slice</Button>
-      </div>
-      {/*<pre>{JSON.stringify(slices, null, 4)}</pre> */}
-      <div className="drag--parent">
-        <TimelineSliceWrap parentRef={parentRef}>
-          {slices.map(slice => (
-            <TimelineSlice updateSlice={updateSlice} key={slice.id} {...slice} />
-          ))}
-        </TimelineSliceWrap>
-      </div>
-    </>
+    <div className="drag--parent">
+      <TimelineSliceWrap
+        parentRef={parentRef}
+        onMouseMove={getMousePos}
+        onMouseLeave={() => toggleNewBtn('hide')}
+        onMouseEnter={() => toggleNewBtn('show')}>
+        <If
+          isShow={showBtnNew}
+          element={
+            <TimelineSlice
+              data={{
+                x: btnNewX,
+                y: 0,
+                width: NewSliceBtnWidth,
+                height: NewSliceBtnHeight,
+                id: 'new-slice-btn',
+              }}
+              className="new-slice-btn hover:!tw-bg-[#b5b5b5]"
+              enableresize={{ left: false, right: false }}>
+              <div
+                className="tw-flex tw-w-full tw-items-center tw-justify-center tw-h-full"
+                onClick={() => {
+                  addNewSlice({
+                    id: nanoid(10),
+                    x: btnNewX,
+                    width: NewSliceBtnWidth,
+                    height: NewSliceBtnHeight,
+                  })
+                }}>
+                <Plus size={16} />
+              </div>
+            </TimelineSlice>
+          }
+        />
+        <Each
+          of={listSlice}
+          render={slice => <TimelineSlice key={slice.id} data={slice} onMouseDown={() => onSelectSlice(slice)} />}
+        />
+      </TimelineSliceWrap>
+    </div>
   )
 }
 

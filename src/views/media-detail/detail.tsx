@@ -76,7 +76,7 @@ const Detail = ({ type, onExportData }: Props) => {
   const { avatarSelected, showModal, handleUpdateMedia, setShowModal, onSubmitThumb, handleSelectThumb } =
     useUpdateMedia()
   const { response, getDetailMedia } = useDetailMedia()
-  const [cutVideoModal, setCutVideoModal] = useState(true)
+  const [cutVideoModal, setCutVideoModal] = useState(false)
 
   const haveMediaSelectedID = useMemo(() => mediaSelectedID !== null && mediaSelectedID !== '', [mediaSelectedID])
 
@@ -253,11 +253,14 @@ const Detail = ({ type, onExportData }: Props) => {
                 </Badge>
                 <Badge
                   onClick={() => {
-                    type === MediaPackageType.IMAGE &&
+                    if (type === MediaPackageType.IMAGE) {
                       setImgEditorState({
                         show: true,
                         initMenu: 'crop',
                       })
+                    } else {
+                      setCutVideoModal(true)
+                    }
                   }}
                   variant="secondary"
                   className="tw-h-[30px] tw-flex tw-items-center tw-justify-center tw-gap-1 tw-cursor-pointer tw-bg-slate-600 tw-text-white hover:tw-bg-slate-400">
@@ -374,6 +377,7 @@ const Detail = ({ type, onExportData }: Props) => {
         onClose={() => setCutVideoModal(false)}
         src={videoUrl(mediaSelectedData?.data.video) as string}
         thumb={mediaSelectedData?.data.avatar_thumb?.uri || ''}
+        durations={mediaSelectedData?.data.durations}
       />
     </div>
   )

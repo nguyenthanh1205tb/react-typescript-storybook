@@ -1,12 +1,13 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import React, { forwardRef } from 'react'
+import { cn } from '../utils'
 
-interface Props {
+interface Props extends React.DetailedHTMLProps<React.HTMLAttributes<HTMLDivElement>, HTMLDivElement> {
   parentRef?: React.LegacyRef<HTMLDivElement>
 }
-const TimelineSliceWrap = forwardRef((props: React.PropsWithChildren<Props>, _ref) => {
+const TimelineSliceWrap = forwardRef(({ parentRef, className, ...props }: React.PropsWithChildren<Props>, _ref) => {
   return (
-    <div className="slice--parent" ref={props.parentRef}>
+    <div className={cn('slice--parent tw-w-full', className)} ref={parentRef} {...props}>
       {props.children}
     </div>
   )

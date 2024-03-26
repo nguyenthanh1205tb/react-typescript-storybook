@@ -1,45 +1,54 @@
-import { TimelineData } from '@/src/lib/video/useVideo'
-import React, { useState } from 'react'
+import { useTimelineVideo } from '@/src/lib/video/store/useVideo'
+import React, { PropsWithChildren } from 'react'
 import { Rnd } from 'react-rnd'
+import { TimelineData } from './video'
+import { cn } from '../utils'
 
-interface Props extends TimelineData {
-  updateSlice: (data: TimelineData) => void
+interface Props {
+  data: TimelineData
+  className?: string
+  enableresize?: { left: boolean; right: boolean }
+  onMouseDown?: () => void
 }
-const TimelineSlice = ({ width = 100, height = 50, x = 0, y = 0, id, ...props }: Props) => {
-  const [slice, setSlice] = useState<TimelineData>({
-    width: width,
-    height: height,
-    x: x,
-    y: y,
-    id: id,
-  })
+const TimelineSlice = ({ data, ...props }: PropsWithChildren<Props>) => {
+  const { sliceSelected, setSliceSelected } = useTimelineVideo()
+  const { width, height, x, y, id } = data
+  const { updateSlice } = useTimelineVideo()
+
   return (
     <Rnd
-      className="drag--child"
-      size={{ width: slice.width ?? 0, height: slice.height ?? 0 }}
-      position={{ x: slice.x ?? 0, y: slice.y ?? 0 }}
+      className={cn('drag--child', { 'drag--child--activated': sliceSelected?.id === data.id })}
+      size={{ width: width ?? 0, height: height ?? 0 }}
+      position={{ x: x ?? 0, y: y ?? 0 }}
       bounds="parent"
-      enableResizing={{ left: true, right: true }}
+      enableResizing={{ left: true, right: true, ...props.enableresize }}
+      onMouseDown={props.onMouseDown}
       resizeHandleClasses={{
         right: 'drag--handle--right',
         left: 'drag--handle--left',
       }}
       onDragStop={(e, d) => {
-        const _d = { ...slice, x: d.x, y: d.y }
-        setSlice(_d)
-        props.updateSlice(_d)
+        const _d = { id, x: d.x, y: d.y }
+        updateSlice(_d)
+        if (sliceSelected?.id === data.id) {
+          setSliceSelected(_d)
+        }
       }}
       onResizeStop={(e, direction, ref, delta, position) => {
         const u = {
-          ...slice,
+          id,
           width: parseInt(ref.style.width),
           height: parseInt(ref.style.height),
           ...position,
         }
-        setSlice(u)
-        props.updateSlice(u)
+        updateSlice(u)
+        if (sliceSelected?.id === data.id) {
+          setSliceSelected(u)
+        }
       }}
-    />
+      {...props}>
+      {props.children ? props.children : null}
+    </Rnd>
   )
 }
 

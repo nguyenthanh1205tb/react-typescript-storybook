@@ -311,41 +311,54 @@
 }
 
 /* CUT VIDEO */
-.slice--parent {
-  background: #333f50;
-  height: 20px;
-  top: 10px;
-  position: relative;
-}
 
 .drag--parent {
   height: 30px;
-}
+  display: block;
+  width: 100%;
 
-.drag--child {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: #51b051;
-  height: 20px !important;
-}
+  .slice--parent {
+    background: #333f50;
+    height: 20px;
+    top: 10px;
+    position: relative;
 
-.drag--bar {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: #ff0000;
-  cursor: ew-resize !important;
-}
 
-.drag--handle--right {
-  width: 5px !important;
-  background: #ffffff;
-  right: -5px !important;
-}
+    .drag--bar {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: #ff0000;
+      cursor: ew-resize !important;
+    }
 
-.drag--handle--left {
-  width: 5px !important;
-  background: #ffffff;
-  left: -5px !important;
+    .new-slice-btn {
+      background: #a3a3a3;
+      cursor: pointer !important;
+    }
+
+    .drag--child {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: #88c188;
+      height: 20px !important;
+
+      &.drag--child--activated {
+        background: #51b051;
+      }
+
+      .drag--handle--right {
+        width: 5px !important;
+        background: #ffffff;
+        right: -5px !important;
+      }
+
+      .drag--handle--left {
+        width: 5px !important;
+        background: #ffffff;
+        left: -5px !important;
+      }
+    }
+  }
 }
