@@ -1,4 +1,4 @@
-import { TimelineData } from '@/src/types'
+import { TimelineData } from './useVideo'
 
 const useTimelineSliceHelpers = (
   slices: TimelineData[],
