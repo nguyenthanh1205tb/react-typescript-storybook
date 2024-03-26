@@ -8,7 +8,6 @@ import Input from 'antd/es/input/Input'
 import TextArea from 'antd/es/input/TextArea'
 import Select from 'antd/es/select'
 import TreeSelect from 'antd/es/tree-select'
-import { flatMapDeep } from 'lodash'
 import React, { useMemo } from 'react'
 
 const { SHOW_PARENT } = TreeSelect
@@ -46,15 +45,19 @@ const DetailMediaForm = ({ form, handleUpdateMedia }: DetailMediaFormProps) => {
           return item
         })
 
-      const flatOptions = flatMapDeep(categories, item => {
-        if (item.children) {
-          return [item, ...flatMapDeep(item.children)]
-        }
-        return item
-      })
-      const newData = flatOptions.map(({ children, ...rest }) => rest)
+      console.log(categories)
 
-      return newData
+      return categories
+
+      // const flatOptions = flatMapDeep(categories, item => {
+      //   if (item.children) {
+      //     return [item, ...flatMapDeep(item.children)]
+      //   }
+      //   return item
+      // })
+      // const newData = flatOptions.map(({ children, ...rest }) => rest)
+
+      // return newData
     }
     return []
   }, [categoriesData])
@@ -62,7 +65,8 @@ const DetailMediaForm = ({ form, handleUpdateMedia }: DetailMediaFormProps) => {
   const tProps = {
     treeData: categoryOptions,
     // onChange,
-    treeCheckable: true,
+    // treeCheckable: true,
+    multiple: true,
     showCheckedStrategy: SHOW_PARENT,
     placeholder: 'Please select',
     style: {
