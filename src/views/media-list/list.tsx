@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import LoadingItem from '@/src/components/common/media-loading-item/loading-item'
 import Paginate from '@/src/components/common/paginate'
 import { SkeletonCard } from '@/src/components/common/skeleton-card'
@@ -201,7 +202,13 @@ function ListMedia({ type }: PropsWithChildren<Props>) {
         />
         <If isShow={!isLoading && data !== null} element={listMediaItem} />
       </div>
-      {<ImageEditorModal imageEditorState={imgEditorState} onClose={onCloseImageEditor} />}
+      {
+        <ImageEditorModal
+          key={imgEditorState?.show?.toString()}
+          imageEditorState={imgEditorState}
+          onClose={onCloseImageEditor}
+        />
+      }
     </div>
   )
 }

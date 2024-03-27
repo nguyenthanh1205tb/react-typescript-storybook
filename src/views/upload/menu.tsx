@@ -67,7 +67,7 @@ function MenuUpload({ onChangeMenu, active }: PropsWithChildren<Props>) {
             <TooltipTrigger>
               <div
                 className={cn(
-                  'tw-w-[35px] tw-h-[35px] tw-flex tw-items-center tw-justify-center tw-rounded-lg tw-cursor-pointer',
+                  'tw-w-[35px]  tw-h-[35px] tw-flex tw-items-center tw-justify-center tw-rounded-lg tw-cursor-pointer',
                   {
                     'tw-bg-slate-600 tw-text-white': active === SideMenuActive.FILTER,
                   },
@@ -76,7 +76,7 @@ function MenuUpload({ onChangeMenu, active }: PropsWithChildren<Props>) {
                 <FilterIcon size={18} />
               </div>
             </TooltipTrigger>
-            <TooltipContent side="right" className="tw-bg-slate-800 tw-text-white tw-z-50">
+            <TooltipContent side="right" className="tw-bg-slate-800 tw-text-white tw-z-[100]">
               <p>Bộ lọc</p>
             </TooltipContent>
           </Tooltip>

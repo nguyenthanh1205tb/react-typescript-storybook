@@ -176,7 +176,7 @@ function Main({ type, onExportData }: Props) {
                     className={`tw-pt-2 tw-w-[350px] ${state.sideMenu.active === SideMenuActive.FILTER ? '' : 'tw-w-fit'} tw-pr-2 tw-border-r tw-flex-none tw-flex`}>
                     <MenuUpload onChangeMenu={onChangeMenu} active={state?.sideMenu?.active} />
                     <div
-                      className={`tw-flex-1 tw-pl-2 tw-relative ${state.sideMenu.active === SideMenuActive.FILTER ? '' : 'tw-hidden'}`}>
+                      className={`tw-flex-1  tw-pl-2 tw-relative ${state.sideMenu.active === SideMenuActive.FILTER ? '' : 'tw-hidden'}`}>
                       <If
                         isShow={state.sideMenu.active === SideMenuActive.FILTER}
                         element={<Filter type={packageEnabled as MediaPackageType} />}

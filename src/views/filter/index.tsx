@@ -1,5 +1,5 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Combobox } from '@/src/components/common/combobox'
-import { DatePicker } from '@/src/components/common/date-picker'
 import { MultiSelect } from '@/src/components/common/multi-select'
 import Typo from '@/src/components/common/typo'
 import { ScrollArea } from '@/src/components/ui/scroll-area'
@@ -11,6 +11,7 @@ import { useCategory, useListMedia } from '@/src/hooks/useMedia'
 import { cn } from '@/src/lib/utils'
 import useAppStore from '@/src/stores/useAppStore'
 import { Category, ComboboxOption, GetListMediaTimeRange, MediaPackageType, OrderByType, OrderType } from '@/src/types'
+import { DatePicker } from 'antd'
 import React, { PropsWithChildren, useEffect, useMemo } from 'react'
 
 interface Props {
@@ -68,14 +69,8 @@ function Filter({ type }: PropsWithChildren<Props>) {
   const { getListCategories } = useCategory()
   const { data: categoriesData, isLoading: isGetListCategoriesLoading } = getListCategories()
 
-  const {
-    onChangeOrder,
-    onChangeCategory,
-    onChangeTimeRange,
-    onChangeVideoOfMine,
-    onChangeTimeRangeCustom,
-    timeRangeCustom,
-  } = useListMedia()
+  const { onChangeOrder, onChangeCategory, onChangeTimeRange, onChangeVideoOfMine, onChangeTimeRangeCustom } =
+    useListMedia()
 
   const exposeDataOfMineLabel = useMemo(() => {
     switch (type) {
@@ -196,6 +191,16 @@ function Filter({ type }: PropsWithChildren<Props>) {
             element={
               <>
                 <DatePicker
+                  // value={timeRangeCustom.start ? new Date(timeRangeCustom.start) : undefined}
+                  onChange={(val: any) => onChangeTimeRangeCustom('start', val)}
+                  placeholder="Chọn ngày bắt đầu"
+                />
+                <DatePicker
+                  // value={timeRangeCustom.start ? new Date(timeRangeCustom.start) : undefined}
+                  onChange={(val: any) => onChangeTimeRangeCustom('end', val)}
+                  placeholder="Chọn ngày ngày kết thúc"
+                />
+                {/* <DatePicker
                   value={timeRangeCustom.start ? new Date(timeRangeCustom.start) : undefined}
                   onChange={val => onChangeTimeRangeCustom('start', val)}
                   placeholder="Chọn ngày bắt đầu"
@@ -204,7 +209,7 @@ function Filter({ type }: PropsWithChildren<Props>) {
                   value={timeRangeCustom.end ? new Date(timeRangeCustom.end) : undefined}
                   onChange={val => onChangeTimeRangeCustom('end', val)}
                   placeholder="Chọn ngày kết thúc"
-                />
+                /> */}
               </>
             }></If>
         </div>

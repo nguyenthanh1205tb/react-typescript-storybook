@@ -1,12 +1,11 @@
-import React from 'react'
-import { format } from 'date-fns'
 import { Calendar as CalendarIcon } from 'lucide-react'
 import moment from 'moment'
+import React from 'react'
 
-import { cn } from '@/src/lib/utils'
 import { Button } from '@/src/components/ui/button'
 import { Calendar } from '@/src/components/ui/calendar'
 import { Popover, PopoverContent, PopoverTrigger } from '@/src/components/ui/popover'
+import { cn } from '@/src/lib/utils'
 
 interface Props {
   onChange: (val: Date | undefined) => void
