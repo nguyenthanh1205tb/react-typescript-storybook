@@ -113,13 +113,14 @@ function ListMedia({ type }: PropsWithChildren<Props>) {
   }, [listMedia, type])
 
   let resizeTimeout: ReturnType<typeof setTimeout>
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const handleResize = (entries: any) => {
     clearTimeout(resizeTimeout)
     resizeTimeout = setTimeout(() => {
       if (gridRef.current) {
         for (const entry of entries) {
           const width = entry.contentRect.width
-          let column = Math.floor(width / 160)
+          let column = Math.floor(width / 200)
           if (column > 9) column = 9
           setColumn(column)
         }
