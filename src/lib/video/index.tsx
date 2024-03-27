@@ -1,10 +1,10 @@
 import VideoPlayer from '@/src/components/common/video-player'
-import React, { PropsWithChildren, useEffect, useMemo, useState } from 'react'
-import TimeLine from './timeline'
-import Player from 'video.js/dist/types/player'
-import { useTimelineVideo } from './store/useVideo'
-import { convertDuration } from '../utils/date'
 import { Input } from '@/src/components/ui/input'
+import React, { PropsWithChildren, useEffect, useMemo, useState } from 'react'
+import Player from 'video.js/dist/types/player'
+import { convertDuration } from '../utils/date'
+import { useTimelineVideo } from './store/useVideo'
+import TimeLine from './timeline'
 
 interface Props {
   src: string
