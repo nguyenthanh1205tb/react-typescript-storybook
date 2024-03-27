@@ -15,8 +15,14 @@ interface Props {
   onOpenImageEditor: (initMenu?: MenuImgEditorType) => void
 }
 function Item({ data, type, onOpenImageEditor }: PropsWithChildren<Props>) {
-  const { setMediaSelectedID, mediaSelectedID, setListMediaSelected, selectMultiMode, listMediaSelected } =
-    useAppStore()
+  const {
+    setMediaSelectedID,
+    mediaSelectedID,
+    setListMediaSelected,
+    selectMultiMode,
+    listMediaSelected,
+    setCutVideoModal,
+  } = useAppStore()
 
   const selectHandler = (media: MediaEntity) => {
     switch (selectMultiMode) {
@@ -78,7 +84,8 @@ function Item({ data, type, onOpenImageEditor }: PropsWithChildren<Props>) {
         </div>
         <div
           key={'btn-cut-video'}
-          className="tw-flex tw-gap-2 !tw-items-center tw-cursor-pointer hover:tw-bg-slate-200 tw-transition-all tw-px-3 tw-py-2 tw-rounded-md">
+          className="tw-flex tw-gap-2 !tw-items-center tw-cursor-pointer hover:tw-bg-slate-200 tw-transition-all tw-px-3 tw-py-2 tw-rounded-md"
+          onClick={() => setCutVideoModal(true)}>
           <Crop size={16} color="#404040" />
           <span>Cắt video</span>
         </div>

@@ -5,7 +5,6 @@ import Player from 'video.js/dist/types/player'
 import { useTimelineVideo } from './store/useVideo'
 import { convertDuration } from '../utils/date'
 
-
 interface Props {
   src: string
   thumb: string

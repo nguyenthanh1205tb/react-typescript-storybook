@@ -8,7 +8,7 @@ interface Props {
   data: TimelineData
   className?: string
   enableresize?: { left: boolean; right: boolean }
-  onMouseDown?: () => void
+  onMouseDown?: (e: MouseEvent) => void
 }
 const TimelineSlice = ({ data, ...props }: PropsWithChildren<Props>) => {
   const { sliceSelected, setSliceSelected, updateSlice } = useTimelineVideo()

@@ -29,7 +29,7 @@ function CutVideo({ open, onClose, ...props }: PropsWithChildren<Props>) {
         </div>
       }
       title="Cắt video theo thời lượng"
-      className="!tw-max-w-[60vw] !tw-w-[60vw]"
+      className="!tw-max-w-[55vw] !tw-w-[55vw]"
       classNames={{ content: '!tw-px-0', header: '!tw-px-2 !tw-pb-2' }}>
       <VideoEditor {...props} durations={props.durations} />
     </Modal>

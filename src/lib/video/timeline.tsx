@@ -18,7 +18,8 @@ const NewSliceBtnWidth = 100
 const NewSliceBtnHeight = 20
 const TimeLine = () => {
   const parentRef = useRef<HTMLDivElement>(null)
-  const { addNewSlice, listSlice, setSliceSelected, sliceSelected, setMaxTimelineWidth } = useTimelineVideo()
+  const { addNewSlice, listSlice, setSliceSelected, sliceSelected, setMaxTimelineWidth, removeSlice } =
+    useTimelineVideo()
   const [btnNewX, setBtnNewX] = useState(0)
   const [showBtnNew, setShowBtnNew] = useState(false)
 
@@ -72,6 +73,8 @@ const TimeLine = () => {
     setSliceSelected(data)
   }
 
+  const onRemoveSlice = (id: string) => removeSlice(id)
+
   useEffect(() => {
     if (parentRef.current) {
       initSlice(parentRef.current)
@@ -79,7 +82,7 @@ const TimeLine = () => {
   }, [parentRef])
 
   return (
-    <div className="drag--parent">
+    <div className="drag--parent" onContextMenu={e => e.preventDefault()}>
       <TimelineSliceWrap
         parentRef={parentRef}
         onMouseMove={getMousePos}
@@ -115,7 +118,19 @@ const TimeLine = () => {
         />
         <Each
           of={listSlice}
-          render={slice => <TimelineSlice key={slice.id} data={slice} onMouseDown={() => onSelectSlice(slice)} />}
+          render={slice => (
+            <TimelineSlice
+              key={slice.id}
+              data={slice}
+              onMouseDown={(e: MouseEvent) => {
+                if (e.which === 3 || e.button === 2) {
+                  onRemoveSlice(slice.id)
+                } else {
+                  onSelectSlice(slice)
+                }
+              }}
+            />
+          )}
         />
         <If isShow={!_isEmpty(sliceSelected)} element={<TimelineBar />} />
       </TimelineSliceWrap>

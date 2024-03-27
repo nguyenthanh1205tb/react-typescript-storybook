@@ -40,6 +40,7 @@ type State = {
     show: boolean
     initMenu: MenuImgEditorType
   }
+  cutVideoModal: boolean
 
   // Functions
   setListFileProgress: (payload: FileProgressType[]) => void
@@ -57,6 +58,7 @@ type State = {
   setPackageEnabled: (payload: MediaPackageType | null) => void
   setImgEditorState: (payload: { show: boolean; initMenu: MenuImgEditorType }) => void
   resetAppState: () => void
+  setCutVideoModal: (status: boolean) => void
 }
 
 const defaultState = {
@@ -85,6 +87,7 @@ const defaultState = {
     timeRange: GetListMediaTimeRange.ALL,
     isMyFile: false,
   },
+  cutVideoModal: false,
 }
 
 const useAppStore = create<State>(set => ({
@@ -149,6 +152,8 @@ const useAppStore = create<State>(set => ({
       _list.push(payload)
       return { listMediaSelected: _list }
     }),
+
+  setCutVideoModal: status => set(() => ({ cutVideoModal: status })),
 }))
 
 export default useAppStore

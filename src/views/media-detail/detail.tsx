@@ -28,7 +28,7 @@ import {
   X,
 } from 'lucide-react'
 import moment from 'moment'
-import React, { useEffect, useMemo, useState } from 'react'
+import React, { useEffect, useMemo } from 'react'
 import { useDetailMedia } from '../../hooks/useMedia'
 import { formatBytes } from '../../lib/utils/media'
 import useAppStore from '../../stores/useAppStore'
@@ -72,11 +72,17 @@ const mediaAccords = [
 
 const Detail = ({ type, onExportData }: Props) => {
   const [form] = useForm()
-  const { mediaSelectedID, mediaSelectedData, setMediaSelectedData, setImgEditorState } = useAppStore()
+  const {
+    mediaSelectedID,
+    mediaSelectedData,
+    cutVideoModal,
+    setMediaSelectedData,
+    setImgEditorState,
+    setCutVideoModal,
+  } = useAppStore()
   const { avatarSelected, showModal, handleUpdateMedia, setShowModal, onSubmitThumb, handleSelectThumb } =
     useUpdateMedia()
   const { response, getDetailMedia } = useDetailMedia()
-  const [cutVideoModal, setCutVideoModal] = useState(false)
 
   const haveMediaSelectedID = useMemo(() => mediaSelectedID !== null && mediaSelectedID !== '', [mediaSelectedID])
 
