@@ -54,7 +54,7 @@ export enum GetListMediaTimeRange {
 
 export enum OrderByType {
   CREATED_AT = 'createdAt',
-  NAME = 'name',
+  NAME = 'nameUnsigned',
 }
 
 export enum MediaStatus {
