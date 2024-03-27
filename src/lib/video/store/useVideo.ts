@@ -7,6 +7,7 @@ const defaultState = {
   maxTimelineWidth: 0,
   player: null,
   barTime: { start: 0, end: 0 },
+  title: '',
 }
 
 const useTimelineVideo = create<VideoState>(set => ({
@@ -38,6 +39,8 @@ const useTimelineVideo = create<VideoState>(set => ({
   setPlayer: payload => set(() => ({ player: payload })),
 
   setBarTime: payload => set(() => ({ barTime: payload })),
+
+  setTitle: text => set(() => ({ title: text })),
 
   resetToDefault: () => set(() => defaultState),
 }))

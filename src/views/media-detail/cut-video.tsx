@@ -1,8 +1,14 @@
 import { Button } from '@/src/components/ui/button'
+import If from '@/src/hooks/if'
+import { useTrimVideo } from '@/src/hooks/useMedia'
 import VideoEditor from '@/src/lib/video'
 import { useTimelineVideo } from '@/src/lib/video/store/useVideo'
+import { MediaEntity } from '@/src/types'
+import { useQueryClient } from '@tanstack/react-query'
+import { notification } from 'antd'
 import Modal from 'antd/es/modal/Modal'
-import React, { PropsWithChildren } from 'react'
+import { Loader } from 'lucide-react'
+import React, { PropsWithChildren, useEffect } from 'react'
 
 interface Props {
   open: boolean
@@ -10,9 +16,29 @@ interface Props {
   src: string
   thumb: string
   durations?: number
+  data?: MediaEntity
 }
-function CutVideo({ open, onClose, ...props }: PropsWithChildren<Props>) {
-  const { resetToDefault } = useTimelineVideo()
+function CutVideo({ open, onClose, data, ...props }: PropsWithChildren<Props>) {
+  const { resetToDefault, barTime, title } = useTimelineVideo()
+  const { trimVideo } = useTrimVideo()
+  const queryClient = useQueryClient()
+
+  const { mutate: trimVideoMutation, data: trimData, isPending } = trimVideo(data?.id)
+
+  const onSubmit = () => {
+    if (!data || isPending) return
+    trimVideoMutation({ startTimeSeconds: barTime.start, endTimeSeconds: barTime.end, title })
+  }
+
+  useEffect(() => {
+    if (trimData && trimData.success) {
+      queryClient.invalidateQueries({
+        queryKey: ['getListMedia'],
+      })
+      notification.info({ message: 'Video đang được xử lý' })
+    }
+  }, [trimData])
+
   return (
     <Modal
       destroyOnClose
@@ -25,7 +51,9 @@ function CutVideo({ open, onClose, ...props }: PropsWithChildren<Props>) {
       footer={
         <div className="tw-flex tw-items-center tw-justify-center tw-gap-4">
           <Button className="tw-bg-transparent !tw-text-black tw-border">Huỷ bỏ</Button>
-          <Button>Hoàn thành</Button>
+          <Button onClick={onSubmit}>
+            <If isShow={isPending} element={<Loader size={18} className="tw-animate-spin tw-mr-2" />} /> Hoàn thành
+          </Button>
         </div>
       }
       title="Cắt video theo thời lượng"

@@ -16,6 +16,7 @@ interface VideoState {
   maxTimelineWidth: number
   player: Player | null
   barTime: BartTime
+  title: string
   addNewSlice: (payload: TimelineData) => void
   updateSlice: (payload: TimelineData) => void
   setSliceSelected: (payload: TimelineData | null) => void
@@ -24,4 +25,5 @@ interface VideoState {
   resetToDefault: () => void
   setPlayer: (payload: Player | null) => void
   setBarTime: (payload: BartTime) => void
+  setTitle: (text: string) => void
 }

@@ -369,3 +369,7 @@
     }
   }
 }
+
+.no-outline:focus-visible {
+  box-shadow: none !important;
+}

@@ -384,6 +384,7 @@ const Detail = ({ type, onExportData }: Props) => {
         src={videoUrl(mediaSelectedData?.data.video) as string}
         thumb={mediaSelectedData?.data.avatar_thumb?.uri || ''}
         durations={mediaSelectedData?.data.durations}
+        data={mediaSelectedData?.data}
       />
     </div>
   )

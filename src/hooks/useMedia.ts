@@ -1,4 +1,4 @@
-import { useQuery } from '@tanstack/react-query'
+import { useMutation, useQuery } from '@tanstack/react-query'
 import _debounce from 'lodash/debounce'
 import { useCallback, useEffect, useState } from 'react'
 import { PAGINATE_LIMIT } from '../configs'
@@ -14,6 +14,8 @@ import {
   HookState,
   OrderByType,
   OrderType,
+  TrimVideoRequest,
+  TrimVideoResponse,
 } from '../types'
 
 const useListMedia = () => {
@@ -158,4 +160,22 @@ const useCategory = () => {
   return { getListCategories }
 }
 
-export { useCategory, useDetailMedia, useListMedia }
+const useTrimVideo = () => {
+  const trimVideo = (id?: string) => {
+    return useMutation({
+      mutationFn: (payload: TrimVideoRequest) =>
+        request<TrimVideoResponse>(APIConfigs(), {
+          method: 'POST',
+          url: '/media/trim/{id}',
+          path: {
+            id,
+          },
+          body: payload,
+        }),
+    })
+  }
+
+  return { trimVideo }
+}
+
+export { useCategory, useDetailMedia, useListMedia, useTrimVideo }

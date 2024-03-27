@@ -211,3 +211,14 @@ export type MenuImgEditorType =
   | 'filter'
   | 'reset'
   | 'resize'
+
+export interface TrimVideoRequest {
+  title?: string
+  startTimeSeconds: number
+  endTimeSeconds: number
+}
+
+export interface TrimVideoResponse {
+  data: MediaEntity
+  success: boolean
+}

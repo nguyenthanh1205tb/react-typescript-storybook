@@ -4,6 +4,7 @@ import TimeLine from './timeline'
 import Player from 'video.js/dist/types/player'
 import { useTimelineVideo } from './store/useVideo'
 import { convertDuration } from '../utils/date'
+import { Input } from '@/src/components/ui/input'
 
 interface Props {
   src: string
@@ -11,7 +12,7 @@ interface Props {
   durations?: number
 }
 function VideoEditor({ src, thumb, durations }: PropsWithChildren<Props>) {
-  const { sliceSelected, maxTimelineWidth, setPlayer, setBarTime } = useTimelineVideo()
+  const { sliceSelected, maxTimelineWidth, setPlayer, setBarTime, setTitle } = useTimelineVideo()
   const [plInstance, setPlInstance] = useState<Player>()
 
   const startTime = useMemo(() => {
@@ -54,6 +55,13 @@ function VideoEditor({ src, thumb, durations }: PropsWithChildren<Props>) {
             {convertDuration(startTime)}
           </div>
           <div className="tw-bg-slate-500 tw-text-white tw-px-2 tw-py-1 tw-rounded-md">{convertDuration(endTime)}</div>
+        </div>
+        <div className="tw-mt-4">
+          <Input
+            className="tw-bg-slate-700 tw-border-none tw-text-white no-outline"
+            placeholder="Nhập tên video muốn cắt"
+            onChange={e => setTitle(e.target.value)}
+          />
         </div>
       </div>
     </div>
