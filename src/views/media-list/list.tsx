@@ -119,7 +119,7 @@ function ListMedia({ type }: PropsWithChildren<Props>) {
       if (gridRef.current) {
         for (const entry of entries) {
           const width = entry.contentRect.width
-          let column = Math.floor(width / 200)
+          let column = Math.floor(width / 160)
           if (column > 9) column = 9
           setColumn(column)
         }

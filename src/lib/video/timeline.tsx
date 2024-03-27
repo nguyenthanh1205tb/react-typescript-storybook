@@ -2,6 +2,7 @@
 import React, { useEffect, useRef, useState } from 'react'
 import TimelineSlice from './timeline-slice'
 import { nanoid } from 'nanoid'
+import _isEmpty from 'lodash/isEmpty'
 
 //Hooks
 import TimelineSliceWrap from './timeline-slice-wrap'
@@ -11,12 +12,16 @@ import { Plus } from 'lucide-react'
 import If from '@/src/hooks/if'
 import { wait } from '@/src/hooks/wait'
 import { TimelineData } from './video'
+import TimelineBar from './timeline-bar'
+
+const NewSliceBtnWidth = 100
+const NewSliceBtnHeight = 20
 
 const NewSliceBtnWidth = 100
 const NewSliceBtnHeight = 20
 const TimeLine = () => {
   const parentRef = useRef<HTMLDivElement>(null)
-  const { addNewSlice, listSlice, setSliceSelected, setMaxTimelineWidth } = useTimelineVideo()
+  const { addNewSlice, listSlice, setSliceSelected, sliceSelected, setMaxTimelineWidth } = useTimelineVideo()
   const [btnNewX, setBtnNewX] = useState(0)
   const [showBtnNew, setShowBtnNew] = useState(false)
 
@@ -115,6 +120,7 @@ const TimeLine = () => {
           of={listSlice}
           render={slice => <TimelineSlice key={slice.id} data={slice} onMouseDown={() => onSelectSlice(slice)} />}
         />
+        <If isShow={!_isEmpty(sliceSelected)} element={<TimelineBar />} />
       </TimelineSliceWrap>
     </div>
   )

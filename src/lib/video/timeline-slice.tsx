@@ -11,9 +11,8 @@ interface Props {
   onMouseDown?: () => void
 }
 const TimelineSlice = ({ data, ...props }: PropsWithChildren<Props>) => {
-  const { sliceSelected, setSliceSelected } = useTimelineVideo()
+  const { sliceSelected, setSliceSelected, updateSlice } = useTimelineVideo()
   const { width, height, x, y, id } = data
-  const { updateSlice } = useTimelineVideo()
 
   return (
     <Rnd

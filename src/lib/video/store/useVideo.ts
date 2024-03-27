@@ -5,6 +5,8 @@ const defaultState = {
   listSlice: [],
   sliceSelected: null,
   maxTimelineWidth: 0,
+  player: null,
+  barTime: { start: 0, end: 0 },
 }
 
 const useTimelineVideo = create<VideoState>(set => ({
@@ -22,7 +24,8 @@ const useTimelineVideo = create<VideoState>(set => ({
       return { listSlice: _slice }
     }),
 
-  setSliceSelected: (payload: TimelineData | null) => set(() => ({ sliceSelected: payload })),
+  setSliceSelected: (payload: TimelineData | null) =>
+    set(state => ({ sliceSelected: payload ? { ...state.sliceSelected, ...payload } : null })),
 
   removeSlice: (id: string) =>
     set(state => {
@@ -31,6 +34,11 @@ const useTimelineVideo = create<VideoState>(set => ({
     }),
 
   setMaxTimelineWidth: num => set(() => ({ maxTimelineWidth: num })),
+
+  setPlayer: payload => set(() => ({ player: payload })),
+
+  setBarTime: payload => set(() => ({ barTime: payload })),
+
   resetToDefault: () => set(() => defaultState),
 }))
 
