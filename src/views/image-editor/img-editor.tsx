@@ -11,6 +11,7 @@ interface ImageEditorProps {
 }
 const myTheme: any = {
   'header.display': 'none',
+  // 'downloadButton.display': 'none',
 }
 
 const BaseImageEditor = ({ initMenu, src, getInstance }: ImageEditorProps) => {
@@ -58,6 +59,10 @@ const BaseImageEditor = ({ initMenu, src, getInstance }: ImageEditorProps) => {
     getInstance && getInstance(imageEditor)
 
     imageEditor.changeCursor('default')
+
+    return () => {
+      imageEditor.destroy()
+    }
   }, [imgEditorProps, src])
 
   // return <ImageEditor ref={ref} {...imgEditorProps} />

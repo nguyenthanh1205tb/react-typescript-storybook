@@ -1,3 +1,4 @@
+/* eslint-disable no-case-declarations */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { Button } from '@/src/components/ui/button'
 import { request } from '@/src/lib/request'
@@ -20,10 +21,19 @@ interface ImageEditorModalProps {
   onClose: () => void
 }
 
+interface CustomUI extends tuiImageEditor.UI {
+  changeMenu: (menu: MenuImgEditorType) => void
+  submenu: MenuImgEditorType
+}
+
+interface ImgEditorInstance extends Omit<ImageEditor, 'ui'> {
+  ui: CustomUI
+}
+
 const ImageEditorModal = ({ imageEditorState, onClose }: ImageEditorModalProps) => {
   const { mediaSelectedData, config } = useAppStore()
-  const [instant, setInstant] = React.useState<ImageEditor>()
-  const getInstance = (i: any) => setInstant(i)
+  const [instance, setInstance] = React.useState<ImgEditorInstance>()
+  const getInstance = (i: any) => setInstance(i)
 
   const queryClient = useQueryClient()
 
@@ -45,20 +55,50 @@ const ImageEditorModal = ({ imageEditorState, onClose }: ImageEditorModalProps) 
     },
   })
 
-  const onSubmitEditImg = useCallback(() => {
-    onUploadFile(DataURIToBlob(instant?.toDataURL() as any), config?.organizationId as any).then(res => {
-      onCreateMedia({
-        name: `[EDIT] ${mediaSelectedData?.data?.name}`,
-        fileName: res?.filename,
-        ...res,
-      })
+  const handleCancelCrop = () => {
+    instance?.stopDrawingMode()
+    instance?.ui.changeMenu('crop')
+  }
+
+  const handleCreateMedia = useCallback(async () => {
+    const res = await onUploadFile(DataURIToBlob(instance?.toDataURL() as any), config?.organizationId as any)
+    onCreateMedia({
+      name: `[EDIT] ${mediaSelectedData?.data?.name}`,
+      fileName: res?.filename,
+      ...res,
     })
-  }, [instant, config, mediaSelectedData, onCreateMedia])
+  }, [onCreateMedia, mediaSelectedData, instance, config])
+
+  const onSubmitEditImg = useCallback(async () => {
+    try {
+      const currentMenu = instance?.ui.submenu
+      switch (currentMenu) {
+        case 'crop':
+          const cropSize = instance?.getCropzoneRect()
+          await instance?.crop(cropSize as any)
+          handleCreateMedia()
+          break
+        default:
+          handleCreateMedia()
+          break
+      }
+    } catch (error) {
+      notification.error({
+        message: 'Có lỗi xảy ra',
+      })
+    }
+  }, [instance, handleCreateMedia])
 
   const footer = (
     <div className="tw-gap-3 tw-flex tw-justify-center tw-items-center tw-pb-3">
       <Button className="!tw-bg-slate-400 hover:!tw-bg-slate-500" key={'cancel-edit-img'}>
-        <div onClick={onClose}>Huỷ</div>
+        <div
+          onClick={() => {
+            handleCancelCrop()
+            onClose()
+          }}>
+          Huỷ
+        </div>
       </Button>
       <Button className="!tw-bg-lime-500 hover:!tw-bg-lime-600" key={'ok-edit-img'}>
         <div onClick={onSubmitEditImg}>Hoàn thành</div>
