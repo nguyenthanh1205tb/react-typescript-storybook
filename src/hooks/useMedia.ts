@@ -56,7 +56,7 @@ const useListMedia = () => {
   }
 
   const onChangeCategory = (id: string) => {
-    setListMediaQueries({ categoryId: id })
+    setListMediaQueries({ categoryId: id, page: 1 })
   }
 
   const onChangeTimeRange = (time: GetListMediaTimeRange) => {
@@ -68,11 +68,11 @@ const useListMedia = () => {
         endDate: undefined,
       })
     }
-    return setListMediaQueries({ timeRange: time })
+    return setListMediaQueries({ timeRange: time, page: 1 })
   }
 
   const onChangeVideoOfMine = (payload: boolean) => {
-    setListMediaQueries({ isMyFile: payload })
+    setListMediaQueries({ isMyFile: payload, page: 1 })
   }
 
   const onChangeTimeRangeCustom = (t: 'start' | 'end', date?: Date) => {
@@ -86,12 +86,12 @@ const useListMedia = () => {
   }
 
   const onSearchByText = _debounce((text: string) => {
-    setListMediaQueries({ keyword: text })
+    setListMediaQueries({ keyword: text, page: 1 })
   }, 1000)
 
   useEffect(() => {
     if (tempDate.start && tempDate.end) {
-      setListMediaQueries({ startDate: tempDate.start, endDate: tempDate.end })
+      setListMediaQueries({ startDate: tempDate.start, endDate: tempDate.end, page: 1 })
     }
   }, [tempDate])
 
