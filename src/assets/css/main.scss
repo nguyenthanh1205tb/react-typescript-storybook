@@ -328,8 +328,8 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      background: #ff0000;
-      cursor: ew-resize !important;
+      background: #88c188;
+      cursor: default !important;
     }
 
     .new-slice-btn {
@@ -343,6 +343,7 @@
       justify-content: center;
       background: #88c188;
       height: 20px !important;
+      cursor: pointer !important;
 
       &.drag--child--activated {
         background: #51b051;
