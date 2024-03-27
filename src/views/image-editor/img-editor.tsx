@@ -58,7 +58,7 @@ const BaseImageEditor = ({ initMenu, src, getInstance }: ImageEditorProps) => {
     getInstance && getInstance(imageEditor)
 
     imageEditor.changeCursor('default')
-  }, [imgEditorProps])
+  }, [imgEditorProps, src])
 
   // return <ImageEditor ref={ref} {...imgEditorProps} />
   return <div id="tui-image-editor-container"></div>
