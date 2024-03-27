@@ -67,7 +67,6 @@ const DetailMediaForm = ({ form, handleUpdateMedia }: DetailMediaFormProps) => {
     treeDefaultExpandAll: true,
     multiple: true,
     showCheckedStrategy: SHOW_PARENT,
-    placeholder: 'Please select',
     style: {
       width: '100%',
     },
