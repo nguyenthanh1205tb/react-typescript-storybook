@@ -134,7 +134,7 @@ function ListMedia({ type }: PropsWithChildren<Props>) {
   }, [])
 
   return (
-    <div className="tw-flex tw-flex-col tw-gap-2">
+    <div className="tw-flex tw-flex-col tw-gap-2 tw-h-full">
       <div className="tw-flex tw-items-center tw-justify-between tw-w-full tw-pb-2 tw-z-40 tw-sticky tw-top-0 tw-bg-white">
         <div>
           <If
@@ -174,7 +174,12 @@ function ListMedia({ type }: PropsWithChildren<Props>) {
           />
         </div>
       </div>
-      <div ref={gridRef} className={cn('tw-grid tw-gap-4 tw-w-full tw-transition-all', `tw-grid-cols-${column}`)}>
+      <div
+        ref={gridRef}
+        className={cn(
+          'tw-grid tw-gap-4 tw-w-full tw-transition-all tw-relative',
+          `tw-grid-cols-${!listMedia.length && !isLoading ? 1 : column}`,
+        )}>
         <If isShow={isLoading} element={<Each of={new Array(20)?.fill(0)} render={() => <SkeletonCard />} />} />
         <If
           isShow={!!listFileAdded}
@@ -183,7 +188,7 @@ function ListMedia({ type }: PropsWithChildren<Props>) {
         <If
           isShow={!listMedia.length && !isLoading}
           element={
-            <div className="tw-w-full tw-h-full tw-flex tw-items-center tw-justify-center tw-absolute tw-left-0 tw-top-0">
+            <div className="tw-min-h-[300px] tw-flex tw-items-center tw-justify-center">
               <div className="tw-flex tw-flex-col tw-items-center tw-gap-2 tw-text-gray-400">
                 <PackageOpen size={120} />
                 <Typo.H2>Không có dữ liệu</Typo.H2>
