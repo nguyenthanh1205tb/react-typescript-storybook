@@ -134,7 +134,7 @@ function ListMedia({ type }: PropsWithChildren<Props>) {
   }, [])
 
   return (
-    <div className="tw-flex tw-flex-col tw-gap-2 tw-h-full">
+    <div className="tw-flex tw-flex-col tw-gap-2">
       <div className="tw-flex tw-items-center tw-justify-between tw-w-full tw-pb-2 tw-z-[90] tw-sticky tw-top-0 tw-bg-white">
         <div>
           <If
