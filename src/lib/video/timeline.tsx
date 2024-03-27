@@ -16,9 +16,6 @@ import TimelineBar from './timeline-bar'
 
 const NewSliceBtnWidth = 100
 const NewSliceBtnHeight = 20
-
-const NewSliceBtnWidth = 100
-const NewSliceBtnHeight = 20
 const TimeLine = () => {
   const parentRef = useRef<HTMLDivElement>(null)
   const { addNewSlice, listSlice, setSliceSelected, sliceSelected, setMaxTimelineWidth } = useTimelineVideo()
