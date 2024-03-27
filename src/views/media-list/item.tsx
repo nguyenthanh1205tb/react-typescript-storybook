@@ -54,7 +54,7 @@ function Item({ data, type, onOpenImageEditor }: PropsWithChildren<Props>) {
         <div
           key={'btn-resize'}
           onClick={() => onOpenImageEditor('resize')}
-          className="tw-flex tw-gap-2  !tw-items-center tw-cursor-pointer hover:tw-bg-slate-200 tw-transition-all tw-px-3 tw-py-2 tw-rounded-md">
+          className="tw-flex tw-gap-2 !tw-items-center tw-cursor-pointer hover:tw-bg-slate-200 tw-transition-all tw-px-3 tw-py-2 tw-rounded-md">
           <Pencil size={16} color="#404040" /> <span>Chỉnh sửa</span>
         </div>
         <div
@@ -89,16 +89,16 @@ function Item({ data, type, onOpenImageEditor }: PropsWithChildren<Props>) {
   return (
     <>
       <div
-        className={cn('tw-border-2 group tw-p-2 tw-rounded-lg tw-relative', {
+        className={cn('tw-border-2 group tw-p-3 tw-rounded-lg tw-relative', {
           'tw-border-red-400': activated(data),
         })}
         onClick={() => selectHandler(data)}>
         <Popover
           trigger={['click']}
-          className=" tw-z-40 tw-cursor-pointer tw-absolute !tw-right-[-5px] tw-top-2"
+          className="tw-z-40 tw-cursor-pointer tw-absolute !tw-right-[-6px] tw-top-[9px]"
           placement="bottomLeft"
           content={type === FileType.IMAGE ? menuImgContent : menuVideoContent}>
-          <EllipsisVertical color="#8f8f8f" size={16} />
+          <EllipsisVertical color="#8f8f8f" size={24} />
         </Popover>
         <div className="tw-absolute tw-left-3 tw-top-3 tw-z-10">
           <div

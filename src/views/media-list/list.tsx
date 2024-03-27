@@ -119,7 +119,7 @@ function ListMedia({ type }: PropsWithChildren<Props>) {
       if (gridRef.current) {
         for (const entry of entries) {
           const width = entry.contentRect.width
-          let column = Math.floor(width / 160)
+          let column = Math.floor(width / 200)
           if (column > 9) column = 9
           setColumn(column)
         }
@@ -135,12 +135,14 @@ function ListMedia({ type }: PropsWithChildren<Props>) {
 
   return (
     <div className="tw-flex tw-flex-col tw-gap-2 tw-h-full">
-      <div className="tw-flex tw-items-center tw-justify-between tw-w-full tw-pb-2 tw-z-40 tw-sticky tw-top-0 tw-bg-white">
+      <div className="tw-flex tw-items-center tw-justify-between tw-w-full tw-pb-2 tw-z-[90] tw-sticky tw-top-0 tw-bg-white">
         <div>
           <If
             isShow={!selectMultiMode}
             element={
-              <Typo.Paragraph className="tw-text-red-500 tw-cursor-pointer" onClick={() => setSelectMultiMode(true)}>
+              <Typo.Paragraph
+                className="tw-text-red-500 tw-cursor-pointer tw-relative"
+                onClick={() => setSelectMultiMode(true)}>
                 Chọn nhiều
               </Typo.Paragraph>
             }
