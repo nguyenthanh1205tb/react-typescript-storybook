@@ -55,7 +55,7 @@ const useListMedia = () => {
   const onChangeOrder = (payload: string[]) => {
     const orderBy = payload[0] as OrderByType
     const orderType = payload[1] as OrderType
-    setListMediaQueries({ orderBy, order: orderType })
+    setListMediaQueries({ orderBy, order: orderType, page: 1 })
   }
 
   const onChangeTag = (e: any) => {

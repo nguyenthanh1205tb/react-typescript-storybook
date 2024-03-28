@@ -11,6 +11,7 @@ import useAppStore from '@/src/stores/useAppStore'
 import { Category, ComboboxOption, GetListMediaTimeRange, MediaPackageType, OrderByType, OrderType } from '@/src/types'
 import { DatePicker, Input, TreeSelect } from 'antd'
 import { debounce } from 'lodash'
+import moment from 'moment'
 import React, { PropsWithChildren, useEffect, useMemo } from 'react'
 
 interface Props {
@@ -76,6 +77,8 @@ function Filter({ type }: PropsWithChildren<Props>) {
     onChangeVideoOfMine,
     onChangeTimeRangeCustom,
   } = useListMedia()
+
+  const [firstTime, setFirstTime] = React.useState(moment())
 
   const exposeDataOfMineLabel = useMemo(() => {
     switch (type) {
@@ -202,10 +205,14 @@ function Filter({ type }: PropsWithChildren<Props>) {
               <>
                 <DatePicker
                   // value={timeRangeCustom.start ? new Date(timeRangeCustom.start) : undefined}
-                  onChange={(val: any) => onChangeTimeRangeCustom('start', val)}
+                  onChange={(val: any) => {
+                    onChangeTimeRangeCustom('start', val)
+                    setFirstTime(val)
+                  }}
                   placeholder="Chọn ngày bắt đầu"
                 />
                 <DatePicker
+                  disabledDate={current => current && current < firstTime}
                   // value={timeRangeCustom.start ? new Date(timeRangeCustom.start) : undefined}
                   onChange={(val: any) => onChangeTimeRangeCustom('end', val)}
                   placeholder="Chọn ngày ngày kết thúc"
