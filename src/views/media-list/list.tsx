@@ -12,7 +12,7 @@ import { APIConfigs } from '@/src/lib/request/core/ApiConfig'
 import { cn } from '@/src/lib/utils'
 import useAppStore from '@/src/stores/useAppStore'
 import { ConfigResponse, FileType, MenuImgEditorType } from '@/src/types'
-import { useQuery } from '@tanstack/react-query'
+import { useQuery, useQueryClient } from '@tanstack/react-query'
 import { CheckCheck, PackageOpen, X } from 'lucide-react'
 import React, { PropsWithChildren, useEffect, useMemo, useRef, useState } from 'react'
 import ImageEditorModal from '../image-editor/img-editor-modal'
@@ -43,6 +43,17 @@ function ListMedia({ type }: PropsWithChildren<Props>) {
     useListMedia()
 
   const { data, isLoading } = getListMedia({ fileType: type })
+
+  const queryClient = useQueryClient()
+
+  useEffect(() => {
+    const interVal = setInterval(() => {
+      queryClient.invalidateQueries({
+        queryKey: ['getListMedia', listMediaQueries],
+      })
+    }, 10000)
+    return () => clearInterval(interVal)
+  }, [])
 
   const gridRef = useRef<HTMLDivElement>(null)
   const [column, setColumn] = useState(4)
