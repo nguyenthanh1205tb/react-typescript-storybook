@@ -68,7 +68,6 @@ const useTranscodePercent = (props: Props) => {
         .subscribe({
           next({ data }: any) {
             if (data) {
-              console.log('data', data)
               const response = data?.onTranscodeProgress
               const percent = Math.round(response?.progress)
               setTranscodePercentMap(prev => ({
