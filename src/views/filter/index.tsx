@@ -1,5 +1,4 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { MultiSelect } from '@/src/components/common/multi-select'
 import Typo from '@/src/components/common/typo'
 import { ScrollArea } from '@/src/components/ui/scroll-area'
 import { Separator } from '@/src/components/ui/separator'
@@ -10,7 +9,8 @@ import { useCategory, useListMedia } from '@/src/hooks/useMedia'
 import { cn } from '@/src/lib/utils'
 import useAppStore from '@/src/stores/useAppStore'
 import { Category, ComboboxOption, GetListMediaTimeRange, MediaPackageType, OrderByType, OrderType } from '@/src/types'
-import { DatePicker, TreeSelect } from 'antd'
+import { DatePicker, Input, TreeSelect } from 'antd'
+import { debounce } from 'lodash'
 import React, { PropsWithChildren, useEffect, useMemo } from 'react'
 
 interface Props {
@@ -68,8 +68,14 @@ function Filter({ type }: PropsWithChildren<Props>) {
   const { getListCategories } = useCategory()
   const { data: categoriesData, isLoading: isGetListCategoriesLoading } = getListCategories()
 
-  const { onChangeOrder, onChangeCategory, onChangeTimeRange, onChangeVideoOfMine, onChangeTimeRangeCustom } =
-    useListMedia()
+  const {
+    onChangeOrder,
+    onChangeTag,
+    onChangeCategory,
+    onChangeTimeRange,
+    onChangeVideoOfMine,
+    onChangeTimeRangeCustom,
+  } = useListMedia()
 
   const exposeDataOfMineLabel = useMemo(() => {
     switch (type) {
@@ -142,7 +148,7 @@ function Filter({ type }: PropsWithChildren<Props>) {
 
         <div className="tw-flex tw-flex-col tw-gap-2">
           <Typo.H2>Từ khoá</Typo.H2>
-          <MultiSelect options={[]} onChange={val => console.log(val)} selected={[]} />
+          <Input onChange={debounce(onChangeTag, 300)} />
         </div>
 
         <Separator />

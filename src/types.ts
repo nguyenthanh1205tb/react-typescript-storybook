@@ -138,6 +138,7 @@ export interface GetListMediaRequest {
   page: number
   take: number
   orderBy: OrderByType
+  tag?: string
   keyword?: string
   timeRange?: GetListMediaTimeRange
   startDate?: string

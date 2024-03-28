@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useMutation, useQuery } from '@tanstack/react-query'
 import _debounce from 'lodash/debounce'
 import { useCallback, useEffect, useState } from 'react'
@@ -57,6 +58,10 @@ const useListMedia = () => {
     setListMediaQueries({ orderBy, order: orderType })
   }
 
+  const onChangeTag = (e: any) => {
+    setListMediaQueries({ tag: e.target.value, page: 1 })
+  }
+
   const onChangeCategory = (id: string) => {
     setListMediaQueries({ categoryId: id, page: 1 })
   }
@@ -99,12 +104,13 @@ const useListMedia = () => {
 
   return {
     timeRangeCustom: tempDate,
-    getListMedia,
     totalCount,
+    getListMedia,
     setTotalCount,
     onChangePagination,
     onNextPagination,
     onPrevPagination,
+    onChangeTag,
     onChangeOrder,
     onChangeCategory,
     onChangeTimeRange,
