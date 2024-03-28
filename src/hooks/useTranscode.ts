@@ -76,7 +76,7 @@ const useTranscodePercent = (props: Props) => {
                 [profileId]: percent,
               }))
 
-              if (percent >= 95) {
+              if (percent >= 97) {
                 queryClient.invalidateQueries({
                   queryKey: ['getListMedia', listMediaQueries],
                 })

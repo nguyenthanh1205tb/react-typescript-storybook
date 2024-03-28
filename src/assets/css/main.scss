@@ -157,37 +157,6 @@
   }
 
 
-  .progress-bar {
-    width: 18px;
-    /* Set width and height of the progress bar */
-    height: 18px;
-    position: relative;
-    /* Make the circle position relative to the container */
-  }
-
-  .progress-bar-circle {
-    width: 100%;
-    height: 100%;
-    border-radius: 50%;
-    /* Make the circle */
-    background-color: #f3f4f6;
-    /* Background color of the circle */
-  }
-
-  .progress-bar-fill {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    border-radius: 50%;
-    /* Make the filled part of the circle */
-    background-color: #6ee7b7;
-    /* Fill color of the progress */
-    transform-origin: center;
-    /* Set the transform origin to the center */
-  }
-
   .loading-cirle {
     width: 17px;
     height: 17px;
@@ -261,6 +230,83 @@
   }
 
   .hundred {
+    background-image: none;
+  }
+
+
+  .loading-cirle-yl {
+    width: 17px;
+    height: 17px;
+    display: block;
+    border-radius: 50%;
+    background-color: rgb(208, 195, 14);
+    /* border: 1px solid green; */
+    float: left;
+    margin: 1px;
+  }
+
+  .ten-yl {
+    background-image:
+      linear-gradient(126deg, transparent 50%, white 50%),
+      linear-gradient(90deg, white 50%, transparent 50%);
+  }
+
+  .twenty-yl {
+    background-image:
+      linear-gradient(150deg, transparent 50%, white 50%),
+      linear-gradient(90deg, white 50%, transparent 50%);
+  }
+
+  .thirty-yl {
+    background-image:
+      linear-gradient(200deg, transparent 50%, white 50%),
+      linear-gradient(90deg, white 50%, transparent 50%);
+  }
+
+  .forty-yl {
+    background-image:
+      linear-gradient(220deg, transparent 50%, white 50%),
+      linear-gradient(90deg, white 50%, transparent 50%);
+  }
+
+  .fifty-yl {
+    background-image:
+      linear-gradient(90deg, white 50%, transparent 50%);
+  }
+
+  .sixty-yl {
+    background-image:
+      linear-gradient(120deg, transparent 50%, rgb(208, 195, 14) 50%),
+      linear-gradient(90deg, white 50%, transparent 50%);
+  }
+
+
+  .seventy-yl {
+    background-image:
+      linear-gradient(150deg, transparent 50%, rgb(208, 195, 14) 50%),
+      linear-gradient(90deg, white 50%, transparent 50%);
+  }
+
+
+  .seventy-five-yl {
+    background-image:
+      linear-gradient(180deg, transparent 50%, rgb(208, 195, 14) 50%),
+      linear-gradient(90deg, white 50%, transparent 50%);
+  }
+
+  .eighty-yl {
+    background-image:
+      linear-gradient(200deg, transparent 50%, rgb(208, 195, 14) 50%),
+      linear-gradient(90deg, white 50%, transparent 50%);
+  }
+
+  .ninety-yl {
+    background-image:
+      linear-gradient(220deg, transparent 50%, rgb(208, 195, 14) 50%),
+      linear-gradient(90deg, white 50%, transparent 50%);
+  }
+
+  .hundred-yl {
     background-image: none;
   }
 

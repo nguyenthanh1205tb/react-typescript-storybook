@@ -66,24 +66,21 @@ const Image = ({
         }
       />
 
-      <If
-        isShow={!isError}
-        element={
-          <img
-            onLoad={() => setImgLoaded(true)}
-            onError={() => {
-              console.log('load image error')
-              setIsError(true)
-            }}
-            loading="lazy"
-            src={src}
-            className={cn('tw-m-auto tw-object-cover', className, {
-              '!tw-h-0': !imgLoaded,
-            })}
-            style={{ height, ...style }}
-            {...rest}
-          />
-        }
+      <img
+        onLoad={() => {
+          setImgLoaded(true)
+          setIsError(false)
+        }}
+        onError={() => {
+          setIsError(true)
+        }}
+        loading="lazy"
+        src={src}
+        className={cn('tw-m-auto tw-object-cover', className, {
+          '!tw-h-0': !imgLoaded,
+        })}
+        style={{ height, ...style }}
+        {...rest}
       />
     </div>
   )

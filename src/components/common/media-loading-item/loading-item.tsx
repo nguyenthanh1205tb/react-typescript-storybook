@@ -15,7 +15,7 @@ export const Icons = {
   spinner: Loader2,
 }
 
-export const getClassNameLoading = (percent: number) => {
+const getClassNameLoading = (percent: number) => {
   if (percent <= 20) {
     return 'ten'
   }

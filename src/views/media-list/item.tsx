@@ -1,12 +1,11 @@
 import Image from '@/src/components/common/image'
-import { getClassNameLoading } from '@/src/components/common/media-loading-item/loading-item'
 import Popover from '@/src/components/common/popover'
 import If from '@/src/hooks/if'
 import useTranscodePercent from '@/src/hooks/useTranscode'
 import { convertDuration } from '@/src/lib/utils/date'
 import { cn } from '@/src/lib/utils/merge-class'
 import useAppStore from '@/src/stores/useAppStore'
-import { FileType, MediaEntity, MediaStatus, MenuImgEditorType } from '@/src/types'
+import { FileType, MediaEntity, MediaProfileStatus, MediaStatus, MenuImgEditorType } from '@/src/types'
 import { CalendarFold, Crop, EllipsisVertical, ImageIcon, Pencil } from 'lucide-react'
 import moment from 'moment'
 import React, { PropsWithChildren, useMemo } from 'react'
@@ -16,6 +15,29 @@ interface Props {
   data: MediaEntity
   onOpenImageEditor: (initMenu?: MenuImgEditorType) => void
 }
+
+const getClassNameLoading = (percent: number) => {
+  if (percent <= 20) {
+    return 'ten-yl'
+  }
+
+  if (percent > 20 && percent <= 40) {
+    return 'thirty-yl'
+  }
+
+  if (percent > 40 && percent <= 60) {
+    return 'fifty-yl'
+  }
+
+  if (percent > 60 && percent <= 90) {
+    return 'seventy-yl'
+  }
+
+  if (percent > 90) {
+    return 'hundred-yl'
+  }
+}
+
 function Item({ data, type, onOpenImageEditor }: PropsWithChildren<Props>) {
   const {
     setMediaSelectedID,
@@ -110,15 +132,6 @@ function Item({ data, type, onOpenImageEditor }: PropsWithChildren<Props>) {
   // console.log('data', data)
   // console.log('transcodePercent', transcodePercent)
 
-  const thumbMedia = useMemo(() => {
-    return (
-      <img
-        alt={data?.id}
-        src={data?.avatar_thumb?.uri || data.avatar_thumb?.url_list ? data.avatar_thumb.url_list[0] : ''}
-      />
-    )
-  }, [data])
-
   return (
     <>
       <div
@@ -140,7 +153,8 @@ function Item({ data, type, onOpenImageEditor }: PropsWithChildren<Props>) {
               'tw-bg-red-500': data.status !== status,
             })}></div>
         </div> */}
-        <div className={`loading-cirle ${getClassNameLoading(transcodePercent)} tw-border-white`}></div>
+        <div
+          className={`${data?.status === MediaProfileStatus.DONE ? 'loading-cirle' : 'loading-cirle-yl'} tw-absolute tw-left-4 tw-top-4 tw-z-10 ${data?.status === MediaProfileStatus.ERROR ? '!tw-bg-red-500' : ''} ${getClassNameLoading(transcodePercent)} tw-border-white`}></div>
 
         <div
           className={cn(' tw-gap-1 tw-cursor-pointer tw-justify-between tw-h-full', {
@@ -153,7 +167,6 @@ function Item({ data, type, onOpenImageEditor }: PropsWithChildren<Props>) {
                 alt={data?.id}
                 src={data?.avatar_thumb?.uri || data.avatar_thumb?.url_list ? data.avatar_thumb.url_list[0] : ''}
               />
-              {/* {thumbMedia} */}
               <div className="tw-absolute tw-left-1 tw-bg-black/20 tw-text-xs tw-text-white tw-bottom-3 tw-py-1 tw-px-2 tw-rounded-md tw-backdrop-blur-sm">
                 <If isShow={type === FileType.VIDEO} element={convertDuration(data.durations)} />
                 <If isShow={type === FileType.IMAGE} element={<ImageIcon size={18} />} />
