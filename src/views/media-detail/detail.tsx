@@ -205,7 +205,9 @@ const Detail = ({ type, onExportData }: Props) => {
                   <Image
                     alt={mediaSelectedData?.data?.id}
                     src={
-                      mediaSelectedData?.data?.avatar_thumb?.uri || mediaSelectedData?.data?.avatar_thumb?.url_list[0]
+                      mediaSelectedData?.data?.avatar_thumb?.uri || mediaSelectedData?.data?.avatar_thumb
+                        ? mediaSelectedData?.data?.avatar_thumb?.url_list[0]
+                        : ''
                     }
                     height="253px"
                     containerClassName="!tw-rounded-none"
