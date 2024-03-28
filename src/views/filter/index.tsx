@@ -1,5 +1,4 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { Combobox } from '@/src/components/common/combobox'
 import { MultiSelect } from '@/src/components/common/multi-select'
 import Typo from '@/src/components/common/typo'
 import { ScrollArea } from '@/src/components/ui/scroll-area'
@@ -11,7 +10,7 @@ import { useCategory, useListMedia } from '@/src/hooks/useMedia'
 import { cn } from '@/src/lib/utils'
 import useAppStore from '@/src/stores/useAppStore'
 import { Category, ComboboxOption, GetListMediaTimeRange, MediaPackageType, OrderByType, OrderType } from '@/src/types'
-import { DatePicker } from 'antd'
+import { DatePicker, TreeSelect } from 'antd'
 import React, { PropsWithChildren, useEffect, useMemo } from 'react'
 
 interface Props {
@@ -114,12 +113,17 @@ function Filter({ type }: PropsWithChildren<Props>) {
           <div className="tw-flex tw-justify-between tw-py-3">
             <Typo.H2>Chuyên mục</Typo.H2>
           </div>
-          <Combobox
+          <TreeSelect
+            treeData={categoriesFiltered as any}
+            onChange={onChangeCategory}
+            placeholder="Chọn chuyên mục..."
+          />
+          {/* <Combobox
             options={categoriesFiltered}
             placeholder="Chọn chuyên mục..."
             value={listMediaQueries.categoryId}
             onChange={onChangeCategory}
-          />
+          /> */}
         </div>
 
         <Separator />
