@@ -20,32 +20,32 @@ const TimelineSlice = ({ data, ...props }: PropsWithChildren<Props>) => {
     return dynamicX - (x ?? 0) < 0 ? DragDirection.LEFT : DragDirection.RIGHT
   }, [x, dynamicX])
 
-  const disableDragging = useMemo(() => {
+  const disableDraggingPos = useMemo(() => {
     const idx = listSlice.findIndex(o => o.id === sliceSelected?.id)
 
-    if (idx < 0) return false
+    if (idx < 0) return null
     const slice = listSlice[idx]
     const prevSlice = listSlice[idx - 1]
     const nextSlice = listSlice[idx + 1]
 
-    if (!prevSlice && !nextSlice) return false
-    if (!slice) return false
+    if (!prevSlice && !nextSlice) return null
+    if (!slice) return null
 
+    const sliceW = slice.width ?? 0
     const maxStart = (prevSlice?.x ?? 0) + (prevSlice?.width ?? 0)
     const maxEnd = nextSlice?.x ?? 0
 
     if (dragDirection === DragDirection.LEFT) {
-      if (maxStart === 0) return false
-      return dynamicX <= maxStart
+      if (maxStart === 0) return null
+      return dynamicX <= maxStart ? maxStart : null
     } else {
-      if (maxEnd === 0) return false
-      return dynamicX + (slice.width ?? 0) >= maxEnd
+      if (maxEnd === 0) return null
+      return dynamicX + sliceW >= maxEnd ? maxEnd - sliceW : null
     }
   }, [listSlice, sliceSelected, dragDirection, dynamicX])
 
   return (
     <Rnd
-      disableDragging={disableDragging}
       className={cn('drag--child', { 'drag--child--activated': sliceSelected?.id === data.id })}
       size={{ width: width ?? 0, height: height ?? 0 }}
       position={{ x: x ?? 0, y: y ?? 0 }}
@@ -57,7 +57,10 @@ const TimelineSlice = ({ data, ...props }: PropsWithChildren<Props>) => {
         left: 'drag--handle--left',
       }}
       onDragStop={(e, d) => {
-        const _d = { id, x: d.x, y: d.y }
+        let x = d.x
+        if (disableDraggingPos) x = disableDraggingPos
+
+        const _d = { id, x, y: d.y }
         updateSlice(_d)
         if (sliceSelected?.id === data.id) {
           setSliceSelected(_d)
