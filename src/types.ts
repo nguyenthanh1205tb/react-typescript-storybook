@@ -229,11 +229,18 @@ export type MenuImgEditorType =
 
 export interface TrimVideoRequest {
   title?: string
-  startTimeSeconds: number
-  endTimeSeconds: number
+  positions: {
+    startTimeSeconds: number
+    endTimeSeconds: number
+  }[]
 }
 
 export interface TrimVideoResponse {
   data: MediaEntity
   success: boolean
+}
+
+export enum DragDirection {
+  LEFT = 'left',
+  RIGHT = 'right',
 }

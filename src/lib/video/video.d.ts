@@ -8,15 +8,16 @@ export interface TimelineData {
   y?: number
 }
 
-export type BartTime = { start: number; end: number }
+export type BarTime = { id: string; start: number; end: number }
 
-interface VideoState {
+export interface VideoState {
   listSlice: TimelineData[]
   sliceSelected: TimelineData | null
   maxTimelineWidth: number
   player: Player | null
-  barTime: BartTime
+  barTime: BarTime[]
   title: string
+  barTimePlayed: BarTime | null
   addNewSlice: (payload: TimelineData) => void
   updateSlice: (payload: TimelineData) => void
   setSliceSelected: (payload: TimelineData | null) => void
@@ -24,6 +25,7 @@ interface VideoState {
   setMaxTimelineWidth: (payload: number) => void
   resetToDefault: () => void
   setPlayer: (payload: Player | null) => void
-  setBarTime: (payload: BartTime) => void
+  setBarTime: (payload: BarTime[]) => void
   setTitle: (text: string) => void
+  setBarTimePlayed: (id: string) => void
 }

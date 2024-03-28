@@ -7,7 +7,7 @@ function secondsToX(startX: number, maxWidth: number, startTime: number, current
   if (endTime) {
     totalDuration = endTime - startTime
   } else {
-    totalDuration = currentTime - startTime // Assume indefinite duration
+    totalDuration = currentTime - startTime
   }
 
   const elapsedTime = currentTime - startTime
@@ -17,29 +17,42 @@ function secondsToX(startX: number, maxWidth: number, startTime: number, current
 }
 
 function TimelineBar() {
-  const { sliceSelected, player, barTime } = useTimelineVideo()
+  const { sliceSelected, player, listSlice, setSliceSelected, barTimePlayed } = useTimelineVideo()
   const [barX, setBarX] = useState(0)
+
+  const nextSlice = () => {
+    const currentSliceIdx = listSlice.findIndex(o => o.id === sliceSelected?.id)
+    if (typeof currentSliceIdx === 'number' && currentSliceIdx >= 0) {
+      const next = listSlice[currentSliceIdx + 1]
+      if (!next) return
+      setSliceSelected(next)
+      return next
+    }
+  }
 
   useEffect(() => {
     if (!sliceSelected) return
     if (!player) return
     player.on('timeupdate', () => {
-      const currentTime = player.currentTime() ?? 0
-      const x = secondsToX(
-        sliceSelected.x as number,
-        sliceSelected.width as number,
-        barTime.start,
-        currentTime,
-        barTime.end,
-      )
-      if (currentTime >= barTime.end) {
-        player.pause()
-      } else {
-        setBarX(x)
+      const currentTime = player.currentTime() ?? 0 + 0.2
+      if (barTimePlayed) {
+        const x = secondsToX(
+          sliceSelected.x as number,
+          sliceSelected.width as number,
+          barTimePlayed.start,
+          currentTime,
+          barTimePlayed.end,
+        )
+        if (currentTime >= barTimePlayed.end) {
+          const haveNextSlice = nextSlice()
+          if (!haveNextSlice) player.pause()
+        } else {
+          setBarX(x)
+        }
       }
     })
     return () => player.off('timeupdate')
-  }, [sliceSelected, player, barTime])
+  }, [sliceSelected, player, barTimePlayed, nextSlice])
 
   return (
     <Rnd

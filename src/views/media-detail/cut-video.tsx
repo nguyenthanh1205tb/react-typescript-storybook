@@ -19,7 +19,7 @@ interface Props {
   data?: MediaEntity
 }
 function CutVideo({ open, onClose, data, ...props }: PropsWithChildren<Props>) {
-  const { resetToDefault, barTime, title } = useTimelineVideo()
+  const { resetToDefault, title, barTime } = useTimelineVideo()
   const { trimVideo } = useTrimVideo()
   const queryClient = useQueryClient()
 
@@ -27,7 +27,7 @@ function CutVideo({ open, onClose, data, ...props }: PropsWithChildren<Props>) {
 
   const onSubmit = () => {
     if (!data || isPending) return
-    trimVideoMutation({ startTimeSeconds: barTime.start, endTimeSeconds: barTime.end, title })
+    trimVideoMutation({ title, positions: barTime.map(o => ({ startTimeSeconds: o.start, endTimeSeconds: o.end })) })
   }
 
   useEffect(() => {
