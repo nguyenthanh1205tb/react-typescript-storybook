@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Button } from '@/src/components/ui/button'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import ConfigProvider from 'antd/es/config-provider'
@@ -22,7 +23,6 @@ import MediaDetail from './media-detail/detail'
 import ListMedia from './media-list/list'
 import MediaMultiSelected from './media-multi-selected'
 import MenuUpload from './upload/menu'
-
 type State = {
   sideMenu: SideMenu
 }

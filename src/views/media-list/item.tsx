@@ -1,6 +1,8 @@
 import Image from '@/src/components/common/image'
+import { getClassNameLoading } from '@/src/components/common/media-loading-item/loading-item'
 import Popover from '@/src/components/common/popover'
 import If from '@/src/hooks/if'
+import useTranscodePercent from '@/src/hooks/useTranscode'
 import { convertDuration } from '@/src/lib/utils/date'
 import { cn } from '@/src/lib/utils/merge-class'
 import useAppStore from '@/src/stores/useAppStore'
@@ -23,6 +25,18 @@ function Item({ data, type, onOpenImageEditor }: PropsWithChildren<Props>) {
     listMediaSelected,
     setCutVideoModal,
   } = useAppStore()
+
+  const { transcodePercentMap } = useTranscodePercent({ profiles: data?.profiles })
+
+  const transcodePercent = useMemo(() => {
+    const totalProfilesPercent = Object.values(transcodePercentMap).reduce((total, percent) => {
+      return total + (percent || 0)
+    }, 0)
+
+    const averagePercent = totalProfilesPercent / (Object.values(transcodePercentMap)?.length || 1)
+
+    return Math.ceil(averagePercent)
+  }, [transcodePercentMap])
 
   const selectHandler = (media: MediaEntity) => {
     switch (selectMultiMode) {
@@ -93,6 +107,18 @@ function Item({ data, type, onOpenImageEditor }: PropsWithChildren<Props>) {
     )
   }, [])
 
+  // console.log('data', data)
+  // console.log('transcodePercent', transcodePercent)
+
+  const thumbMedia = useMemo(() => {
+    return (
+      <img
+        alt={data?.id}
+        src={data?.avatar_thumb?.uri || data.avatar_thumb?.url_list ? data.avatar_thumb.url_list[0] : ''}
+      />
+    )
+  }, [data])
+
   return (
     <>
       <div
@@ -107,20 +133,27 @@ function Item({ data, type, onOpenImageEditor }: PropsWithChildren<Props>) {
           content={type === FileType.IMAGE ? menuImgContent : menuVideoContent}>
           <EllipsisVertical color="#8f8f8f" size={24} />
         </Popover>
-        <div className="tw-absolute tw-left-3 tw-top-3 tw-z-10">
+        {/* <div className="tw-absolute tw-left-3 tw-top-3 tw-z-10">
           <div
             className={cn('tw-w-4 tw-h-4 tw-rounded-full tw-border tw-border-white', {
               'tw-bg-emerald-500': data.status === status,
               'tw-bg-red-500': data.status !== status,
             })}></div>
-        </div>
+        </div> */}
+        <div className={`loading-cirle ${getClassNameLoading(transcodePercent)} tw-border-white`}></div>
+
         <div
           className={cn(' tw-gap-1 tw-cursor-pointer tw-justify-between tw-h-full', {
             'tw-opacity-50': data.status !== status,
           })}>
           <div className="tw-mb-2 tw-gap-1">
             <div className="tw-relative">
-              <Image alt={data.id} src={data.avatar_thumb?.uri || data.avatar_thumb?.url_list[0]} />
+              <Image
+                key={data?.id}
+                alt={data?.id}
+                src={data?.avatar_thumb?.uri || data.avatar_thumb?.url_list ? data.avatar_thumb.url_list[0] : ''}
+              />
+              {/* {thumbMedia} */}
               <div className="tw-absolute tw-left-1 tw-bg-black/20 tw-text-xs tw-text-white tw-bottom-3 tw-py-1 tw-px-2 tw-rounded-md tw-backdrop-blur-sm">
                 <If isShow={type === FileType.VIDEO} element={convertDuration(data.durations)} />
                 <If isShow={type === FileType.IMAGE} element={<ImageIcon size={18} />} />

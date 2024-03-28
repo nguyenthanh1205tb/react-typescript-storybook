@@ -65,6 +65,13 @@ export enum MediaStatus {
   Uploading = 'UPLOADING',
 }
 
+export enum MediaProfileStatus {
+  WAITING = 'WAITING',
+  TRANSCODING = 'TRANSCODING',
+  ERROR = 'ERROR',
+  DONE = 'DONE',
+}
+
 export enum FileType {
   VIDEO = 'video',
   IMAGE = 'image',
@@ -113,6 +120,12 @@ export interface Meta {
   pageCount: number
 }
 
+export interface Profile {
+  id: string
+  name: string
+  status: MediaProfileStatus
+}
+
 export interface MediaEntity {
   id: string
   name: string
@@ -127,6 +140,7 @@ export interface MediaEntity {
   video: Video
   tags?: string[]
   createdAt: string
+  profiles: Profile[]
   updatedAt: string
   categories: Category[]
   width: number
