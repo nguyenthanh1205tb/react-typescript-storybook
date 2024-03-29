@@ -1,4 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+import LoadingItem from '@/src/components/common/media-loading-item/loading-item'
 import Paginate from '@/src/components/common/paginate'
 import { SkeletonCard } from '@/src/components/common/skeleton-card'
 import Typo from '@/src/components/common/typo'
@@ -195,10 +196,10 @@ function ListMedia({ type }: PropsWithChildren<Props>) {
           `tw-grid-cols-${!listMedia.length && !isLoading ? 1 : column}`,
         )}>
         <If isShow={isLoading} element={<Each of={new Array(20)?.fill(0)} render={() => <SkeletonCard />} />} />
-        {/* <If
+        <If
           isShow={!!listFileAdded}
           element={<Each of={listFileAdded} render={item => <LoadingItem key={item?.contentId} data={item} />} />}
-        /> */}
+        />
         <If
           isShow={!listMedia.length && !isLoading}
           element={

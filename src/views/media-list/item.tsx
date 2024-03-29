@@ -129,9 +129,6 @@ function Item({ data, type, onOpenImageEditor }: PropsWithChildren<Props>) {
     )
   }, [])
 
-  // console.log('data', data)
-  // console.log('transcodePercent', transcodePercent)
-
   return (
     <>
       <div
@@ -146,19 +143,24 @@ function Item({ data, type, onOpenImageEditor }: PropsWithChildren<Props>) {
           content={type === FileType.IMAGE ? menuImgContent : menuVideoContent}>
           <EllipsisVertical color="#8f8f8f" size={24} />
         </Popover>
-        {type === FileType.IMAGE ? (
-          <div className="tw-absolute tw-left-3 tw-top-3 tw-z-10">
+        {data?.status !== MediaProfileStatus.TRANSCODING && data?.status !== MediaStatus.Uploading ? (
+          <div className="tw-absolute tw-left-4 tw-top-4 tw-z-10">
             <div
               className={cn('tw-w-4 tw-h-4 tw-rounded-full tw-border tw-border-white', {
-                'tw-bg-emerald-500': data.status === MediaStatus.Uploaded,
-                'tw-bg-red-500': data.status === MediaStatus.Error,
+                'tw-bg-emerald-500': data.status === status,
+                'tw-bg-red-500': data.status !== status,
               })}></div>
           </div>
         ) : null}
-        {type === FileType.VIDEO ? (
+        {data?.status === MediaProfileStatus.TRANSCODING ? (
           <div
-            className={`${data?.status === MediaProfileStatus.DONE ? 'loading-cirle' : 'loading-cirle-yl'} tw-absolute tw-left-4 tw-top-4 tw-z-10 ${data?.status === MediaProfileStatus.ERROR ? '!tw-bg-red-500' : ''} ${getClassNameLoading(transcodePercent)} tw-border-white`}></div>
+            className={`loading-cirle-yl tw-absolute tw-left-4 tw-top-4 tw-z-10 ${getClassNameLoading(transcodePercent)} tw-border-white`}></div>
         ) : null}
+
+        {/* {data?.status === MediaStatus.Uploading ? (
+          <div
+            className={`loading-cirle tw-absolute tw-left-4 tw-top-4 tw-z-10 ${getClassNameLoading(percentUpload)} tw-border-white`}></div>
+        ) : null} */}
         <div
           className={cn(' tw-gap-1 tw-cursor-pointer tw-justify-between tw-h-full', {
             'tw-opacity-50': data.status !== status,
