@@ -193,9 +193,10 @@ const Detail = ({ type, onExportData }: Props) => {
                   <VideoPlayer
                     videoUrl={videoUrl(mediaSelectedData?.data.video) as string}
                     thumbnailUrl={
-                      mediaSelectedData?.data?.avatar_thumb?.uri || mediaSelectedData?.data?.avatar_thumb?.url_list
+                      mediaSelectedData?.data?.avatar_thumb?.uri ||
+                      (mediaSelectedData?.data?.avatar_thumb?.url_list
                         ? mediaSelectedData?.data?.avatar_thumb?.url_list?.[0]
-                        : ''
+                        : '')
                     }
                   />
                 }
