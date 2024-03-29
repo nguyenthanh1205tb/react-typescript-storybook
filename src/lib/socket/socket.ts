@@ -11,16 +11,18 @@ export const createWsClient = () => {
 
   wsClient = new SubscriptionClient(sockUrl, {
     reconnect: true,
-    timeout: 3000,
+    timeout: 5000,
+    reconnectionAttempts: 10,
     connectionParams: () => {
       const token = getAuthToken(AuthTokenType.ACCESS)
+      console.log('connectionParams', token)
       return {
         Authorization: `Bearer ${token}`,
       }
     },
     lazy: false, // only connect when there is a query
     connectionCallback: error => {
-      error && console.error(error)
+      error && console.log('sock:', error)
     },
   })
   return wsClient

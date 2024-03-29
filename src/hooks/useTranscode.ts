@@ -59,7 +59,6 @@ const useTranscodePercent = (props: Props) => {
             }
           }
               `
-
       const subscription = createWsClient()
         .request({
           query: OnTranscodeProgressDocument,
@@ -85,11 +84,12 @@ const useTranscodePercent = (props: Props) => {
             }
           },
         })
+
       tempSubscriptions.push(subscription)
     }
 
     setSubscriptions(tempSubscriptions)
-  }, [profiles])
+  }, [profiles, type, createWsClient])
 
   // Clear subscript after
   useEffect(() => {
