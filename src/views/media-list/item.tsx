@@ -48,7 +48,7 @@ function Item({ data, type, onOpenImageEditor }: PropsWithChildren<Props>) {
     setCutVideoModal,
   } = useAppStore()
 
-  const { transcodePercentMap } = useTranscodePercent({ profiles: data?.profiles })
+  const { transcodePercentMap } = useTranscodePercent({ profiles: data?.profiles, type })
 
   const transcodePercent = useMemo(() => {
     const totalProfilesPercent = Object.values(transcodePercentMap).reduce((total, percent) => {
@@ -146,16 +146,19 @@ function Item({ data, type, onOpenImageEditor }: PropsWithChildren<Props>) {
           content={type === FileType.IMAGE ? menuImgContent : menuVideoContent}>
           <EllipsisVertical color="#8f8f8f" size={24} />
         </Popover>
-        {/* <div className="tw-absolute tw-left-3 tw-top-3 tw-z-10">
+        {type === FileType.IMAGE ? (
+          <div className="tw-absolute tw-left-3 tw-top-3 tw-z-10">
+            <div
+              className={cn('tw-w-4 tw-h-4 tw-rounded-full tw-border tw-border-white', {
+                'tw-bg-emerald-500': data.status === MediaStatus.Uploaded,
+                'tw-bg-red-500': data.status === MediaStatus.Error,
+              })}></div>
+          </div>
+        ) : null}
+        {type === FileType.VIDEO ? (
           <div
-            className={cn('tw-w-4 tw-h-4 tw-rounded-full tw-border tw-border-white', {
-              'tw-bg-emerald-500': data.status === status,
-              'tw-bg-red-500': data.status !== status,
-            })}></div>
-        </div> */}
-        <div
-          className={`${data?.status === MediaProfileStatus.DONE ? 'loading-cirle' : 'loading-cirle-yl'} tw-absolute tw-left-4 tw-top-4 tw-z-10 ${data?.status === MediaProfileStatus.ERROR ? '!tw-bg-red-500' : ''} ${getClassNameLoading(transcodePercent)} tw-border-white`}></div>
-
+            className={`${data?.status === MediaProfileStatus.DONE ? 'loading-cirle' : 'loading-cirle-yl'} tw-absolute tw-left-4 tw-top-4 tw-z-10 ${data?.status === MediaProfileStatus.ERROR ? '!tw-bg-red-500' : ''} ${getClassNameLoading(transcodePercent)} tw-border-white`}></div>
+        ) : null}
         <div
           className={cn(' tw-gap-1 tw-cursor-pointer tw-justify-between tw-h-full', {
             'tw-opacity-50': data.status !== status,
@@ -165,7 +168,10 @@ function Item({ data, type, onOpenImageEditor }: PropsWithChildren<Props>) {
               <Image
                 key={data?.id}
                 alt={data?.id}
-                src={data?.avatar_thumb?.uri || data.avatar_thumb?.url_list ? data.avatar_thumb.url_list[0] : ''}
+                src={
+                  data?.avatar_thumb?.uri ||
+                  (data?.avatar_thumb?.url_list?.length ? data?.avatar_thumb?.url_list[0] : '')
+                }
               />
               <div className="tw-absolute tw-left-1 tw-bg-black/20 tw-text-xs tw-text-white tw-bottom-3 tw-py-1 tw-px-2 tw-rounded-md tw-backdrop-blur-sm">
                 <If isShow={type === FileType.VIDEO} element={convertDuration(data.durations)} />

@@ -3,14 +3,15 @@ import { useQueryClient } from '@tanstack/react-query'
 import { useEffect, useState } from 'react'
 import { createWsClient } from '../lib/socket/socket'
 import useAppStore from '../stores/useAppStore'
-import { MediaProfileStatus } from '../types'
+import { FileType, MediaProfileStatus } from '../types'
 
 interface Props {
   profiles: any
+  type?: FileType
 }
 
 const useTranscodePercent = (props: Props) => {
-  const { profiles } = props
+  const { profiles, type } = props
 
   const [transcodePercentMap, setTranscodePercentMap] = useState<Record<string, number>>({})
 
@@ -27,10 +28,11 @@ const useTranscodePercent = (props: Props) => {
   }
 
   useEffect(() => {
+    if (!profiles || type !== FileType.VIDEO) return
     clearSubscription()
     const tempSubscriptions = []
 
-    for (let i = 0; i < profiles.length; i++) {
+    for (let i = 0; i < profiles?.length; i++) {
       const profile = profiles[i]
       const profileId = profile?.id || ''
 
