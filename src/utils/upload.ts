@@ -2,7 +2,7 @@
 import { notification } from 'antd'
 import { AuthTokenType, getAuthToken } from '../lib/utils/auth'
 
-export function DataURIToBlob(dataURI: string) {
+export function DataURIToBlob(dataURI: string, orgType?: string) {
   const splitDataURI = dataURI.split(',')
   const byteString = splitDataURI[0].indexOf('base64') >= 0 ? atob(splitDataURI[1]) : decodeURI(splitDataURI[1])
   const mimeString = splitDataURI[0].split(':')[1].split(';')[0]
@@ -10,7 +10,7 @@ export function DataURIToBlob(dataURI: string) {
   const ia = new Uint8Array(byteString.length)
   for (let i = 0; i < byteString.length; i++) ia[i] = byteString.charCodeAt(i)
 
-  return new Blob([ia], { type: mimeString })
+  return new Blob([ia], { type: orgType ?? mimeString })
 }
 
 export async function onUploadFile(file: File | Blob, organizationId: string) {
