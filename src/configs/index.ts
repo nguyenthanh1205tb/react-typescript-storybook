@@ -1,9 +1,9 @@
 const UPLOAD_ENDPOINT = 'https://upload.plcplatform.net/files/'
 const MEDIA_BASE_ENDPOINT = 'https://upload.plcplatform.net/media'
+const REACT_APP_DOWNLOAD_ENDPOINT = 'https://download.plcplatform.net'
 const ORG_ID = '65ae3593905f66bff177f068'
 const TEMPLATE_ID = '65bc649a1f2422e6c787898d'
 const APP_API_URL = 'https://api.plcplatform.net'
-const REACT_APP_DOWNLOAD_ENDPOINT = 'https://download.plcplatform.net'
 const FB_YT_IN_STRING_REGEX =
   /^(?:https?:\/\/)?(?:www\.)?(youtube\.com|facebook\.com|fb\.com|m\.facebook\.com|facebook\.watch|fb\.watch|m\.facebook\.watch)/
 

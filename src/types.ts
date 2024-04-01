@@ -193,6 +193,8 @@ export interface ConfigResponse {
 export interface ConfigEntity {
   organizationId: string
   templateId: string
+  uid: string
+  uploadEndpoint: string
 }
 
 export interface FileAdded {

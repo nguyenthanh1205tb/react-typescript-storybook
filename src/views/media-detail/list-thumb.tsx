@@ -18,7 +18,7 @@ const ListThumb = ({ items, avatarSelected, onSelectThumb }: Props) => {
     if (e.target.files) {
       const file = e.target.files[0]
       // onUploadThumb && onUploadThumb(file)
-      onUploadFile(file, config?.organizationId as any).then(res => {
+      onUploadFile(file, config?.organizationId as any, config?.uploadEndpoint as any).then(res => {
         const thumbPath = defaultImgUrl + res?.path
         onSelectThumb(thumbPath)
       })
