@@ -22,6 +22,7 @@ import Filter from './filter'
 import MediaDetail from './media-detail/detail'
 import ListMedia from './media-list/list'
 import MediaMultiSelected from './media-multi-selected'
+import UploadFromUrlModal from './upload-from-url'
 import MenuUpload from './upload/menu'
 type State = {
   sideMenu: SideMenu
@@ -222,6 +223,18 @@ function Main({ type, onExportData }: Props) {
                     className="!tw-mt-0 tw-max-h-[650px] tw-min-h-[650px]"></TabsContent>
                 </div>
               </Tabs>
+              {
+                <UploadFromUrlModal
+                  isOpen={state.sideMenu.active === SideMenuActive.LINK}
+                  onCancel={() =>
+                    setState({
+                      sideMenu: {
+                        active: SideMenuActive.NULL,
+                      },
+                    })
+                  }
+                />
+              }
             </div>
           </Modal>
         </ConfigProvider>
