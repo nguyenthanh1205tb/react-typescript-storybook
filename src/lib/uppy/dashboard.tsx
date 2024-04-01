@@ -91,7 +91,7 @@ const UppyDashboard = React.forwardRef((props: Props, ref) => {
       return () => {}
     }
 
-    const uppy = createUppyInstance({})
+    const uppy = createUppyInstance({}, config.uploadEndpoint)
 
     uppy.use(ThumbnailGenerator)
 

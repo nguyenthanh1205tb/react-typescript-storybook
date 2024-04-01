@@ -31,18 +31,6 @@ const useUpdateMedia = () => {
   const [avatarSelected, setAvatarSelected] = React.useState<string>('')
   const { mediaSelectedID, mediaSelectedData, setMediaSelectedData, config } = useAppStore()
 
-  // const onUploadThumb = (file: File) => {
-  //   const formData = new FormData()
-  //   formData.append('file', file)
-  //   fetch(UPLOAD_ENDPOINT, {
-  //     method: 'POST',
-  //     body: formData,
-  //     headers: {
-  //       Authorization: `Bearer ${localStorage.getItem('mf-token')}`,
-  //     },
-  //   }).then(response => response.json())
-  // }
-
   const queryClient = useQueryClient()
 
   const { mutateAsync: onSubmitMedia } = useMutation({

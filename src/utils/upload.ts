@@ -13,7 +13,7 @@ export function DataURIToBlob(dataURI: string, orgType?: string) {
   return new Blob([ia], { type: orgType ?? mimeString })
 }
 
-export async function onUploadFile(file: File | Blob, organizationId: string) {
+export async function onUploadFile(file: File | Blob, organizationId: string, baseUrl: string) {
   // const fileData = DataURIToBlob(file)
 
   const formData = new FormData()
@@ -22,7 +22,7 @@ export async function onUploadFile(file: File | Blob, organizationId: string) {
   formData.append('organizationId', organizationId)
   //[EDIT] tên file cũ
 
-  const uploadEndpoint = `https://uat.upload.plcplatform.net/upload?organizationId=${organizationId}`
+  const uploadEndpoint = `${baseUrl}/upload?organizationId=${organizationId}`
 
   return fetch(uploadEndpoint, {
     method: 'POST',

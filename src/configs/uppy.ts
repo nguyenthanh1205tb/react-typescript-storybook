@@ -1,11 +1,11 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import Uppy from '@uppy/core'
 import Dashboard from '@uppy/dashboard'
 import Tus from '@uppy/tus'
-import { UPLOAD_ENDPOINT } from '.'
-import Vietnamese from './uppy.locale'
 import { AuthTokenType, getAuthToken } from '../lib/utils/auth'
+import Vietnamese from './uppy.locale'
 
-export const createUppyInstance = (options?: any) => {
+export const createUppyInstance = (options: any, baseUrl: string) => {
   // TODO: Add English locale
   return new Uppy({
     locale: Vietnamese,
@@ -18,7 +18,7 @@ export const createUppyInstance = (options?: any) => {
     .use(Tus, {
       removeFingerprintOnSuccess: true,
       resume: true,
-      endpoint: UPLOAD_ENDPOINT,
+      endpoint: baseUrl + '/files',
       async onBeforeRequest(req) {
         const token = getAuthToken(AuthTokenType.ACCESS)
         req.setHeader('Authorization', `Bearer ${token}`)
