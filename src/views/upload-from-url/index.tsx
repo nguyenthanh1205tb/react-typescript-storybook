@@ -1,10 +1,11 @@
+import { FB_YT_IN_STRING_REGEX } from '@/src/configs'
 import useAppStore from '@/src/stores/useAppStore'
 import { MediaPackageType } from '@/src/types'
 import { Button, Form, notification } from 'antd'
 import FormItem from 'antd/es/form/FormItem'
 import TextArea from 'antd/es/input/TextArea'
 import Modal from 'antd/es/modal/Modal'
-import React, { useState } from 'react'
+import React, { useCallback, useState } from 'react'
 import { createDownloadClient } from './download'
 interface Props {
   isOpen: boolean
@@ -16,7 +17,6 @@ const UploadFromUrlModal = (props: Props) => {
   const { isOpen, onCancel, type } = props
   const [form] = Form.useForm()
   const links = Form.useWatch('urls', form)
-  const transcodeTemplateId = Form.useWatch('transcodeTemplate', form)
   const { config } = useAppStore()
 
   const [isLoading, setIsLoading] = useState<boolean>(false)
@@ -37,59 +37,83 @@ const UploadFromUrlModal = (props: Props) => {
     return true
   }
 
-  const handleSubmit = async (values: any) => {
-    const urlStr: string = values?.urls
-    if (!urlStr) return
-    if (!config?.organizationId || !urlStr || urlStr === '' || form.getFieldError('urls')?.length) return
+  const handleSubmit = useCallback(
+    async (values: any) => {
+      const urlStr: string = values?.urls
+      if (!urlStr) return
+      if (!config?.organizationId || !urlStr || urlStr === '' || form.getFieldError('urls')?.length) return
 
-    const urls = urlStr
-      ?.trim()
-      ?.split('\n')
-      ?.map((url: string) => url?.trim())
+      const urls = urlStr
+        ?.trim()
+        ?.split('\n')
+        ?.map((url: string) => url?.trim())
 
-    await createDownloadClient({
-      organizationId: config?.organizationId,
-      templateId: transcodeTemplateId,
-      urls,
-    })
-      .then(() => {
-        notification.success({
-          message: 'Tải lên thành công',
+      await createDownloadClient({
+        organizationId: config?.organizationId,
+        templateId: config.templateId,
+        urls,
+      })
+        .then(() => {
+          notification.success({
+            message: 'Tải lên thành công',
+          })
+          onCancel()
         })
-        onCancel()
-      })
-      .catch(() => {
-        notification.error({
-          message: 'Lỗi không xác định',
+        .catch(() => {
+          notification.error({
+            message: 'Lỗi không xác định',
+          })
         })
-      })
-      .finally(() => {
-        setIsLoading(false)
-      })
+        .finally(() => {
+          setIsLoading(false)
+        })
 
-    setIsLoading(true)
-  }
+      setIsLoading(true)
+    },
+    [config, createDownloadClient],
+  )
   const footer = (
     <div className="tw-gap-3 tw-flex tw-justify-center tw-items-center tw-pb-3">
-      <Button className="!tw-bg-slate-400 hover:!tw-bg-slate-500" key={'cancel-edit-img'}>
+      <Button
+        className="!tw-bg-slate-400 !tw-border-none hover:!tw-bg-slate-500 hover:!tw-text-black hover:!tw-border-none"
+        key={'cancel-upload-url'}>
         <div
           onClick={() => {
-            console.log('first')
+            onCancel()
+            form.resetFields()
           }}>
           Huỷ
         </div>
       </Button>
-      <Button className="!tw-bg-lime-500 hover:!tw-bg-lime-600" key={'ok-edit-img'}>
-        <div onClick={() => console.log('sda')}>Hoàn thành</div>
+      <Button disabled={!links} className="!tw-text-white !tw-bg-lime-500 hover:!tw-bg-lime-600" key={'ok-upload-url'}>
+        <div onClick={() => form.submit()}>Hoàn thành</div>
       </Button>
     </div>
   )
   return (
     <Modal footer={footer} open={isOpen} onCancel={onCancel} title={'Upload từ URL'}>
-      <Form layout="vertical" form={form} onFinish={value => console.log(value)}>
-        <FormItem name="urls" label={'URL'}>
+      <Form layout="vertical" disabled={isLoading} form={form} onFinish={handleSubmit}>
+        <FormItem
+          name="urls"
+          label={'URL'}
+          rules={[
+            {
+              required: true,
+              message: 'Vui lòng nhập URL',
+            },
+            {
+              validator: async (_, value) => {
+                const isOk = validateNotFbAndYt(value)
+                console.log('isOk', isOk)
+                if (isOk) {
+                  return Promise.resolve()
+                }
+                return Promise.reject('Không hỗ trợ định dạng URL này')
+              },
+            },
+          ]}>
           <TextArea
-            rows={10}
+            rows={type === MediaPackageType.VIDEO ? 8 : 12}
             placeholder={
               type === MediaPackageType.VIDEO
                 ? 'Nhập một hoặc nhiều URL, cách nhau bằng cách xuống dòng\nLoại URL được hỗ trợ: Mp4,jpg,jpeg,png\nTối đa 10 link.\n\n\n\n\n\n\n'
