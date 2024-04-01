@@ -1,5 +1,5 @@
 export const fetchToken = async () => {
-  const response = await fetch('https://uat.api.plcplatform.net/graphql', {
+  const response = await fetch('https://api.plcplatform.net/graphql', {
     headers: {
       accept: '*/*',
       'accept-language': 'en-US,en;q=0.9,vi;q=0.8',
@@ -13,9 +13,9 @@ export const fetchToken = async () => {
       'sec-fetch-mode': 'cors',
       'sec-fetch-site': 'same-site',
     },
-    referrer: 'https://uat.plcplatform.net/',
+    referrer: 'https://plcplatform.net/',
     referrerPolicy: 'strict-origin-when-cross-origin',
-    body: '{"query":"\\n    mutation login($input: LoginInputDto!) {\\n  signIn(input: $input) {\\n    token\\n    refreshToken\\n    expiresAt\\n    refreshTokenExpiresAt\\n    payload {\\n      _id\\n    }\\n  }\\n}\\n    ","variables":{"input":{"email":"admin@mefi.vn","password":"Mefihub123!@#"}},"operationName":"login"}',
+    body: '{"query":"\\n    mutation login($input: LoginInputDto!) {\\n  signIn(input: $input) {\\n    token\\n    refreshToken\\n    expiresAt\\n    refreshTokenExpiresAt\\n    payload {\\n      _id\\n    }\\n  }\\n}\\n    ","variables":{"input":{"email":"admin@test.com","password":"Testermefi@123"}},"operationName":"login"}',
     method: 'POST',
     mode: 'cors',
     credentials: 'omit',
