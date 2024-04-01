@@ -3,7 +3,7 @@ import { ORG_ID, TEMPLATE_ID } from '@/src/configs'
 import UppyDashboard from '@/src/lib/uppy/dashboard'
 import { cn } from '@/src/lib/utils'
 import { SideMenuActive } from '@/src/types'
-import { FilterIcon } from 'lucide-react'
+import { FilterIcon, Link } from 'lucide-react'
 import React, { PropsWithChildren } from 'react'
 
 interface Props {
@@ -91,7 +91,7 @@ function MenuUpload({ onChangeMenu, active }: PropsWithChildren<Props>) {
             </TooltipContent>
           </Tooltip>
         </li>
-        {/* <li className="tw-flex tw-items-center tw-justify-center">
+        <li className="tw-flex tw-items-center tw-justify-center">
           <Tooltip>
             <TooltipTrigger>
               <div
@@ -110,7 +110,7 @@ function MenuUpload({ onChangeMenu, active }: PropsWithChildren<Props>) {
             </TooltipContent>
           </Tooltip>
         </li>
-        <li className="tw-flex tw-items-center tw-justify-center">
+        {/* <li className="tw-flex tw-items-center tw-justify-center">
           <Tooltip>
             <TooltipTrigger>
               <div

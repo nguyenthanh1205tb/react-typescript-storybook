@@ -3,6 +3,7 @@ const MEDIA_BASE_ENDPOINT = 'https://upload.plcplatform.net/media'
 const ORG_ID = '65ae3593905f66bff177f068'
 const TEMPLATE_ID = '65bc649a1f2422e6c787898d'
 const APP_API_URL = 'https://api.plcplatform.net'
+const REACT_APP_DOWNLOAD_ENDPOINT = 'https://download.plcplatform.net'
 
 const LS_SELECTED_ORGANIZATION_KEY = 'mf-id'
 const LS_SELECTED_TOKEN_KEY = 'mf-token'
@@ -26,6 +27,7 @@ export {
   LS_SELECTED_TOKEN_REFRESH_KEY,
   MEDIA_BASE_ENDPOINT,
   ORG_ID,
+  REACT_APP_DOWNLOAD_ENDPOINT,
   SERVER_ERROR,
   TEMPLATE_ID,
   UPLOAD_ENDPOINT,
