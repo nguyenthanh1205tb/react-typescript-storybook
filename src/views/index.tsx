@@ -3,7 +3,7 @@ import { Button } from '@/src/components/ui/button'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import ConfigProvider from 'antd/es/config-provider'
 import Modal from 'antd/es/modal/Modal'
-import { FileText, Image as ImageIcon, MoveLeft, Search, Trash, Video } from 'lucide-react'
+import { FileText, Image as ImageIcon, MoveLeft, Search, Trash as TrashIcon, Video } from 'lucide-react'
 import moment from 'moment'
 import 'moment/locale/vi'
 import React, { useEffect, useMemo, useState } from 'react'
@@ -24,6 +24,8 @@ import ListMedia from './media-list/list'
 import MediaMultiSelected from './media-multi-selected'
 import UploadFromUrlModal from './upload-from-url'
 import MenuUpload from './upload/menu'
+import Trash from './trash/list'
+
 type State = {
   sideMenu: SideMenu
 }
@@ -46,15 +48,12 @@ function Main({ type, onExportData }: Props) {
     setPackageEnabled,
     resetAppState,
   } = useAppStore()
+
   const [state, setState] = useState<State>({
     sideMenu: {
       active: SideMenuActive.NULL,
     },
   })
-
-  useEffect(() => {
-    fetchToken()
-  }, [])
 
   const onChangeMenu = (k: SideMenuActive) => {
     setState(prev => ({
@@ -101,6 +100,10 @@ function Main({ type, onExportData }: Props) {
       setTimeout(() => resetAppState(), 300)
     }
   }, [openMedia])
+
+  useEffect(() => {
+    fetchToken()
+  }, [])
 
   return (
     <QueryClientProvider client={queryClient}>
@@ -152,7 +155,7 @@ function Main({ type, onExportData }: Props) {
                       className="!tw-px-14"
                       onClick={() => setTabActivated(VideoTabItemType.TRASH)}>
                       <div className="tw-flex tw-items-center">
-                        <Trash size={18} className="tw-mr-2" />
+                        <TrashIcon size={18} className="tw-mr-2" />
                         <p>Thùng Rác</p>
                       </div>
                     </TabsTrigger>
@@ -173,54 +176,64 @@ function Main({ type, onExportData }: Props) {
                 </div>
                 <Separator className="tw-flex-none" />
                 <div className="tw-flex tw-flex-1 ">
-                  <div
-                    className={`tw-pt-2 tw-w-[350px] ${state.sideMenu.active === SideMenuActive.FILTER ? '' : 'tw-w-fit'} tw-pr-2 tw-border-r tw-flex-none tw-flex`}>
-                    <MenuUpload onChangeMenu={onChangeMenu} active={state?.sideMenu?.active} />
-                    <div
-                      className={`tw-flex-1  tw-pl-2 tw-relative ${state.sideMenu.active === SideMenuActive.FILTER ? '' : 'tw-hidden'}`}>
-                      <If
-                        isShow={state.sideMenu.active === SideMenuActive.FILTER}
-                        element={<Filter type={packageEnabled as MediaPackageType} />}
-                      />
-                      <MoveLeft
-                        className="tw-cursor-pointer tw-absolute tw-top-5 tw-right-3"
-                        onClick={() =>
-                          setState({
-                            sideMenu: {
-                              active: SideMenuActive.NULL,
-                            },
-                          })
-                        }
-                      />
+                  <If
+                    isShow={tabActivated === VideoTabItemType.CONTENT}
+                    element={
+                      <div
+                        className={`tw-pt-2 tw-w-[350px] ${state.sideMenu.active === SideMenuActive.FILTER ? '' : 'tw-w-fit'} tw-pr-2 tw-border-r tw-flex-none tw-flex`}>
+                        <MenuUpload onChangeMenu={onChangeMenu} active={state?.sideMenu?.active} />
+                        <div
+                          className={`tw-flex-1  tw-pl-2 tw-relative ${state.sideMenu.active === SideMenuActive.FILTER ? '' : 'tw-hidden'}`}>
+                          <If
+                            isShow={state.sideMenu.active === SideMenuActive.FILTER}
+                            element={<Filter type={packageEnabled as MediaPackageType} />}
+                          />
+                          <MoveLeft
+                            className="tw-cursor-pointer tw-absolute tw-top-5 tw-right-3"
+                            onClick={() =>
+                              setState({
+                                sideMenu: {
+                                  active: SideMenuActive.NULL,
+                                },
+                              })
+                            }
+                          />
 
-                      {/* <If
+                          {/* <If
                         isShow={
                           state.sideMenu.active === SideMenuActive.LOCAL_FILES
                         }
                         element={<LocalFilesUpload />}
                       /> */}
-                      {/* <If isShow={state.sideMenu.active === SideMenuActive.LINK} element={<LinkUpload />} />
+                          {/* <If isShow={state.sideMenu.active === SideMenuActive.LINK} element={<LinkUpload />} />
                       <If
                         isShow={state.sideMenu.active === SideMenuActive.WATCH_FOLDER}
                         element={<WatchFolderUpload />}
                       />
                       <If isShow={state.sideMenu.active === SideMenuActive.S3_STORAGE} element={<S3StorageUpload />} /> */}
-                    </div>
-                  </div>
+                        </div>
+                      </div>
+                    }
+                  />
 
-                  <TabsContent value={VideoTabItemType.CONTENT} className="!tw-mt-0 tw-flex-1 tw-pl-2 tw-pt-2 tw-flex">
-                    <div className="tw-pr-2 tw-max-h-[650px] tw-min-h-[650px] tw-border-r tw-flex-1 tw-overflow-x-hidden tw-overflow-y-auto">
-                      <ListMedia type={exportFileType} isFilterOpen={state.sideMenu.active === SideMenuActive.FILTER} />
+                  <TabsContent value={VideoTabItemType.CONTENT} className="!tw-mt-0">
+                    <div className=" tw-flex-1 tw-pt-2 tw-flex tw-pl-2">
+                      <div className="tw-pr-2 tw-max-h-[650px] tw-min-h-[650px] tw-border-r tw-flex-1 tw-overflow-x-hidden tw-overflow-y-auto">
+                        <ListMedia
+                          type={exportFileType}
+                          isFilterOpen={state.sideMenu.active === SideMenuActive.FILTER}
+                        />
+                      </div>
+                      <If isShow={selectMultiMode} element={<MediaMultiSelected onExportData={onExportData} />} />
+                      <If
+                        isShow={!selectMultiMode && packageEnabled !== null}
+                        element={<MediaDetail type={packageEnabled as MediaPackageType} onExportData={onExportData} />}
+                      />
                     </div>
-                    <If isShow={selectMultiMode} element={<MediaMultiSelected onExportData={onExportData} />} />
-                    <If
-                      isShow={!selectMultiMode && packageEnabled !== null}
-                      element={<MediaDetail type={packageEnabled as MediaPackageType} onExportData={onExportData} />}
-                    />
                   </TabsContent>
-                  <TabsContent
-                    value={VideoTabItemType.TRASH}
-                    className="!tw-mt-0 tw-max-h-[650px] tw-min-h-[650px]"></TabsContent>
+                  <TabsContent value={VideoTabItemType.TRASH} className="!tw-mt-0 tw-max-h-[650px] tw-min-h-[650px]">
+                    <Trash type={exportFileType} />
+                  </TabsContent>
                 </div>
               </Tabs>
               {

@@ -18,7 +18,7 @@ export const createUppyInstance = (options: any, baseUrl: string) => {
     .use(Tus, {
       removeFingerprintOnSuccess: true,
       resume: true,
-      endpoint: baseUrl + '/files',
+      endpoint: baseUrl + '/files/',
       async onBeforeRequest(req) {
         const token = getAuthToken(AuthTokenType.ACCESS)
         req.setHeader('Authorization', `Bearer ${token}`)
