@@ -12,11 +12,12 @@ import { CalendarFold, Crop, EllipsisVertical, ImageIcon, Pencil, Trash2 } from 
 import moment from 'moment'
 import Popover from 'antd/es/popover'
 import { notification } from 'antd'
+import { useQueryClient } from '@tanstack/react-query'
 
 interface Props {
   type: FileType
   data: MediaEntity
-  onOpenImageEditor: (initMenu?: MenuImgEditorType) => void
+  onOpenImageEditor?: (initMenu?: MenuImgEditorType) => void
 }
 
 const getClassNameLoading = (percent: number) => {
@@ -42,6 +43,7 @@ const getClassNameLoading = (percent: number) => {
 }
 
 function Item({ data, type, onOpenImageEditor }: PropsWithChildren<Props>) {
+  const clientQueries = useQueryClient()
   const { deleteMedia } = useDeleteMedia()
   const {
     mediaSelectedID,
@@ -101,6 +103,7 @@ function Item({ data, type, onOpenImageEditor }: PropsWithChildren<Props>) {
     if (!isPending && !error && deleteMediaData) {
       setDeleteConfirm(false)
       notification.success({ message: 'Xoá media thành công' })
+      clientQueries.invalidateQueries({ queryKey: ['getListMedia'] })
     }
   }, [deleteMediaData, isPending, error])
 
@@ -111,7 +114,7 @@ function Item({ data, type, onOpenImageEditor }: PropsWithChildren<Props>) {
           isShow={type === FileType.IMAGE}
           element={
             <div
-              onClick={() => onOpenImageEditor('resize')}
+              onClick={() => onOpenImageEditor && onOpenImageEditor('resize')}
               className="tw-flex tw-gap-2 !tw-items-center tw-cursor-pointer hover:tw-bg-slate-200 tw-transition-all tw-px-3 tw-py-2 tw-rounded-md">
               <Pencil size={16} color="#404040" /> <span>Chỉnh sửa</span>
             </div>
@@ -121,7 +124,7 @@ function Item({ data, type, onOpenImageEditor }: PropsWithChildren<Props>) {
           isShow={type === FileType.IMAGE}
           element={
             <div
-              onClick={() => onOpenImageEditor('crop')}
+              onClick={() => onOpenImageEditor && onOpenImageEditor('crop')}
               className="tw-flex tw-gap-2 !tw-items-center tw-cursor-pointer hover:tw-bg-slate-200 tw-transition-all tw-px-3 tw-py-2 tw-rounded-md">
               <Crop size={16} color="#404040" />
               <span>Cắt ảnh</span>
