@@ -184,4 +184,22 @@ const useTrimVideo = () => {
   return { trimVideo }
 }
 
-export { useCategory, useDetailMedia, useListMedia, useTrimVideo }
+const useDeleteMedia = () => {
+  const deleteMedia = () =>
+    useMutation({
+      mutationFn: (id: string) =>
+        request<TrimVideoResponse>(APIConfigs(), {
+          method: 'DELETE',
+          url: '/media/{id}',
+          path: {
+            id,
+          },
+        }),
+    })
+
+  return {
+    deleteMedia,
+  }
+}
+
+export { useCategory, useDetailMedia, useListMedia, useTrimVideo, useDeleteMedia }

@@ -3,7 +3,6 @@
 @tailwind components;
 @tailwind utilities;
 
-
 @layer base {
   :root {
     --background: 0 0% 100%;
@@ -138,7 +137,6 @@
   }
 
   .modal-image-editor {
-
     .ant-modal-close-x {
       color: #fff;
     }
@@ -152,10 +150,7 @@
       background-color: #1a1a1a;
       padding: 0 !important;
     }
-
-
   }
-
 
   .loading-cirle {
     width: 17px;
@@ -169,70 +164,57 @@
   }
 
   .ten {
-    background-image:
-      linear-gradient(126deg, transparent 50%, white 50%),
+    background-image: linear-gradient(126deg, transparent 50%, white 50%),
       linear-gradient(90deg, white 50%, transparent 50%);
   }
 
   .twenty {
-    background-image:
-      linear-gradient(150deg, transparent 50%, white 50%),
+    background-image: linear-gradient(150deg, transparent 50%, white 50%),
       linear-gradient(90deg, white 50%, transparent 50%);
   }
 
   .thirty {
-    background-image:
-      linear-gradient(200deg, transparent 50%, white 50%),
+    background-image: linear-gradient(200deg, transparent 50%, white 50%),
       linear-gradient(90deg, white 50%, transparent 50%);
   }
 
   .forty {
-    background-image:
-      linear-gradient(220deg, transparent 50%, white 50%),
+    background-image: linear-gradient(220deg, transparent 50%, white 50%),
       linear-gradient(90deg, white 50%, transparent 50%);
   }
 
   .fifty {
-    background-image:
-      linear-gradient(90deg, white 50%, transparent 50%);
+    background-image: linear-gradient(90deg, white 50%, transparent 50%);
   }
 
   .sixty {
-    background-image:
-      linear-gradient(120deg, transparent 50%, rgb(15 185 129) 50%),
+    background-image: linear-gradient(120deg, transparent 50%, rgb(15 185 129) 50%),
       linear-gradient(90deg, white 50%, transparent 50%);
   }
-
 
   .seventy {
-    background-image:
-      linear-gradient(150deg, transparent 50%, rgb(15 185 129) 50%),
+    background-image: linear-gradient(150deg, transparent 50%, rgb(15 185 129) 50%),
       linear-gradient(90deg, white 50%, transparent 50%);
   }
 
-
   .seventy-five {
-    background-image:
-      linear-gradient(180deg, transparent 50%, rgb(15 185 129) 50%),
+    background-image: linear-gradient(180deg, transparent 50%, rgb(15 185 129) 50%),
       linear-gradient(90deg, white 50%, transparent 50%);
   }
 
   .eighty {
-    background-image:
-      linear-gradient(200deg, transparent 50%, rgb(15 185 129) 50%),
+    background-image: linear-gradient(200deg, transparent 50%, rgb(15 185 129) 50%),
       linear-gradient(90deg, white 50%, transparent 50%);
   }
 
   .ninety {
-    background-image:
-      linear-gradient(220deg, transparent 50%, rgb(15 185 129) 50%),
+    background-image: linear-gradient(220deg, transparent 50%, rgb(15 185 129) 50%),
       linear-gradient(90deg, white 50%, transparent 50%);
   }
 
   .hundred {
     background-image: none;
   }
-
 
   .loading-cirle-yl {
     width: 17px;
@@ -246,71 +228,57 @@
   }
 
   .ten-yl {
-    background-image:
-      linear-gradient(126deg, transparent 50%, white 50%),
+    background-image: linear-gradient(126deg, transparent 50%, white 50%),
       linear-gradient(90deg, white 50%, transparent 50%);
   }
 
   .twenty-yl {
-    background-image:
-      linear-gradient(150deg, transparent 50%, white 50%),
+    background-image: linear-gradient(150deg, transparent 50%, white 50%),
       linear-gradient(90deg, white 50%, transparent 50%);
   }
 
   .thirty-yl {
-    background-image:
-      linear-gradient(200deg, transparent 50%, white 50%),
+    background-image: linear-gradient(200deg, transparent 50%, white 50%),
       linear-gradient(90deg, white 50%, transparent 50%);
   }
 
   .forty-yl {
-    background-image:
-      linear-gradient(220deg, transparent 50%, white 50%),
+    background-image: linear-gradient(220deg, transparent 50%, white 50%),
       linear-gradient(90deg, white 50%, transparent 50%);
   }
 
   .fifty-yl {
-    background-image:
-      linear-gradient(90deg, white 50%, transparent 50%);
+    background-image: linear-gradient(90deg, white 50%, transparent 50%);
   }
 
   .sixty-yl {
-    background-image:
-      linear-gradient(120deg, transparent 50%, rgb(208, 195, 14) 50%),
+    background-image: linear-gradient(120deg, transparent 50%, rgb(208, 195, 14) 50%),
       linear-gradient(90deg, white 50%, transparent 50%);
   }
-
 
   .seventy-yl {
-    background-image:
-      linear-gradient(150deg, transparent 50%, rgb(208, 195, 14) 50%),
+    background-image: linear-gradient(150deg, transparent 50%, rgb(208, 195, 14) 50%),
       linear-gradient(90deg, white 50%, transparent 50%);
   }
 
-
   .seventy-five-yl {
-    background-image:
-      linear-gradient(180deg, transparent 50%, rgb(208, 195, 14) 50%),
+    background-image: linear-gradient(180deg, transparent 50%, rgb(208, 195, 14) 50%),
       linear-gradient(90deg, white 50%, transparent 50%);
   }
 
   .eighty-yl {
-    background-image:
-      linear-gradient(200deg, transparent 50%, rgb(208, 195, 14) 50%),
+    background-image: linear-gradient(200deg, transparent 50%, rgb(208, 195, 14) 50%),
       linear-gradient(90deg, white 50%, transparent 50%);
   }
 
   .ninety-yl {
-    background-image:
-      linear-gradient(220deg, transparent 50%, rgb(208, 195, 14) 50%),
+    background-image: linear-gradient(220deg, transparent 50%, rgb(208, 195, 14) 50%),
       linear-gradient(90deg, white 50%, transparent 50%);
   }
 
   .hundred-yl {
     background-image: none;
   }
-
-
 
   .dark {
     --background: 222.2 84% 4.9%;
@@ -375,7 +343,6 @@
     top: 10px;
     position: relative;
 
-
     .drag--bar {
       display: flex;
       align-items: center;
@@ -418,4 +385,10 @@
 
 .no-outline:focus-visible {
   box-shadow: none !important;
+}
+
+.ant-popconfirm-buttons {
+  .ant-btn-primary {
+    background: #1677ff !important;
+  }
 }

@@ -25,7 +25,7 @@ const Image = ({
   const [isError, setIsError] = useState(false)
 
   return (
-    <div className={cn('tw-relative tw-bg-slate-100 tw-w-full tw-overflow-hidden tw-rounded-md', containerClassName)}>
+    <div className={cn('tw-relative tw-bg-slate-300 tw-w-full tw-overflow-hidden tw-rounded-md', containerClassName)}>
       <If
         isShow={!imgLoaded && !isError}
         element={
@@ -61,7 +61,7 @@ const Image = ({
                 </TooltipContent>
               </Tooltip>
             </div>
-            <div className={cn('tw-w-full tw-bg-gray-50', className)} style={{ height }}></div>
+            <div className={cn('tw-w-full tw-bg-gray-300', className)} style={{ height }}></div>
           </div>
         }
       />
