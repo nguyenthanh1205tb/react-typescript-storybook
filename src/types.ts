@@ -126,6 +126,12 @@ export interface Profile {
   status: MediaProfileStatus
 }
 
+export interface Author {
+  avatar: string
+  full_name: string
+  uid: string
+}
+
 export interface MediaEntity {
   id: string
   name: string
@@ -145,6 +151,7 @@ export interface MediaEntity {
   categories: Category[]
   width: number
   height: number
+  author: Author
 }
 
 export interface GetListMediaRequest {

@@ -1,4 +1,4 @@
-import React, { PropsWithChildren, useMemo } from 'react'
+import React, { PropsWithChildren, useEffect, useMemo, useState } from 'react'
 import Image from '@/src/components/common/image'
 import If from '@/src/hooks/if'
 import { useDeleteMedia } from '@/src/hooks/useMedia'
@@ -11,6 +11,7 @@ import Popconfirm from 'antd/es/popconfirm'
 import { CalendarFold, Crop, EllipsisVertical, ImageIcon, Pencil, Trash2 } from 'lucide-react'
 import moment from 'moment'
 import Popover from 'antd/es/popover'
+import { notification } from 'antd'
 
 interface Props {
   type: FileType
@@ -43,15 +44,16 @@ const getClassNameLoading = (percent: number) => {
 function Item({ data, type, onOpenImageEditor }: PropsWithChildren<Props>) {
   const { deleteMedia } = useDeleteMedia()
   const {
-    setMediaSelectedID,
     mediaSelectedID,
-    setListMediaSelected,
     selectMultiMode,
     listMediaSelected,
+    config,
+    setMediaSelectedID,
+    setListMediaSelected,
     setCutVideoModal,
   } = useAppStore()
-
-  const { mutate: deleteMediaMutation } = deleteMedia()
+  const [deleteConfirm, setDeleteConfirm] = useState(false)
+  const { mutate: deleteMediaMutation, isPending, data: deleteMediaData, error } = deleteMedia()
 
   const { transcodePercentMap } = useTranscodePercent({ profiles: data?.profiles, type })
 
@@ -95,14 +97,26 @@ function Item({ data, type, onOpenImageEditor }: PropsWithChildren<Props>) {
     }
   }, [type])
 
+  useEffect(() => {
+    if (!isPending && !error && deleteMediaData) {
+      setDeleteConfirm(false)
+      notification.success({ message: 'Xoá media thành công' })
+    }
+  }, [deleteMediaData, isPending, error])
+
   const btnActions = useMemo(() => {
     return (
       <div className="tw-flex tw-flex-col tw-gap-1 ">
-        <div
-          onClick={() => onOpenImageEditor('resize')}
-          className="tw-flex tw-gap-2 !tw-items-center tw-cursor-pointer hover:tw-bg-slate-200 tw-transition-all tw-px-3 tw-py-2 tw-rounded-md">
-          <Pencil size={16} color="#404040" /> <span>Chỉnh sửa</span>
-        </div>
+        <If
+          isShow={type === FileType.IMAGE}
+          element={
+            <div
+              onClick={() => onOpenImageEditor('resize')}
+              className="tw-flex tw-gap-2 !tw-items-center tw-cursor-pointer hover:tw-bg-slate-200 tw-transition-all tw-px-3 tw-py-2 tw-rounded-md">
+              <Pencil size={16} color="#404040" /> <span>Chỉnh sửa</span>
+            </div>
+          }
+        />
         <If
           isShow={type === FileType.IMAGE}
           element={
@@ -126,20 +140,30 @@ function Item({ data, type, onOpenImageEditor }: PropsWithChildren<Props>) {
           }
         />
 
-        <Popconfirm
-          title="Xoá media"
-          description={`Bạn có đồng ý xoá ${type === FileType.VIDEO ? 'video' : 'hình ảnh'} này không?`}
-          onConfirm={() => deleteMediaMutation(data.id)}
-          okText="Xoá"
-          cancelText="Không">
-          <div className="tw-flex tw-gap-2 !tw-items-center tw-cursor-pointer hover:tw-bg-slate-200 tw-transition-all tw-px-3 tw-py-2 tw-rounded-md tw-text-red-500">
-            <Trash2 size={16} />
-            <span>Xoá</span>
-          </div>
-        </Popconfirm>
+        <If
+          isShow={config?.uid === data.author.uid}
+          element={
+            <Popconfirm
+              open={deleteConfirm}
+              title="Xoá media"
+              okType="danger"
+              description={`Bạn có đồng ý xoá ${type === FileType.VIDEO ? 'video' : 'hình ảnh'} này không?`}
+              onConfirm={() => deleteMediaMutation(data.id)}
+              okText="Xoá"
+              cancelText="Không"
+              okButtonProps={{ loading: isPending }}>
+              <div
+                className="tw-flex tw-gap-2 !tw-items-center tw-cursor-pointer hover:tw-bg-slate-200 tw-transition-all tw-px-3 tw-py-2 tw-rounded-md tw-text-red-500"
+                onClick={() => setDeleteConfirm(true)}>
+                <Trash2 size={16} />
+                <span>Xoá</span>
+              </div>
+            </Popconfirm>
+          }
+        />
       </div>
     )
-  }, [])
+  }, [deleteConfirm, type, data, config])
 
   return (
     <>
