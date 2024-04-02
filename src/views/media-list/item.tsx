@@ -1,14 +1,17 @@
+import React, { PropsWithChildren, useEffect, useMemo, useState } from 'react'
 import Image from '@/src/components/common/image'
-import Popover from '@/src/components/common/popover'
 import If from '@/src/hooks/if'
+import { useDeleteMedia } from '@/src/hooks/useMedia'
 import useTranscodePercent from '@/src/hooks/useTranscode'
 import { convertDuration } from '@/src/lib/utils/date'
 import { cn } from '@/src/lib/utils/merge-class'
 import useAppStore from '@/src/stores/useAppStore'
 import { FileType, MediaEntity, MediaProfileStatus, MediaStatus, MenuImgEditorType } from '@/src/types'
-import { CalendarFold, Crop, EllipsisVertical, ImageIcon, Pencil } from 'lucide-react'
+import Popconfirm from 'antd/es/popconfirm'
+import { CalendarFold, Crop, EllipsisVertical, ImageIcon, Pencil, Trash2 } from 'lucide-react'
 import moment from 'moment'
-import React, { PropsWithChildren, useMemo } from 'react'
+import Popover from 'antd/es/popover'
+import { notification } from 'antd'
 
 interface Props {
   type: FileType
@@ -39,14 +42,18 @@ const getClassNameLoading = (percent: number) => {
 }
 
 function Item({ data, type, onOpenImageEditor }: PropsWithChildren<Props>) {
+  const { deleteMedia } = useDeleteMedia()
   const {
-    setMediaSelectedID,
     mediaSelectedID,
-    setListMediaSelected,
     selectMultiMode,
     listMediaSelected,
+    config,
+    setMediaSelectedID,
+    setListMediaSelected,
     setCutVideoModal,
   } = useAppStore()
+  const [deleteConfirm, setDeleteConfirm] = useState(false)
+  const { mutate: deleteMediaMutation, isPending, data: deleteMediaData, error } = deleteMedia()
 
   const { transcodePercentMap } = useTranscodePercent({ profiles: data?.profiles, type })
 
@@ -90,44 +97,74 @@ function Item({ data, type, onOpenImageEditor }: PropsWithChildren<Props>) {
     }
   }, [type])
 
-  const menuImgContent = useMemo(() => {
-    return (
-      <div className="tw-flex tw-flex-col tw-gap-1 ">
-        <div
-          key={'btn-resize'}
-          onClick={() => onOpenImageEditor('resize')}
-          className="tw-flex tw-gap-2 !tw-items-center tw-cursor-pointer hover:tw-bg-slate-200 tw-transition-all tw-px-3 tw-py-2 tw-rounded-md">
-          <Pencil size={16} color="#404040" /> <span>Chỉnh sửa</span>
-        </div>
-        <div
-          key={'btn-crop'}
-          onClick={() => onOpenImageEditor('crop')}
-          className="tw-flex tw-gap-2 !tw-items-center tw-cursor-pointer hover:tw-bg-slate-200 tw-transition-all tw-px-3 tw-py-2 tw-rounded-md">
-          <Crop size={16} color="#404040" />
-          <span>Cắt ảnh</span>
-        </div>
-      </div>
-    )
-  }, [])
+  useEffect(() => {
+    if (!isPending && !error && deleteMediaData) {
+      setDeleteConfirm(false)
+      notification.success({ message: 'Xoá media thành công' })
+    }
+  }, [deleteMediaData, isPending, error])
 
-  const menuVideoContent = useMemo(() => {
+  const btnActions = useMemo(() => {
     return (
       <div className="tw-flex tw-flex-col tw-gap-1 ">
-        <div
-          key={'btn-edit-video'}
-          className="tw-flex tw-gap-2  !tw-items-center tw-cursor-pointer hover:tw-bg-slate-200 tw-transition-all tw-px-3 tw-py-2 tw-rounded-md">
-          <Pencil size={16} color="#404040" /> <span>Chỉnh sửa</span>
-        </div>
-        <div
-          key={'btn-cut-video'}
-          className="tw-flex tw-gap-2 !tw-items-center tw-cursor-pointer hover:tw-bg-slate-200 tw-transition-all tw-px-3 tw-py-2 tw-rounded-md"
-          onClick={() => setCutVideoModal(true)}>
-          <Crop size={16} color="#404040" />
-          <span>Cắt video</span>
-        </div>
+        <If
+          isShow={type === FileType.IMAGE}
+          element={
+            <div
+              onClick={() => onOpenImageEditor('resize')}
+              className="tw-flex tw-gap-2 !tw-items-center tw-cursor-pointer hover:tw-bg-slate-200 tw-transition-all tw-px-3 tw-py-2 tw-rounded-md">
+              <Pencil size={16} color="#404040" /> <span>Chỉnh sửa</span>
+            </div>
+          }
+        />
+        <If
+          isShow={type === FileType.IMAGE}
+          element={
+            <div
+              onClick={() => onOpenImageEditor('crop')}
+              className="tw-flex tw-gap-2 !tw-items-center tw-cursor-pointer hover:tw-bg-slate-200 tw-transition-all tw-px-3 tw-py-2 tw-rounded-md">
+              <Crop size={16} color="#404040" />
+              <span>Cắt ảnh</span>
+            </div>
+          }
+        />
+        <If
+          isShow={type === FileType.VIDEO}
+          element={
+            <div
+              className="tw-flex tw-gap-2 !tw-items-center tw-cursor-pointer hover:tw-bg-slate-200 tw-transition-all tw-px-3 tw-py-2 tw-rounded-md"
+              onClick={() => setCutVideoModal(true)}>
+              <Crop size={16} color="#404040" />
+              <span>Cắt video</span>
+            </div>
+          }
+        />
+
+        <If
+          isShow={config?.uid === data.author.uid}
+          element={
+            <Popconfirm
+              onCancel={() => setDeleteConfirm(false)}
+              open={deleteConfirm}
+              title="Xoá media"
+              okType="danger"
+              description={`Bạn có đồng ý xoá ${type === FileType.VIDEO ? 'video' : 'hình ảnh'} này không?`}
+              onConfirm={() => deleteMediaMutation(data.id)}
+              okText="Xoá"
+              cancelText="Không"
+              okButtonProps={{ loading: isPending }}>
+              <div
+                className="tw-flex tw-gap-2 !tw-items-center tw-cursor-pointer hover:tw-bg-slate-200 tw-transition-all tw-px-3 tw-py-2 tw-rounded-md tw-text-red-500"
+                onClick={() => setDeleteConfirm(true)}>
+                <Trash2 size={16} />
+                <span>Xoá</span>
+              </div>
+            </Popconfirm>
+          }
+        />
       </div>
     )
-  }, [])
+  }, [deleteConfirm, type, data, config])
 
   return (
     <>
@@ -136,12 +173,10 @@ function Item({ data, type, onOpenImageEditor }: PropsWithChildren<Props>) {
           'tw-border-red-400': activated(data),
         })}
         onClick={() => selectHandler(data)}>
-        <Popover
-          trigger={['click']}
-          className="tw-z-40 tw-cursor-pointer tw-absolute !tw-right-[-6px] tw-top-[9px]"
-          placement="bottomLeft"
-          content={type === FileType.IMAGE ? menuImgContent : menuVideoContent}>
-          <EllipsisVertical color="#8f8f8f" size={24} />
+        <Popover trigger="click" placement="bottomRight" content={btnActions}>
+          <div className="tw-z-40 tw-cursor-pointer tw-absolute tw-right-3 tw-top-4">
+            <EllipsisVertical color="#fff" size={20} />
+          </div>
         </Popover>
         {data?.status !== MediaProfileStatus.TRANSCODING && data?.status !== MediaStatus.Uploading ? (
           <div className="tw-absolute tw-left-4 tw-top-4 tw-z-10">

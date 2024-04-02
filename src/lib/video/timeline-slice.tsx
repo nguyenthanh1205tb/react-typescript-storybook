@@ -12,7 +12,7 @@ interface Props {
   onMouseDown?: (e: MouseEvent) => void
 }
 const TimelineSlice = ({ data, ...props }: PropsWithChildren<Props>) => {
-  const { sliceSelected, setSliceSelected, updateSlice, listSlice } = useTimelineVideo()
+  const { sliceSelected, setSliceSelected, updateSlice, listSlice, setPlayerViewAt } = useTimelineVideo()
   const { width, height, x, y, id } = data
   const [dynamicX, setDynamicX] = useState(0)
 
@@ -20,7 +20,7 @@ const TimelineSlice = ({ data, ...props }: PropsWithChildren<Props>) => {
     return dynamicX - (x ?? 0) < 0 ? DragDirection.LEFT : DragDirection.RIGHT
   }, [x, dynamicX])
 
-  const disableDraggingPos = useMemo(() => {
+  const limit = useMemo(() => {
     const idx = listSlice.findIndex(o => o.id === sliceSelected?.id)
 
     if (idx < 0) return null
@@ -30,6 +30,7 @@ const TimelineSlice = ({ data, ...props }: PropsWithChildren<Props>) => {
 
     if (!prevSlice && !nextSlice) return null
     if (!slice) return null
+    if (dynamicX === 0 || !slice.x) return null
 
     const sliceW = slice.width ?? 0
     const maxStart = (prevSlice?.x ?? 0) + (prevSlice?.width ?? 0)
@@ -58,7 +59,7 @@ const TimelineSlice = ({ data, ...props }: PropsWithChildren<Props>) => {
       }}
       onDragStop={(e, d) => {
         let x = d.x
-        if (disableDraggingPos) x = disableDraggingPos
+        if (limit) x = limit
 
         const _d = { id, x, y: d.y }
         updateSlice(_d)
@@ -70,17 +71,30 @@ const TimelineSlice = ({ data, ...props }: PropsWithChildren<Props>) => {
         const { x } = data
         setDynamicX(x)
       }}
+      onResizeStart={(e, direction, ref) => {
+        const u = {
+          ...data,
+          id,
+          width: parseInt(ref.style.width),
+          height: parseInt(ref.style.height),
+        }
+        updateSlice(u)
+        setSliceSelected(u)
+      }}
       onResizeStop={(e, direction, ref, delta, position) => {
+        const cls = (e.target as HTMLDivElement).classList
+        const isRight = cls.contains('drag--handle--right')
+
         const u = {
           id,
           width: parseInt(ref.style.width),
           height: parseInt(ref.style.height),
           ...position,
         }
+
         updateSlice(u)
-        if (sliceSelected?.id === data.id) {
-          setSliceSelected(u)
-        }
+        setSliceSelected(u)
+        setPlayerViewAt(isRight ? DragDirection.RIGHT : DragDirection.LEFT)
       }}
       {...props}>
       {props.children ? props.children : null}

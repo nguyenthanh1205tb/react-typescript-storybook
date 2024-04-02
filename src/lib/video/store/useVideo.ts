@@ -14,6 +14,8 @@ const defaultState = {
   barTime: [],
   barTimePlayed: null,
   title: '',
+  draggingDirection: null,
+  playerViewAt: null,
 }
 
 const useTimelineVideo = create<VideoState>(set => ({
@@ -67,6 +69,12 @@ const useTimelineVideo = create<VideoState>(set => ({
         return { barTimePlayed: state.barTime[idx] }
       }
       return state
+    }),
+
+  setPlayerViewAt: dir =>
+    set(state => {
+      if (state.playerViewAt === dir) return state
+      return { playerViewAt: dir }
     }),
 
   resetToDefault: () => set(() => defaultState),
