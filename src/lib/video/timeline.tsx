@@ -18,7 +18,7 @@ const NewSliceBtnWidth = 100
 const NewSliceBtnHeight = 20
 const TimeLine = () => {
   const parentRef = useRef<HTMLDivElement>(null)
-  const { addNewSlice, listSlice, setSliceSelected, sliceSelected, setMaxTimelineWidth, removeSlice } =
+  const { addNewSlice, listSlice, setSliceSelected, sliceSelected, setMaxTimelineWidth, removeSlice, setPlayerViewAt } =
     useTimelineVideo()
   const [btnNewX, setBtnNewX] = useState(0)
   const [showBtnNew, setShowBtnNew] = useState(false)
@@ -127,6 +127,7 @@ const TimeLine = () => {
                   onRemoveSlice(slice.id)
                 } else {
                   onSelectSlice(slice)
+                  setPlayerViewAt(null)
                 }
               }}
             />

@@ -8,6 +8,7 @@ import TimeLine from './timeline'
 import { Button } from '@/src/components/ui/button'
 import { Play } from 'lucide-react'
 import { BarTime, TimelineData } from './video'
+import { DragDirection } from '@/src/types'
 
 interface Props {
   src: string
@@ -20,11 +21,13 @@ function VideoEditor({ src, thumb, durations }: PropsWithChildren<Props>) {
     maxTimelineWidth,
     listSlice,
     barTimePlayed,
+    playerViewAt,
     setPlayer,
     setBarTime,
     setTitle,
     setSliceSelected,
     setBarTimePlayed,
+    setPlayerViewAt,
   } = useTimelineVideo()
   const [plInstance, setPlInstance] = useState<Player>()
 
@@ -46,7 +49,7 @@ function VideoEditor({ src, thumb, durations }: PropsWithChildren<Props>) {
     return 0
   }
 
-  const endTime = (d: TimelineData, x?: number) => {
+  const endTime = (d: TimelineData, x: number) => {
     if (d && typeof durations === 'number') {
       const w = d?.width ?? 0
       const playedPercent = (w * 100) / maxTimelineWidth
@@ -60,6 +63,7 @@ function VideoEditor({ src, thumb, durations }: PropsWithChildren<Props>) {
   const onPreview = () => {
     if (!plInstance) return
     if (isLastSlice) {
+      setPlayerViewAt(null)
       setSliceSelected(listSlice[0])
     }
     plInstance.play()
@@ -82,9 +86,16 @@ function VideoEditor({ src, thumb, durations }: PropsWithChildren<Props>) {
   useEffect(() => {
     if (sliceSelected) {
       setBarTimePlayed(sliceSelected.id)
-      if (plInstance) plInstance.currentTime(startTime(sliceSelected))
+      if (plInstance) {
+        const st = startTime(sliceSelected)
+        if (playerViewAt === DragDirection.RIGHT) {
+          plInstance.currentTime(endTime(sliceSelected, st))
+        } else if (playerViewAt === DragDirection.LEFT || playerViewAt === null) {
+          plInstance.currentTime(st)
+        }
+      }
     }
-  }, [sliceSelected, plInstance])
+  }, [sliceSelected, plInstance, playerViewAt])
 
   return (
     <div className="tw-overflow-hidden">

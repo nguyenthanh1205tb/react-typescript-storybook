@@ -144,6 +144,7 @@ function Item({ data, type, onOpenImageEditor }: PropsWithChildren<Props>) {
           isShow={config?.uid === data.author.uid}
           element={
             <Popconfirm
+              onCancel={() => setDeleteConfirm(false)}
               open={deleteConfirm}
               title="Xoá media"
               okType="danger"

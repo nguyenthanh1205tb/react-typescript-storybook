@@ -1,3 +1,4 @@
+import { DragDirection } from '@/src/types'
 import Player from 'video.js/dist/types/player'
 
 export interface TimelineData {
@@ -18,6 +19,7 @@ export interface VideoState {
   barTime: BarTime[]
   title: string
   barTimePlayed: BarTime | null
+  playerViewAt: DragDirection | null
   addNewSlice: (payload: TimelineData) => void
   updateSlice: (payload: TimelineData) => void
   setSliceSelected: (payload: TimelineData | null) => void
@@ -28,4 +30,5 @@ export interface VideoState {
   setBarTime: (payload: BarTime[]) => void
   setTitle: (text: string) => void
   setBarTimePlayed: (id: string) => void
+  setPlayerViewAt: (dir: DragDirection | null) => void
 }

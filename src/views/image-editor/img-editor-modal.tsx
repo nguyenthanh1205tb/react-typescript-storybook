@@ -62,7 +62,7 @@ const ImageEditorModal = ({ imageEditorState, onClose }: ImageEditorModalProps) 
 
   const handleCreateMedia = useCallback(async () => {
     const fileBlob = DataURIToBlob(instance?.toDataURL() as any, mediaSelectedData?.data?.mime_type)
-    const res = await onUploadFile(fileBlob, config?.organizationId as any)
+    const res = await onUploadFile(fileBlob, config?.organizationId as string, config?.uploadEndpoint as string)
     onCreateMedia({
       name: `[EDIT] ${mediaSelectedData?.data?.name}`,
       fileName: res?.filename,
