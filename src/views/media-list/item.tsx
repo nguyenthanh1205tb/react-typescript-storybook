@@ -219,7 +219,7 @@ function Item({ data, type, onOpenImageEditor }: PropsWithChildren<Props>) {
               </div>
             </div>
 
-            <p className="tw-text-sm tw-line-clamp-2" title={data.name}>
+            <p className="tw-text-sm tw-line-clamp-2 tw-mt-1" title={data.name}>
               {data.name}
             </p>
           </div>

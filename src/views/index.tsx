@@ -1,12 +1,10 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
+import React, { useEffect, useMemo, useState } from 'react'
 import { Button } from '@/src/components/ui/button'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import ConfigProvider from 'antd/es/config-provider'
 import Modal from 'antd/es/modal/Modal'
 import { FileText, Image as ImageIcon, MoveLeft, Search, Trash as TrashIcon, Video } from 'lucide-react'
 import moment from 'moment'
-import 'moment/locale/vi'
-import React, { useEffect, useMemo, useState } from 'react'
 import { Input } from '../components/ui/input'
 import { Separator } from '../components/ui/separator'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '../components/ui/tabs'
@@ -22,9 +20,10 @@ import Filter from './filter'
 import MediaDetail from './media-detail/detail'
 import ListMedia from './media-list/list'
 import MediaMultiSelected from './media-multi-selected'
-import UploadFromUrlModal from './upload-from-url'
-import MenuUpload from './upload/menu'
+import UploadFromUrlModal from './upload/from-urls'
+import SideMenuUpload from './side-menu'
 import Trash from './trash/list'
+import 'moment/locale/vi'
 
 type State = {
   sideMenu: SideMenu
@@ -181,7 +180,7 @@ function Main({ type, onExportData }: Props) {
                     element={
                       <div
                         className={`tw-pt-2 tw-w-[350px] ${state.sideMenu.active === SideMenuActive.FILTER ? '' : 'tw-w-fit'} tw-pr-2 tw-border-r tw-flex-none tw-flex`}>
-                        <MenuUpload onChangeMenu={onChangeMenu} active={state?.sideMenu?.active} />
+                        <SideMenuUpload onChangeMenu={onChangeMenu} active={state?.sideMenu?.active} />
                         <div
                           className={`tw-flex-1  tw-pl-2 tw-relative ${state.sideMenu.active === SideMenuActive.FILTER ? '' : 'tw-hidden'}`}>
                           <If
@@ -198,19 +197,6 @@ function Main({ type, onExportData }: Props) {
                               })
                             }
                           />
-
-                          {/* <If
-                        isShow={
-                          state.sideMenu.active === SideMenuActive.LOCAL_FILES
-                        }
-                        element={<LocalFilesUpload />}
-                      /> */}
-                          {/* <If isShow={state.sideMenu.active === SideMenuActive.LINK} element={<LinkUpload />} />
-                      <If
-                        isShow={state.sideMenu.active === SideMenuActive.WATCH_FOLDER}
-                        element={<WatchFolderUpload />}
-                      />
-                      <If isShow={state.sideMenu.active === SideMenuActive.S3_STORAGE} element={<S3StorageUpload />} /> */}
                         </div>
                       </div>
                     }
@@ -236,18 +222,17 @@ function Main({ type, onExportData }: Props) {
                   </TabsContent>
                 </div>
               </Tabs>
-              {
-                <UploadFromUrlModal
-                  isOpen={state.sideMenu.active === SideMenuActive.LINK}
-                  onCancel={() =>
-                    setState({
-                      sideMenu: {
-                        active: SideMenuActive.NULL,
-                      },
-                    })
-                  }
-                />
-              }
+
+              <UploadFromUrlModal
+                isOpen={state.sideMenu.active === SideMenuActive.LINK}
+                onCancel={() =>
+                  setState({
+                    sideMenu: {
+                      active: SideMenuActive.NULL,
+                    },
+                  })
+                }
+              />
             </div>
           </Modal>
         </ConfigProvider>

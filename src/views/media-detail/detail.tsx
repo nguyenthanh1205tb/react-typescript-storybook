@@ -124,13 +124,9 @@ const Detail = ({ type, onExportData }: Props) => {
 
   return (
     <div
-      className={cn(
-        'tw-bg-slate-800 tw-text-white tw-relative tw-h-full tw-w-full tw-flex-none tw-transition-all tw-max-h-[658px]',
-        {
-          'tw-max-w-[450px]': haveMediaSelectedID,
-          'tw-max-w-0': !haveMediaSelectedID,
-        },
-      )}>
+      className={cn('tw-bg-slate-800 tw-text-white tw-relative tw-w-full tw-flex-none tw-max-w-[450px] tw-block', {
+        'tw-hidden': !haveMediaSelectedID,
+      })}>
       <div
         className={cn(
           'tw-absolute -tw-left-8 tw-top-1/2 tw-bg-slate-800 tw-w-8 tw-h-10 tw-flex tw-items-center tw-justify-center tw-rounded-tl-lg tw-rounded-bl-lg tw-cursor-pointer',

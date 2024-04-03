@@ -1,64 +1,15 @@
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/src/components/ui/tooltip'
-import { ORG_ID, TEMPLATE_ID } from '@/src/configs'
-import UppyDashboard from '@/src/lib/uppy/dashboard'
 import { cn } from '@/src/lib/utils'
 import { SideMenuActive } from '@/src/types'
-import { FilterIcon, Link } from 'lucide-react'
+import { FilterIcon, FolderOpen, Link, UploadCloud } from 'lucide-react'
 import React, { PropsWithChildren } from 'react'
+import LocalFilesUpload from './upload/from-local-files'
 
 interface Props {
   onChangeMenu: (menu: SideMenuActive) => void
   active: SideMenuActive
 }
 function MenuUpload({ onChangeMenu, active }: PropsWithChildren<Props>) {
-  // const uppyRef = useRef<any>(null)
-  // const [isFileAdded, setIsFileAdded] = useState(false)
-
-  // useEffect(() => {
-  //   if (isFileAdded) {
-  //     uppyRef.current?.upload()
-  //   }
-  // }, [isFileAdded])
-
-  // useEffect(() => {
-  //   if (!ORG_ID) {
-  //     return () => {}
-  //   }
-
-  //   uppyRef.current = createUppyInstance({
-  //     autoProceed: false, // Set to false to manually start upload
-  //   })
-
-  //   uppyRef.current.on('file-added', (file: any) => {
-  //     const contentId = getContentId(file.id) || uniqueId()
-  //     saveContentIdToLocalStorage(file.id, contentId)
-
-  //     // eslint-disable-next-line @typescript-eslint/no-unused-expressions
-  //     console.log('File added>>>>:', file, contentId)
-  //     uppyRef.current.setFileMeta(file.id, {
-  //       contentId,
-  //       ORG_ID,
-  //       TEMPLATE_ID,
-  //     })
-
-  //     setIsFileAdded(true)
-  //   })
-
-  //   return () => {
-  //     uppyRef.current.close() // Close Uppy instance when component unmounts
-  //   }
-  // }, [ORG_ID, TEMPLATE_ID])
-
-  // const handleFileInputChange = (event: any) => {
-  //   const files = event.target.files
-  //   if (files.length > 0) {
-  //     // Add selected files to Uppy instance
-  //     uppyRef.current.addFiles(files)
-  //     // Optionally, you can start the upload process here
-  //     uppyRef.current.upload()
-  //   }
-  // }
-
   return (
     <div className="tw-w-[50px] tw-flex-none tw-bg-gray-50 tw-h-full tw-rounded-lg">
       <ul className="tw-py-2 tw-flex tw-flex-col tw-gap-4">
@@ -84,7 +35,7 @@ function MenuUpload({ onChangeMenu, active }: PropsWithChildren<Props>) {
         <li className="tw-flex tw-items-center tw-justify-center">
           <Tooltip>
             <TooltipTrigger>
-              <UppyDashboard organizationId={ORG_ID} templateId={TEMPLATE_ID} />
+              <LocalFilesUpload />
             </TooltipTrigger>
             <TooltipContent side="right" className="tw-bg-slate-800 tw-text-white">
               <p>Upload từ máy của bạn</p>
@@ -110,7 +61,7 @@ function MenuUpload({ onChangeMenu, active }: PropsWithChildren<Props>) {
             </TooltipContent>
           </Tooltip>
         </li>
-        {/* <li className="tw-flex tw-items-center tw-justify-center">
+        <li className="tw-flex tw-items-center tw-justify-center">
           <Tooltip>
             <TooltipTrigger>
               <div
@@ -147,7 +98,7 @@ function MenuUpload({ onChangeMenu, active }: PropsWithChildren<Props>) {
               <p>Upload từ S3 storage</p>
             </TooltipContent>
           </Tooltip>
-        </li> */}
+        </li>
       </ul>
     </div>
   )
