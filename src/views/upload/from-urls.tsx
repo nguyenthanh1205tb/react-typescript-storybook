@@ -6,7 +6,7 @@ import FormItem from 'antd/es/form/FormItem'
 import TextArea from 'antd/es/input/TextArea'
 import Modal from 'antd/es/modal/Modal'
 import React, { useCallback, useState } from 'react'
-import { createDownloadClient } from './download'
+import { createDownloadClient } from '../../utils/download'
 interface Props {
   isOpen: boolean
   onCancel: () => void
@@ -38,6 +38,8 @@ const UploadFromUrlModal = (props: Props) => {
   }
 
   const handleSubmit = useCallback(
+    // NOTE need remove any
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     async (values: any) => {
       const urlStr: string = values?.urls
       if (!urlStr) return
@@ -104,7 +106,6 @@ const UploadFromUrlModal = (props: Props) => {
             {
               validator: async (_, value) => {
                 const isOk = validateNotFbAndYt(value)
-                console.log('isOk', isOk)
                 if (isOk) {
                   return Promise.resolve()
                 }

@@ -27,7 +27,7 @@ function Trash({ type }: PropsWithChildren<Props>) {
   }, [])
 
   return (
-    <div className="tw-h-full tw-relative">
+    <div className="tw-h-full tw-w-full tw-relative tw-overflow-auto tw-pr-2">
       <If
         isShow={isLoading || !ok}
         element={
@@ -37,7 +37,7 @@ function Trash({ type }: PropsWithChildren<Props>) {
           </div>
         }
       />
-      <div className="tw-grid tw-gap-4 tw-w-full tw-transition-all tw-grid-cols-8 tw-pt-4">
+      <div className="tw-grid tw-gap-4 tw-w-full tw-transition-all tw-grid-cols-8 tw-pt-2">
         <Each of={data ?? []} render={item => <ItemTrash data={item} type={type} />} />
       </div>
     </div>
