@@ -24,6 +24,7 @@ import UploadFromUrlModal from './upload/from-urls'
 import SideMenuUpload from './side-menu'
 import Trash from './trash/list'
 import 'moment/locale/vi'
+import UploadFromWatchFolder from './upload/watch-folder'
 
 type State = {
   sideMenu: SideMenu
@@ -226,6 +227,17 @@ function Main({ type, onExportData }: Props) {
               <UploadFromUrlModal
                 isOpen={state.sideMenu.active === SideMenuActive.LINK}
                 onCancel={() =>
+                  setState({
+                    sideMenu: {
+                      active: SideMenuActive.NULL,
+                    },
+                  })
+                }
+              />
+
+              <UploadFromWatchFolder
+                isOpen={state.sideMenu.active === SideMenuActive.WATCH_FOLDER}
+                onClose={() =>
                   setState({
                     sideMenu: {
                       active: SideMenuActive.NULL,
