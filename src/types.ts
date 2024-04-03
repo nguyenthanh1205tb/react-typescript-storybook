@@ -202,6 +202,7 @@ export interface ConfigEntity {
   templateId: string
   uid: string
   uploadEndpoint: string
+  downloadEndpoint: string
 }
 
 export interface FileAdded {

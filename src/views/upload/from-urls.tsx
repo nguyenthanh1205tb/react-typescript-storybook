@@ -50,16 +50,21 @@ const UploadFromUrlModal = (props: Props) => {
         ?.split('\n')
         ?.map((url: string) => url?.trim())
 
-      await createDownloadClient({
-        organizationId: config?.organizationId,
-        templateId: config.templateId,
-        urls,
-      })
+      await createDownloadClient(
+        {
+          organizationId: config?.organizationId,
+          templateId: config.templateId,
+          urls,
+        },
+        config.downloadEndpoint,
+      )
         .then(() => {
           notification.success({
             message: 'Tải lên thành công',
           })
           onCancel()
+          setIsLoading(false)
+          form.resetFields()
         })
         .catch(() => {
           notification.error({
@@ -69,8 +74,6 @@ const UploadFromUrlModal = (props: Props) => {
         .finally(() => {
           setIsLoading(false)
         })
-
-      setIsLoading(true)
     },
     [config, createDownloadClient],
   )
