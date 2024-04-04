@@ -24,6 +24,7 @@ import UploadFromUrlModal from './upload/from-urls'
 import SideMenuUpload from './side-menu'
 import Trash from './trash/list'
 import 'moment/locale/vi'
+import UploadFromWatchFolder from './upload/watch-folder'
 
 type State = {
   sideMenu: SideMenu
@@ -133,7 +134,8 @@ function Main({ type, onExportData }: Props) {
             onCancel={() => setMediaDialog(false)}
             title="Quản lý media"
             footer={null}
-            className="tw-max-w-[95vw] tw-min-w-[95vw] xl:tw-min-h-[600px]  2xl:tw-min-h-[800px] 2xl:tw-max-h-[800px] tw-overflow-hidden">
+            className="tw-max-w-[95vw] tw-min-w-[95vw] xl:tw-min-h-[600px]  2xl:tw-min-h-[800px] 2xl:tw-max-h-[800px] tw-overflow-hidden"
+            classNames={{ mask: 'tw-backdrop-blur-md' }}>
             <div className="tw-flex tw-flex-col tw-h-full tw-flex-1">
               <Tabs
                 defaultValue={tabActivated}
@@ -226,6 +228,17 @@ function Main({ type, onExportData }: Props) {
               <UploadFromUrlModal
                 isOpen={state.sideMenu.active === SideMenuActive.LINK}
                 onCancel={() =>
+                  setState({
+                    sideMenu: {
+                      active: SideMenuActive.NULL,
+                    },
+                  })
+                }
+              />
+
+              <UploadFromWatchFolder
+                isOpen={state.sideMenu.active === SideMenuActive.WATCH_FOLDER}
+                onClose={() =>
                   setState({
                     sideMenu: {
                       active: SideMenuActive.NULL,

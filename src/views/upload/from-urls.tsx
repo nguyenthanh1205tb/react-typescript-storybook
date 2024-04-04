@@ -1,12 +1,15 @@
 import { FB_YT_IN_STRING_REGEX } from '@/src/configs'
 import useAppStore from '@/src/stores/useAppStore'
 import { MediaPackageType } from '@/src/types'
-import { Button, Form, notification } from 'antd'
+import notification from 'antd/es/notification'
+import Form from 'antd/es/form'
 import FormItem from 'antd/es/form/FormItem'
 import TextArea from 'antd/es/input/TextArea'
 import Modal from 'antd/es/modal/Modal'
 import React, { useCallback, useState } from 'react'
 import { createDownloadClient } from '../../utils/download'
+import { Button } from '@/src/components/ui/button'
+
 interface Props {
   isOpen: boolean
   onCancel: () => void
@@ -50,6 +53,14 @@ const UploadFromUrlModal = (props: Props) => {
         ?.split('\n')
         ?.map((url: string) => url?.trim())
 
+      await createDownloadClient(
+        {
+          organizationId: config?.organizationId,
+          templateId: config.templateId,
+          urls,
+        },
+        config.downloadEndpoint,
+      )
       await createDownloadClient({
         organizationId: config?.organizationId,
         templateId: config.templateId,
@@ -60,6 +71,8 @@ const UploadFromUrlModal = (props: Props) => {
             message: 'Tải lên thành công',
           })
           onCancel()
+          setIsLoading(false)
+          form.resetFields()
         })
         .catch(() => {
           notification.error({
@@ -69,8 +82,6 @@ const UploadFromUrlModal = (props: Props) => {
         .finally(() => {
           setIsLoading(false)
         })
-
-      setIsLoading(true)
     },
     [config, createDownloadClient],
   )

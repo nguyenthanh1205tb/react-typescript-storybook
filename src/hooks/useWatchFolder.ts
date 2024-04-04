@@ -1,15 +1,16 @@
 import { useMutation, useQuery } from '@tanstack/react-query'
 import { request } from '../lib/request'
 import { APIConfigs } from '../lib/request/core/ApiConfig'
+import useAppStore from '../stores/useAppStore'
 
 export interface WatchFile {
-  isDirectory: boolean
-  name: string
-  size: number
+  birthtime: number
   mime: string
   modifiedDate: number
+  name: string
+  size: number
+  isDirectory: boolean
   requestPath: string
-  used: boolean
 }
 
 export interface GetWatchFolderResponse {
@@ -24,6 +25,7 @@ export interface SyncRequest {
 }
 
 export const useWatchFolder = () => {
+  const { config } = useAppStore()
   const getWatchFolderFiles = (payload?: { folder?: string[]; fileName?: string }) => {
     const f = payload?.folder?.join('/').trim() ?? ''
     const n = payload?.fileName ?? ''
@@ -32,7 +34,7 @@ export const useWatchFolder = () => {
       staleTime: 0,
       queryKey: ['getWatchFolderFiles', payload],
       queryFn: () =>
-        request<GetWatchFolderResponse>(APIConfigs(), {
+        request<GetWatchFolderResponse>(APIConfigs(config?.downloadEndpoint), {
           url: '/files',
           method: 'GET',
           query: {
@@ -47,7 +49,7 @@ export const useWatchFolder = () => {
     return useMutation({
       mutationKey: ['sync-watch-folder'],
       mutationFn: (payload: SyncRequest) =>
-        request(APIConfigs(), {
+        request(APIConfigs(config?.downloadEndpoint), {
           url: '/sync',
           method: 'POST',
           body: payload,

@@ -25,3 +25,20 @@ export const formatBytes = (bytes: number, decimals = 2) => {
   const convertedSize = parseFloat((bytes / Math.pow(k, i)).toFixed(decimals))
   return `${convertedSize} ${sizes[i]}`
 }
+
+export function convertBytesToLargerUnit(bytes: number): string {
+  const KB = 1024
+  const MB = KB * KB
+  const GB = MB * KB
+  const TB = GB * KB
+
+  if (bytes < GB) {
+    return (bytes / MB).toFixed(2) + ' MB'
+  }
+
+  if (bytes > GB) {
+    return (bytes / GB).toFixed(2) + ' GB'
+  }
+
+  return (bytes / TB).toFixed(2) + ' TB'
+}

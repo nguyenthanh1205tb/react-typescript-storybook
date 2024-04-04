@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { notification } from 'antd'
+import notification from 'antd/es/notification'
 import { AuthTokenType, getAuthToken } from '../lib/utils/auth'
 
 export function DataURIToBlob(dataURI: string, orgType?: string) {
