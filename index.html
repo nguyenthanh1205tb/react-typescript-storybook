@@ -9,18 +9,14 @@
   <body>
     <div style="padding: 2rem">
       <div style="display: flex; justify-content: center; align-items: center">
-        <div id="mefi-media-package"></div>
+        <div id="point-id"></div>
       </div>
     </div>
 
     <script src="./build/index.min.js"></script>
     <script>
-      const MFPackage = new $MMedia.Init({ type: ['video', 'image'] })
-      MFPackage.render('#mefi-media-package', {
-        onSubmit: function (data) {
-          console.log('data', data)
-        },
-      })
+      const demoPack = new $MMedia.Init({ type: ['video', 'image'] })
+      demoPack.render('#point-id')
     </script>
   </body>
 </html>
