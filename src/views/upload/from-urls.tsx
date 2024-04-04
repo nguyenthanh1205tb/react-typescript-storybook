@@ -9,6 +9,7 @@ import Modal from 'antd/es/modal/Modal'
 import React, { useCallback, useState } from 'react'
 import { createDownloadClient } from '../../utils/download'
 import { Button } from '@/src/components/ui/button'
+
 interface Props {
   isOpen: boolean
   onCancel: () => void
@@ -60,6 +61,11 @@ const UploadFromUrlModal = (props: Props) => {
         },
         config.downloadEndpoint,
       )
+      await createDownloadClient({
+        organizationId: config?.organizationId,
+        templateId: config.templateId,
+        urls,
+      })
         .then(() => {
           notification.success({
             message: 'Tải lên thành công',
