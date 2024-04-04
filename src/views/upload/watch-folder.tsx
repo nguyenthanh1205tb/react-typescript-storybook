@@ -1,5 +1,4 @@
 import React, { useEffect, useMemo, useState } from 'react'
-import { getOrganizationId } from '@/src/lib/utils/auth'
 import { convertBytesToLargerUnit } from '@/src/lib/utils/media'
 import _debounce from 'lodash/debounce'
 import { SyncRequest, WatchFile, useWatchFolder } from 'src/hooks/useWatchFolder'
@@ -81,7 +80,7 @@ const UploadFromWatchFolder = (props: Props) => {
   const onSyncWatchFolder = () => {
     if (!syncMutation.isPending && canSync) {
       const payload: SyncRequest = {
-        organizationId: getOrganizationId() as string,
+        organizationId: config?.organizationId as string,
         templateId: config?.templateId as string,
         paths: filesSelected.map(o => o.requestPath),
       }
