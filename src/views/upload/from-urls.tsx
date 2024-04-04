@@ -61,11 +61,6 @@ const UploadFromUrlModal = (props: Props) => {
         },
         config.downloadEndpoint,
       )
-      await createDownloadClient({
-        organizationId: config?.organizationId,
-        templateId: config.templateId,
-        urls,
-      })
         .then(() => {
           notification.success({
             message: 'Tải lên thành công',
