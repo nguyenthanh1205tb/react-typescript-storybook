@@ -1,11 +1,16 @@
 import React, { useEffect, useMemo, useState } from 'react'
 import { getOrganizationId } from '@/src/lib/utils/auth'
 import { convertBytesToLargerUnit } from '@/src/lib/utils/media'
-import { Form, Input, Modal, Table, Tag, notification } from 'antd'
-import dayjs from 'dayjs'
 import _debounce from 'lodash/debounce'
 import { SyncRequest, WatchFile, useWatchFolder } from 'src/hooks/useWatchFolder'
 import { RefreshCcw, Undo2 } from 'lucide-react'
+import Table from 'antd/es/table'
+import notification from 'antd/es/notification'
+import Modal from 'antd/es/modal/Modal'
+import { Input } from '@/src/components/ui/input'
+import { Button } from '@/src/components/ui/button'
+import moment from 'moment'
+import useAppStore from '@/src/stores/useAppStore'
 
 interface Props {
   isOpen: boolean
@@ -20,9 +25,8 @@ const TURN_BACK_KEY = 'back'
 
 const UploadFromWatchFolder = (props: Props) => {
   const { isOpen, onClose } = props
-
+  const { config } = useAppStore()
   const { getWatchFolderFiles, sync: syncWatchFolder } = useWatchFolder()
-  const [transcodeSelected, setTranscodeSelected] = useState<string>()
   const [filesSelected, setFilesSelected] = useState<RowSelectionFile[]>([])
   const [filteredData, setFilteredData] = useState<{
     name?: string
@@ -30,34 +34,28 @@ const UploadFromWatchFolder = (props: Props) => {
     path?: string[]
   }>({})
 
+  const canSync = useMemo(() => {
+    if (!config) return false
+    if (!config.templateId || config.templateId === '') return false
+    if (!config.organizationId || config.organizationId === '') return false
+    if (filesSelected.length <= 0) return false
+    return true
+  }, [config, filesSelected])
+
   const syncMutation = syncWatchFolder()
   const getWatchFolderResult = getWatchFolderFiles({
     folder: filteredData.path,
     fileName: filteredData.name,
   })
 
-  // const syncApproval = useMemo(() => {
-  //   return (
-  //     typeof organization !== undefined &&
-  //     (transcodeSelected || props.type === ContentType.Image) &&
-  //     filesSelected.length > 0
-  //   )
-  // }, [organization, transcodeSelected, filesSelected, props.type])
-
   const clearSyncRequest = () => {
     setFilesSelected([])
   }
 
   const onChangeSelectedFiles = (newFilesSelected: RowSelectionFile[]) => {
-    // if (getWatchFolderResult.isLoading || syncMutation.isLoading) return
-    if (getWatchFolderResult.isLoading) return
-    setFilesSelected(newFilesSelected.filter(item => !item.isDirectory && item.mime.length))
+    if (getWatchFolderResult.isLoading || syncMutation.isPending) return
+    setFilesSelected(newFilesSelected.filter(item => !item.isDirectory))
   }
-
-  // const onChangeTranscodeSelected = (transcode: string) => {
-  //   if (getWatchFolderResult.isLoading) return
-  //   setTranscodeSelected(transcode)
-  // }
 
   const onChangeFileName = _debounce((v: string) => {
     setFilteredData(prev => ({
@@ -80,16 +78,16 @@ const UploadFromWatchFolder = (props: Props) => {
     }))
   }
 
-  // const onSyncWatchFolder = () => {
-  //     if (syncApproval && !syncMutation.isLoading) {
-  //       const payload: SyncRequest = {
-  //         organizationId: getOrganizationId() as string,
-  //         templateId: transcodeSelected as string,
-  //         paths: filesSelected.map(o => o.requestPath),
-  //       }
-  //       syncMutation.mutate(payload)
-  //     }
-  //   }
+  const onSyncWatchFolder = () => {
+    if (!syncMutation.isPending && canSync) {
+      const payload: SyncRequest = {
+        organizationId: getOrganizationId() as string,
+        templateId: config?.templateId as string,
+        paths: filesSelected.map(o => o.requestPath),
+      }
+      syncMutation.mutate(payload)
+    }
+  }
 
   const fillTableRecord = (record: WatchFile, key: number) => {
     return {
@@ -98,8 +96,7 @@ const UploadFromWatchFolder = (props: Props) => {
       fileSize: record.isDirectory ? null : convertBytesToLargerUnit(record.size),
       fileFormat: record.mime,
       requestPath: record.requestPath,
-      time: record.isDirectory ? null : dayjs(record.modifiedDate).format('DD MMM YYYY hh:mm'),
-      status: record.isDirectory ? '' : !record.used ? 'Active' : 'Used',
+      time: record.isDirectory ? null : moment(record.modifiedDate).format('dddd, DD/MM/YYYY HH:mm:ss'),
       isDirectory: record.isDirectory,
     }
   }
@@ -132,9 +129,9 @@ const UploadFromWatchFolder = (props: Props) => {
     {
       title: () => {
         return (
-          <div className="flex items-center justify-between">
+          <div className="tw-flex tw-items-center tw-justify-between">
             <span>Tên file</span>
-            <RefreshCcw />
+            <RefreshCcw size={20} className="tw-cursor-pointer" onClick={() => getWatchFolderResult.refetch()} />
           </div>
         )
       },
@@ -142,9 +139,9 @@ const UploadFromWatchFolder = (props: Props) => {
       key: 'fileName',
       width: 300,
       ellipsis: true,
-      render: (name: string, record: any) => {
+      render: (name: string) => {
         return (
-          <div className="grid grid-cols-12 items-center">
+          <div className="tw-grid tw-grid-cols-12 tw-items-center">
             <span className="col-span-11 ml-3 line-clamp-1 leading-7">{name}</span>
           </div>
         )
@@ -167,21 +164,7 @@ const UploadFromWatchFolder = (props: Props) => {
       dataIndex: 'time',
       key: 'time',
       width: '190px',
-    },
-    {
-      title: 'Trạng thái',
-      dataIndex: 'status',
-      key: 'status',
-      width: '190px',
-      render: (status: string | undefined) => {
-        if (!status) return null
-        if (status === 'Active') {
-          return <Tag color="warning">Chưa được sử dụng</Tag>
-        } else if (status === 'Used') {
-          return <Tag color="red">Đã sử dụng</Tag>
-        }
-        return null
-      },
+      render: (time: string) => <p className="tw-m-0 tw-p-0 tw-capitalize">{time}</p>,
     },
   ]
 
@@ -196,25 +179,33 @@ const UploadFromWatchFolder = (props: Props) => {
 
   return (
     <Modal
+      destroyOnClose
       open={isOpen}
       onCancel={onClose}
+      centered
       title="Tải lên từ watch folder"
-      styles={{ body: { width: '100%' } }}
-      classNames={{ body: 'max-w-[95vw] lg:max-w-[1200px]' }}>
-      <Form layout="vertical" className="mt-4">
-        <div className="grid grid-cols-12 gap-0 md:grid-cols-3 md:gap-3">
-          <Form.Item className="col-span-12" name="search-file-name">
-            <Input.Search
-              defaultValue={filteredData.name}
-              onChange={e => onChangeFileName(e.target.value)}
-              placeholder="Tìm kiếm"
-            />
-          </Form.Item>
+      className="tw-max-w-[95vw] xl:tw-max-w-[75vw] !tw-w-full tw-max-h-[95vh] tw-overflow-hidden"
+      classNames={{ mask: 'tw-backdrop-blur-md' }}
+      footer={
+        <div className="tw-flex tw-items-center tw-justify-end tw-gap-2">
+          <Button onClick={onClose} variant="outline">
+            Huỷ
+          </Button>
+          <Button disabled={!canSync} onClick={onSyncWatchFolder}>
+            Tải lên
+          </Button>
         </div>
-      </Form>
-      <div className="w-full overflow-auto">
+      }>
+      <div className="tw-w-full tw-mb-4">
+        <Input
+          defaultValue={filteredData.name}
+          onChange={e => onChangeFileName(e.target.value)}
+          placeholder="Tìm kiếm"
+        />
+      </div>
+      <div className="tw-w-full tw-overflow-auto tw-min-h-[500px]">
         <Table
-          scroll={{ y: 350 }}
+          scroll={{ y: 450 }}
           loading={getWatchFolderResult.isLoading || getWatchFolderResult.isFetching}
           onRow={record => {
             return record.isDirectory
@@ -230,7 +221,7 @@ const UploadFromWatchFolder = (props: Props) => {
             fixed: true,
             renderCell: (_value, record, _index, originNode) => {
               if (record.isDirectory)
-                return <div className="cursor-pointer">{record.key === TURN_BACK_KEY ? <Undo2 /> : null}</div>
+                return <div className="tw-cursor-pointer">{record.key === TURN_BACK_KEY ? <Undo2 /> : null}</div>
               // const fileType = (record as any).fileFormat?.split('/')[0] as string
               return originNode
             },

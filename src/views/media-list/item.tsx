@@ -11,7 +11,7 @@ import Popconfirm from 'antd/es/popconfirm'
 import { CalendarFold, Crop, EllipsisVertical, ImageIcon, Pencil, Trash2 } from 'lucide-react'
 import moment from 'moment'
 import Popover from 'antd/es/popover'
-import { notification } from 'antd'
+import notification from 'antd/es/notification'
 import { useQueryClient } from '@tanstack/react-query'
 
 interface Props {
