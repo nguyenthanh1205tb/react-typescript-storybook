@@ -1,5 +1,5 @@
 import { create } from 'zustand'
-import { PAGINATE_LIMIT } from '../configs'
+import { LS_SELECTED_ORGANIZATION_KEY, LS_SELECTED_TEMPLATE_KEY, PAGINATE_LIMIT } from '../configs'
 import {
   Category,
   ConfigEntity,
@@ -104,7 +104,12 @@ const useAppStore = create<State>(set => ({
 
   setListFileAdded: payload => set(() => ({ listFileAdded: payload })),
 
-  setConfig: payload => set(() => ({ config: payload })),
+  setConfig: payload =>
+    set(() => {
+      localStorage.setItem(LS_SELECTED_ORGANIZATION_KEY, payload.organizationId)
+      localStorage.setItem(LS_SELECTED_TEMPLATE_KEY, payload.templateId)
+      return { config: payload }
+    }),
 
   setMediaDialog: payload => set(() => ({ openMedia: payload })),
 
